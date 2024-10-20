@@ -7,10 +7,18 @@ module.exports = {
   ],
   theme: {
     extend: {
-      colors: {
-        background: "var(--background)",
-        foreground: "var(--foreground)",
+      container: {
+        center: true,
+        padding: "15px",
       },
+      fontFamily: {
+        ibmPlexRegular: ["var(--ibm-plex-regular)"],
+        ibmPlexMedium: ["var(--ibm-plex-medium)"],
+        bookish: ["var(--bookish)"],
+      },
+      fontSize: {
+        xs: ["11px", "20px"]
+      }
     },
   },
   plugins: [],
