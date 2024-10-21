@@ -1,4 +1,4 @@
-"use client";
+"use client"
 import Image from 'next/image';
 import Link from 'next/link';
 import { IoChevronDownSharp, IoChevronUpSharp } from "react-icons/io5";
@@ -36,7 +36,14 @@ const ProductGridItems = ({ products, productCategory }) => {
       ...prev,
       [id]: images[0]?.src, // Reset to the first image
     }));
-    swiperRefs.current[id]?.slideTo(0); // Reset swiper to the first slide
+
+    if (swiperRefs.current[id]) {
+      // Disable loop temporarily to reset to the first slide
+      swiperRefs.current[id].loopDestroy();
+      swiperRefs.current[id].slideTo(0, 0, false); // Directly jump to the first slide
+      // Re-enable loop after resetting
+      swiperRefs.current[id].loopCreate();
+    }
   };
 
   return (
@@ -84,7 +91,7 @@ const ProductGridItems = ({ products, productCategory }) => {
                           nextEl: `.custom-next-${item.id}`,
                           prevEl: `.custom-prev-${item.id}`,
                         }}
-                        loop={true}
+                        loop={true} // Keep the loop enabled here
                         spaceBetween={10}
                         slidesPerView={1}
                         className="w-full h-full"
