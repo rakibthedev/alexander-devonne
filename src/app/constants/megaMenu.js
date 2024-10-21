@@ -1,93 +1,93 @@
 export const megaMenuItems = [
     {
         category: "Men", 
-        href: "#men",
+        href: "/products/men",
         menu: [
             {
                 title: "Clothing",
-                href: "#",
+                href: "/products/clothing",
                 items: [
                     {
                         item: "T-shirt",
-                        href: "#tshirt",
+                        href: "/products/tshirt",
                     },
                     {
                         item: "Leather",
-                        href: "#",
+                        href: "/products/leather",
                     },
                     {
                         item: "Coats and Jackets",
-                        href: "#",
+                        href: "/products/coats-and-jackets",
                     },
                     {
                         item: "Denim",
-                        href: "#",
+                        href: "/products/denim",
                     },
                     {
                         item: "Pants",
-                        href: "#",
+                        href: "/products/pants",
                     }
                 ]
             },
             {
                 title: "Shoes",
-                href: "#",
+                href: "/products/shoes",
                 items: [
                     {
                         item: "Sneakers",
-                        href: "#",
+                        href: "/products/sneakers",
                     },
                     {
                         item: "Out of office",
-                        href: "#",
+                        href: "/products/out-of-office",
                     },
                     {
                         item: "Be Right Back",
-                        href: "#",
+                        href: "/products/be-right-back",
                     }
                 ]
             },
             {
                 title: "Bags",
-                href: "#",
+                href: "/products/bags",
                 items: [
                     {
                         item: "Backpacks",
-                        href: "#",
+                        href: "/products/backpacks",
                     },
                     {
                         item: "Crossbody bags",
-                        href: "#",
+                        href: "/products/crossbody-bags",
                     },
                     {
                         item: "Tote bags",
-                        href: "#",
+                        href: "/products/tote-bags",
                     },
                     {
                         item: "Waist bags and clutches",
-                        href: "#",
+                        href: "/products/waist-bags-and-clutches",
                     }
                 ]
             },
             {
                 title: "Accessories",
-                href: "#",
+                href: "/products/accessories",
                 items: [
                     {
                         item: "Hats and scarves",
-                        href: "#",
+                        href: "/products/hats-and-scarves",
                     },
                     {
                         item: "Wallets and cardholders",
-                        href: "#",
+                        href: "/products/wallets-and-cardholders",
                     },
                     {
                         item: "Belts",
-                        href: "#",
+                        href: "/products/belts",
                     },
                     {
                         item: "Other accessories",
-                        href: "#",
+                        href: "/products/other-accessories",
                     }
                 ]
             },
@@ -95,111 +95,111 @@ export const megaMenuItems = [
     },
     {
         category: "Women", 
-        href: "#",
+        href: "/products/women",
         menu: [
             {
                 title: "Clothing",
-                href: "#",
+                href: "/products/clothing",
                 items: [
                     {
                         item: "T-shirt & Tops",
-                        href: "#",
+                        href: "/products/tshirt-and-tops",
                     },
                     {
                         item: "Leather",
-                        href: "#",
+                        href: "/products/leather",
                     },
                     {
                         item: "Coats and Jackets",
-                        href: "#",
+                        href: "/products/coats-and-jackets",
                     },
                     {
                         item: "Denim",
-                        href: "#",
+                        href: "/products/denim",
                     },
                     {
                         item: "Pants",
-                        href: "#",
+                        href: "/products/pants",
                     }
                 ]
             },
             {
                 title: "Shoes",
-                href: "#",
+                href: "/products/shoes",
                 items: [
                     {
                         item: "Sneakers",
-                        href: "#",
+                        href: "/products/sneakers",
                     },
                     {
                         item: "Out of office",
-                        href: "#",
+                        href: "/products/out-of-office",
                     },
                     {
                         item: "Be Right Back",
-                        href: "#",
+                        href: "/products/be-right-back",
                     }
                 ]
             },
             {
                 title: "Activewear",
-                href: "#",
+                href: "/products/activewear",
                 items: [
                     {
                         item: "Tops and bras",
-                        href: "#",
+                        href: "/products/tops-and-bras",
                     },
                     {
                         item: "Leggings",
-                        href: "#",
+                        href: "/products/leggings",
                     },
                     {
                         item: "Be Right Back",
-                        href: "#",
+                        href: "/products/be-right-back",
                     }
                 ]
             },
             {
                 title: "Bags",
-                href: "#",
+                href: "/products/bags",
                 items: [
                     {
                         item: "Shoulder Bags",
-                        href: "#",
+                        href: "/products/shoulder-bags",
                     },
                     {
                         item: "Top handle bags",
-                        href: "#",
+                        href: "/products/top-handle-bags",
                     },
                     {
                         item: "Tote bags",
-                        href: "#",
+                        href: "/products/tote-bags",
                     },
                     {
                         item: "Mini bags",
-                        href: "#",
+                        href: "/products/mini-bags",
                     }
                 ]
             },
             {
                 title: "Accessories",
-                href: "#",
+                href: "/products/accessories",
                 items: [
                     {
                         item: "Wallet and cardholders",
-                        href: "#",
+                        href: "/products/wallet-and-cardholders",
                     },
                     {
                         item: "Hats and scarves",
-                        href: "#",
+                        href: "/products/hats-and-scarves",
                     },
                     {
                         item: "Belts",
-                        href: "#",
+                        href: "/products/belts",
                     },
                     {
                         item: "Other accessories",
-                        href: "#",
+                        href: "/products/other-accessories",
                     }
                 ]
             },
@@ -207,89 +207,87 @@ export const megaMenuItems = [
     },
     {
         category: "Kids", 
-        href: "#",
+        href: "/products/kids",
         menu: [
             {
                 title: "Boys",
-                href: "#",
+                href: "/products/boys",
                 items: [
                     {
                         item: "Boy Clothing",
-                        href: "#",
+                        href: "/products/boy-clothing",
                     },
                     {
                         item: "Boy Shoes",
-                        href: "#",
+                        href: "/products/boy-shoes",
                     },
                     {
                         item: "Boy Accessories",
-                        href: "#",
+                        href: "/products/boy-accessories",
                     }
                 ]
             },
             {
                 title: "Girls",
-                href: "#",
+                href: "/products/girls",
                 items: [
                     {
                         item: "Girl Clothing",
-                        href: "#",
+                        href: "/products/girl-clothing",
                     },
                     {
                         item: "Girl Shoes",
-                        href: "#",
+                        href: "/products/girl-shoes",
                     },
                     {
                         item: "Girl Accessories",
-                        href: "#",
+                        href: "/products/girl-accessories",
                     }
                 ]
             },
             {
                 title: "Baby",
-                href: "#",
+                href: "/products/baby",
                 items: [
-                    
+                    // No items specified
                 ]
             }
-           
         ]
     },
     {
         category: "Homeware", 
-        href: "#",
+        href: "/products/homeware",
         menu: [
             {
                 title: "Homeware",
-                href: "#",
+                href: "/products/homeware",
                 items: [
                     {
                         item: "Bath",
-                        href: "#",
+                        href: "/products/bath",
                     },
                     {
                         item: "Bedding",
-                        href: "#",
+                        href: "/products/bedding",
                     },
                     {
                         item: "Decorative Accessories",
-                        href: "#",
+                        href: "/products/decorative-accessories",
                     },
                     {
-                        item: "Doormats & Rugss",
-                        href: "#",
+                        item: "Doormats & Rugs",
+                        href: "/products/doormats-and-rugs",
                     },
                     {
                         item: "Soft Furnishings",
-                        href: "#",
+                        href: "/products/soft-furnishings",
                     },
                     {
                         item: "Tableware",
-                        href: "#",
+                        href: "/products/tableware",
                     }
                 ]
             }
-           
         ]
     }
-]
+];

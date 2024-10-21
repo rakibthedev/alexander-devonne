@@ -1,6 +1,150 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+:root {
+  --aliceblue: #f0f8ff;
+  --antiquewhite: #faebd7;
+  --aqua: #00B2E2; /* Standard Aqua */
+  --aquamarine: #007B7F; /* Standard Aquamarine */
+  --azure: #007FFF; /* Standard Azure */
+  --beige: #F5F5DC; /* Standard Beige */
+  --bisque: #FFE4C4; /* Standard Bisque */
+  --black: #000000;
+  --blanchedalmond: #FFEBCD; /* Standard Blanched Almond */
+  --blue: #0C234D; /* Standard Blue */
+  --blueviolet: #5D2E91; /* Standard Blue Violet */
+  --brown: #7B3F00; /* Standard Brown */
+  --burlywood: #D1B25B; /* Standard Burlywood */
+  --cadetblue: #4E8D8B; /* Standard Cadet Blue */
+  --chartreuse: #7FFF00; /* Standard Chartreuse */
+  --chocolate: #7B3F00; /* Standard Chocolate */
+  --coral: #FF6F61; /* Standard Coral */
+  --cornflowerblue: #3E8DCE; /* Standard Cornflower Blue */
+  --cornsilk: #FFF8DC; /* Standard Cornsilk */
+  --crimson: #C72C48; /* Standard Crimson */
+  --cyan: #00FFFF; /* Standard Cyan */
+  --darkblue: #003DA5; /* Standard Dark Blue */
+  --darkcyan: #008B8B; /* Standard Dark Cyan */
+  --darkgoldenrod: #B8860B; /* Standard Dark Goldenrod */
+  --darkgray: #A9A9A9; /* Standard Dark Gray */
+  --darkgreen: #004d00; /* Standard Dark Green */
+  --darkkhaki: #BDB76B; /* Standard Dark Khaki */
+  --darkmagenta: #8B008B; /* Standard Dark Magenta */
+  --darkolivegreen: #556B2F; /* Standard Dark Olive Green */
+  --darkorange: #FF8C00; /* Standard Dark Orange */
+  --darkorchid: #9932CC; /* Standard Dark Orchid */
+  --darkred: #8B0000; /* Standard Dark Red */
+  --darksalmon: #E9967A; /* Standard Dark Salmon */
+  --darkseagreen: #8FBC8F; /* Standard Dark Sea Green */
+  --darkslateblue: #483D8B; /* Standard Dark Slate Blue */
+  --darkslategray: #2F4F4F; /* Standard Dark Slate Gray */
+  --darkturquoise: #00CED1; /* Standard Dark Turquoise */
+  --darkviolet: #9400D3; /* Standard Dark Violet */
+  --deeppink: #FF1493; /* Standard Deep Pink */
+  --deepskyblue: #00BFFF; /* Standard Deep Sky Blue */
+  --dimgray: #696969; /* Standard Dim Gray */
+  --dodgerblue: #1E90FF; /* Standard Dodger Blue */
+  --firebrick: #B22222; /* Standard Firebrick */
+  --floralwhite: #FFFAF0; /* Standard Floral White */
+  --forestgreen: #228B22; /* Standard Forest Green */
+  --fuchsia: #FF00FF; /* Standard Fuchsia */
+  --gainsboro: #DCDCDC; /* Standard Gainsboro */
+  --ghostwhite: #F8F8FF; /* Standard Ghost White */
+  --gold: #FFD700; /* Standard Gold */
+  --goldenrod: #DAA520; /* Standard Goldenrod */
+  --gray: #808080; /* Standard Gray */
+  --green: #008000; /* Standard Green */
+  --greenyellow: #ADFF2F; /* Standard Green Yellow */
+  --honeydew: #F0FFF0; /* Standard Honeydew */
+  --hotpink: #FF69B4; /* Standard Hot Pink */
+  --indianred: #CD5C5C; /* Standard Indian Red */
+  --indigo: #4B0082; /* Standard Indigo */
+  --ivory: #FFFFF0; /* Standard Ivory */
+  --khaki: #F0E68C; /* Standard Khaki */
+  --lavender: #E6E6FA; /* Standard Lavender */
+  --lavenderblush: #FFF0F5; /* Standard Lavender Blush */
+  --lawngreen: #7CFC00; /* Standard Lawn Green */
+  --lemonchiffon: #FFFACD; /* Standard Lemon Chiffon */
+  --lightblue: #ADD8E6; /* Standard Light Blue */
+  --lightcoral: #F08080; /* Standard Light Coral */
+  --lightcyan: #E0FFFF; /* Standard Light Cyan */
+  --lightgoldenrodyellow: #FAFAD2; /* Standard Light Goldenrod Yellow */
+  --lightgray: #D3D3D3; /* Standard Light Gray */
+  --lightgreen: #90EE90; /* Standard Light Green */
+  --lightpink: #FFB6C1; /* Standard Light Pink */
+  --lightsalmon: #FFA07A; /* Standard Light Salmon */
+  --lightseagreen: #20B2AA; /* Standard Light Sea Green */
+  --lightskyblue: #87CEFA; /* Standard Light Sky Blue */
+  --lightslategray: #778899; /* Standard Light Slate Gray */
+  --lightsteelblue: #B0C4DE; /* Standard Light Steel Blue */
+  --lightyellow: #FFFFE0; /* Standard Light Yellow */
+  --lime: #00FF00; /* Standard Lime */
+  --limegreen: #32CD32; /* Standard Lime Green */
+  --linen: #FAF0E6; /* Standard Linen */
+  --magenta: #FF00FF; /* Standard Magenta */
+  --maroon: #800000; /* Standard Maroon */
+  --mediumaquamarine: #66CDAA; /* Standard Medium Aquamarine */
+  --mediumblue: #007BFF; /* Standard Medium Blue */
+  --mediumorchid: #BA55D3; /* Standard Medium Orchid */
+  --mediumpurple: #9370DB; /* Standard Medium Purple */
+  --mediumseagreen: #3CB371; /* Standard Medium Sea Green */
+  --mediumslateblue: #7B68EE; /* Standard Medium Slate Blue */
+  --mediumspringgreen: #00FA9A; /* Standard Medium Spring Green */
+  --mediumturquoise: #48D1CC; /* Standard Medium Turquoise */
+  --mediumvioletred: #C71585; /* Standard Medium Violet Red */
+  --midnightblue: #191970; /* Standard Midnight Blue */
+  --mintcream: #F5FFFA; /* Standard Mint Cream */
+  --mistyrose: #FFE4E1; /* Standard Misty Rose */
+  --moccasin: #FFE4B5; /* Standard Moccasin */
+  --navajowhite: #FFDEAD; /* Standard Navajo White */
+  --navy: #000080; /* Standard Navy */
+  --oldlace: #FDF5E6; /* Standard Old Lace */
+  --olive: #808000; /* Standard Olive */
+  --olivedrab: #6B8E23; /* Standard Olive Drab */
+  --orange: #FFA500; /* Standard Orange */
+  --orangered: #FF4500; /* Standard Red Orange */
+  --orchid: #DA70D6; /* Standard Orchid */
+  --palegoldenrod: #EEE8AA; /* Standard Pale Goldenrod */
+  --palegreen: #98FB98; /* Standard Pale Green */
+  --paleturquoise: #AFEEEE; /* Standard Pale Turquoise */
+  --palevioletred: #DB7093; /* Standard Pale Violet Red */
+  --papayawhip: #FFEFD5; /* Standard Papaya Whip */
+  --peachpuff: #FFDAB9; /* Standard Peach Puff */
+  --peru: #CD853F; /* Standard Peru */
+  --pink: #FFC0CB; /* Standard Pink */
+  --plum: #DDA0DD; /* Standard Plum */
+  --powderblue: #B0E0E6; /* Standard Powder Blue */
+  --purple: #800080; /* Standard Purple */
+  --red: #D50000; /* Standard Red */
+  --rosybrown: #BC8F8F; /* Standard Rosy Brown */
+  --royalblue: #4169E1; /* Standard Royal Blue */
+  --saddlebrown: #8B4513; /* Standard Saddle Brown */
+  --salmon: #FA8072; /* Standard Salmon */
+  --sandybrown: #F4A460; /* Standard Sandy Brown */
+  --seagreen: #2E8B57; /* Standard Sea Green */
+  --seashell: #FFF5EE; /* Standard Seashell */
+  --sienna: #A0522D; /* Standard Sienna */
+  --silver: #C0C0C0; /* Standard Silver */
+  --skyblue: #87CEEB; /* Standard Sky Blue */
+  --slateblue: #6A5ACD; /* Standard Slate Blue */
+  --slategray: #708090; /* Standard Slate Gray */
+  --snow: #FFFAFA; /* Standard Snow */
+  --springgreen: #00FF7F; /* Standard Spring Green */
+  --steelblue: #4682B4; /* Standard Steel Blue */
+  --tan: #D2B48C; /* Standard Tan */
+  --teal: #008080; /* Standard Teal */
+  --thistle: #D8BFD8; /* Standard Thistle */
+  --tomato: #FF6347; /* Standard Tomato */
+  --turquoise: #40E0D0; /* Standard Turquoise */
+  --violet: #EE82EE; /* Standard Violet */
+  --wheat: #F5DEB3; /* Standard Wheat */
+  --white: #FFFFFF; /* Standard White */
+  --whitesmoke: #F5F5F5; /* Standard White Smoke */
+  --yellow: #FFFF00; /* Standard Yellow */
+  --yellowgreen: #9ACD32; /* Standard Yellow Green */
+}
+
+
 
 *{
   scroll-behavior: smooth !important;  
@@ -109,6 +253,63 @@ select.form__input,
 .product__grid .product__wrapper:nth-child(-n + 4) {
   border-top: 1px solid #e8e8e8;
 }
+
+.product__image__wrapper{
+  cursor: url('/icons/plus.svg'), auto;
+}
+.product__image__wrapper{
+  border: 1px solid #e8e8e8;
+  border-left: none;
+  border-top: none;
+}
+.product__image__wrapper:first-child{
+  border-left: 1px solid #e8e8e8;
+}
+.product__image__wrapper:nth-child(2n + 1){
+  border-left: 1px solid #e8e8e8;
+}
+.product__image__wrapper:nth-child(-n + 2){
+  border-top: 1px solid #e8e8e8;
+}
+
+.color__variation__btn{
+  width: 36px;
+  height: 36px;
+  border: 1px solid #000000;
+  border-radius: 8px;
+  background: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+ }
+
+
+ /* Swipper slider */
+ .custom-prev,
+  .custom-next {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 2rem;
+    color: black; /* Customize arrow color */
+    z-index: 10;
+    cursor: pointer;
+    opacity: 0; /* Hide arrows initially */
+    transition: opacity 0.3s;
+  }
+
+  .custom-prev {
+    left: 10px;
+  }
+
+  .custom-next {
+    right: 10px;
+  }
+
+  .product__wrapper:hover .custom-prev,
+  .product__wrapper:hover .custom-next {
+    opacity: 1; /* Show arrows on hover */
+  }
 
 
 @media screen and (max-width: 1023px){
