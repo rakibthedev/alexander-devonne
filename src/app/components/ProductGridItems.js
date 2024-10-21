@@ -14,19 +14,35 @@ import 'swiper/css/navigation';
 
 function slugToWords(slug) {
   return decodeURIComponent(slug)
-      .replace(/_/g, '-')
-      .split('-')
-      .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
-      .join(' ');
+    .replace(/_/g, '-')
+    .split('-')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .join(' ');
 }
 
 const ProductGridItems = ({ products, productCategory }) => {
-  const [hovered, setHovered] = useState(false); // State to manage hover
+  const [currentImages, setCurrentImages] = useState({}); // State to manage current images for each product
+  const swiperRefs = useRef({}); // To store Swiper instances
+
+  const handleHover = (id, images) => {
+    setCurrentImages(prev => ({
+      ...prev,
+      [id]: images[1]?.src || images[0]?.src, // Show second image on hover or first image if second doesn't exist
+    }));
+  };
+
+  const handleMouseLeave = (id, images) => {
+    setCurrentImages(prev => ({
+      ...prev,
+      [id]: images[0]?.src, // Reset to the first image
+    }));
+    swiperRefs.current[id]?.slideTo(0); // Reset swiper to the first slide
+  };
 
   return (
     <section className='px-2 lg:px-5 mb-36 relative'>
       <h1 className='capitalize font-bookish text-2xl pb-10 pt-5'>{slugToWords(productCategory)}</h1>
-      <div className='flex justify-between mb-8'> 
+      <div className='flex justify-between mb-8'>
         <div className='flex items-center gap-[6px]'>
           <div className="flex items-center px-4 py-1 hover:bg-[#897f7b] cursor-pointer bg-[#e1e1e180] rounded">
             <span className='text-xs uppercase'>Filter</span>
@@ -50,42 +66,36 @@ const ProductGridItems = ({ products, productCategory }) => {
         {products
           .filter(item => item.status === 'publish')
           .map((item) => {
-            const [currentImage, setCurrentImage] = useState(item.images[0]?.src); // Start with the first image
-            const swiperRef = useRef(null);
+            const currentImage = currentImages[item.id] || item.images[0]?.src; // Get the current image for the product
 
             return (
-              <div 
-                className='product__wrapper relative' 
+              <div
+                className='product__wrapper relative' // Add the group class to manage hover
                 key={item.id}
-                onMouseEnter={() => {
-                  setCurrentImage(item.images[1]?.src || item.images[0]?.src); // Show the second image on hover
-                  setHovered(true); // Set hovered state to true
-                }} 
-                onMouseLeave={() => {
-                  setCurrentImage(item.images[0]?.src); // Reset to the initial image
-                  setHovered(false); // Set hovered state to false
-                  swiperRef.current.slideTo(0); // Reset swiper to the first slide
-                }} 
+                onMouseEnter={() => handleHover(item.id, item.images)} // Set the hover image
+                onMouseLeave={() => handleMouseLeave(item.id, item.images)} // Reset the image
               >
                 <Link href={`/shopping/${item.slug}`}>
                   <article>
-                    <div className='w-full min-h-[339px] flex flex-col justify-center items-center'>
+                    <div className='w-full min-h-[339px] flex flex-col justify-center items-center group'>
                       <Swiper
                         modules={[Navigation]}
                         navigation={{
-                          nextEl: '.custom-next',
-                          prevEl: '.custom-prev',
+                          nextEl: `.custom-next-${item.id}`,
+                          prevEl: `.custom-prev-${item.id}`,
                         }}
                         loop={true}
                         spaceBetween={10}
                         slidesPerView={1}
                         className="w-full h-full"
-                        onSwiper={(swiper) => { swiperRef.current = swiper; }}
+                        onSwiper={(swiper) => {
+                          swiperRefs.current[item.id] = swiper; // Store swiper instance for each product
+                        }}
                       >
                         <SwiperSlide>
                           <Image
                             className='h-auto w-full'
-                            src={currentImage} // Use the current image state
+                            src={currentImage} // Use the current image from state
                             height={339}
                             width={254}
                             alt={item.name}
@@ -102,9 +112,15 @@ const ProductGridItems = ({ products, productCategory }) => {
                             />
                           </SwiperSlide>
                         ))}
-                        <div className="custom-prev"><GoChevronLeft className='text-[28px]' /></div>
-                        <div className="custom-next"><GoChevronRight className='text-[28px]' /></div>
                       </Swiper>
+
+                      {/* Custom Navigation Arrows */}
+                      <div className={`custom-prev-${item.id} absolute opacity-0 group-hover:opacity-100 top-1/2 left-4 transform -translate-y-1/2 z-10`}>
+                        <GoChevronLeft className='text-[28px] text-black' />
+                      </div>
+                      <div className={`custom-next-${item.id} absolute opacity-0 group-hover:opacity-100 top-1/2 right-4 transform -translate-y-1/2 z-10`}>
+                        <GoChevronRight className='text-[28px] text-black' />
+                      </div>
                     </div>
                     <section className='flex flex-col pb-7'>
                       <p className='m-[13px] mb-0 text-[12px] capitalize leading-5'>{item.name}</p>

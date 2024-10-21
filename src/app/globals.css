@@ -285,31 +285,42 @@ select.form__input,
 
 
  /* Swipper slider */
- .custom-prev,
+/* Custom Navigation Arrow Styles */
+.product__wrapper {
+  position: relative;
+}
+
+.product__wrapper .swiper-container {
+  position: relative; /* Ensure the container is positioned relative */
+}
+
+.custom-prev,
+.custom-next {
+  position: absolute;
+  top: 50%; /* Center the arrows vertically */
+  transform: translateY(-50%); /* Align arrows to the center */
+  z-index: 10; /* Ensure the arrows are on top of images */
+  cursor: pointer;
+  color: black; /* Arrow color */
+  opacity: 1; /* Ensure arrows are always visible */
+}
+
+.custom-prev {
+  left: 10px; /* Position the left arrow on the left side */
+}
+
+.custom-next {
+  right: 10px; /* Position the right arrow on the right side */
+}
+
+/* Adjust arrow size and styling for mobile */
+@media (max-width: 768px) {
+  .custom-prev,
   .custom-next {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 2rem;
-    color: black; /* Customize arrow color */
-    z-index: 10;
-    cursor: pointer;
-    opacity: 0; /* Hide arrows initially */
-    transition: opacity 0.3s;
+    font-size: 24px; /* Adjust arrow size for mobile */
   }
+}
 
-  .custom-prev {
-    left: 10px;
-  }
-
-  .custom-next {
-    right: 10px;
-  }
-
-  .product__wrapper:hover .custom-prev,
-  .product__wrapper:hover .custom-next {
-    opacity: 1; /* Show arrows on hover */
-  }
 
 
 @media screen and (max-width: 1023px){
