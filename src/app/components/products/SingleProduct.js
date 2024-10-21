@@ -18,6 +18,9 @@ export default function SingleProduct({ product }) {
   const [selectedSize, setSelectedSize] = useState(null); // State for selected size
   const [isExpanded, setIsExpanded] = useState(false); // State for read more/less
   const detailsRef = useRef(null); // Create a ref for the details section
+  const [isModalOpen, setIsModalOpen] = useState(false); // State for modal visibility
+  const [modalImage, setModalImage] = useState(''); // State for the image that should be displayed in the modal
+  const [imageNumber, setImageNumber] = useState(''); // State for the image that should be displayed in the modal
 
   const materials = product.meta_data
     .filter(item => item.key === 'meterials')
@@ -48,13 +51,25 @@ export default function SingleProduct({ product }) {
   const descriptionText = removeHtmlTags(product.description);
   const truncatedDescription = descriptionText.length > 100 ? `${descriptionText.slice(0, 100)}...` : descriptionText;
 
+    // Function to open the modal with the selected image
+    const openModal = (imageSrc, imgNumber) => {
+        setModalImage(imageSrc);
+        setImageNumber(imgNumber);
+        setIsModalOpen(true);
+    };
+
+    // Function to close the modal
+    const closeModal = () => {
+        setIsModalOpen(false);
+    };    
+
   return (
     <div className="block lg:flex px-2 lg:px-5 gap-5">
         <div className="lg:flex-[70%] flex-[100%]">
             <div className='grid grid-cols-2 mb-16'>
                 {product.images.map((item, index) => (
                     <div key={index} className='product__image__wrapper relative flex justify-center items-center'>
-                        <Image className='w-full h-auto' src={item.src} height={339} width={254} alt={product.name} />
+                        <Image onClick={() => openModal(item.src, (index+1))} className='w-full h-auto' src={item.src} height={339} width={254} alt={product.name} />
                         <div className='absolute top-0 left-0 py-2 px-3'>
                             <span className='text-xs'>{`[${index + 1}/${product.images.length}]`}</span>
                         </div>
@@ -160,6 +175,21 @@ export default function SingleProduct({ product }) {
                 </button>
             </div>
         </div>
+        
+        {isModalOpen && (
+        <div className="image__popup fixed inset-0 bg-white z-[99999] flex justify-center items-center" onClick={closeModal}>
+          <div className="relative w-full h-full">
+            <div className="absolute top-3 left-3 text-xs">{`[${imageNumber}/${product.images.length}]`}</div>
+            {/* Use an img tag instead of Image component */}
+            <img
+              className="w-full h-auto object-contain"
+              src={modalImage}
+              alt="Full-size product image"
+              style={{ maxWidth: '100vw', maxHeight: '100vh' }} // Ensure image doesn't exceed the viewport
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 }

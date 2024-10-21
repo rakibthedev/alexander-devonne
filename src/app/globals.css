@@ -255,7 +255,10 @@ select.form__input,
 }
 
 .product__image__wrapper{
-  cursor: url('/icons/plus.svg'), auto;
+  cursor: url('/icons/plus.svg'), auto !important;
+}
+.image__popup{
+  cursor: url('/icons/minus.svg'), auto !important;
 }
 .product__image__wrapper{
   border: 1px solid #e8e8e8;
