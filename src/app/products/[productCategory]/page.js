@@ -28,7 +28,7 @@ const appDomain = process.env.DOMAIN_ADDRESS
   
   return (
     <div>
-      <ProductGridItems products={responsData.products} productCategory={params.productCategory}/>
+      {responsData.products && <ProductGridItems products={responsData.products} productCategory={params.productCategory}/>}
     </div>
   );
 };

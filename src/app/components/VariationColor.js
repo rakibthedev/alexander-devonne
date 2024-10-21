@@ -102,13 +102,10 @@ export default function VariationColor({ variationColor }) {
     // Set up the gradient style
     const gradientStyle = {
         background: `linear-gradient(180deg, ${gradientString})`,
-        height: '32px', // Adjust height as needed
-        width: '32px', // Adjust width as needed
         display: 'inline-block',
-        borderRadius: '8px',
     };
 
     return (
-        <div style={gradientStyle}></div>
+        <div className='variation__color' style={gradientStyle}></div>
     );
 }
