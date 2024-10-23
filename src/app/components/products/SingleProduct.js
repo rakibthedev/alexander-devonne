@@ -1,9 +1,10 @@
 "use client";
-import React, { useState, useRef } from 'react';
+import React, {useContext, useState, useRef } from 'react';
 import Image from 'next/image';
 import { IoArrowDownSharp } from "react-icons/io5";
 import VariationColor from '../VariationColor';
 import { IoMdHeartEmpty } from "react-icons/io";
+import { CartContext } from '@/context/cartContext';
 
 function removeHtmlTags(str) {
     return str.replace(/<[^>]*>/g, ''); // Removes everything between < and >
@@ -61,7 +62,13 @@ export default function SingleProduct({ product }) {
     // Function to close the modal
     const closeModal = () => {
         setIsModalOpen(false);
-    };    
+    }; 
+    
+    // Add to cart 
+    const {cartItem, setCartItem} = useContext(CartContext);
+    const handleAddToCart = () => {
+        setCartItem((prevItems) => [...prevItems, product]);
+    }
 
   return (
     <div className="block lg:flex px-2 lg:px-5 gap-5">
@@ -134,8 +141,7 @@ export default function SingleProduct({ product }) {
                             .filter(item => item.slug === 'color')
                             .flatMap(item => item.options)
                             .map((option, index) => (
-                                <button key={index} className='color__variation__btn'>                            
-
+                                <button key={index} className='color__variation__btn'>                           
                                     <VariationColor variationColor={option} />
                                 </button>
                             ))                   
@@ -147,7 +153,7 @@ export default function SingleProduct({ product }) {
             <div className="py-4">
                 <p className='text-xs uppercase'>Sizes (US):</p>
                 <div className="py-1">
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-[6px]">
                         {
                             product.attributes
                             .filter(item => item.slug === 'size')
@@ -166,16 +172,22 @@ export default function SingleProduct({ product }) {
                 </div>
             </div>
             <div className="mt-5 flex items-center gap-2">
-                <button className='bg-black rounded text-xs text-white py-1 uppercase h-[30px] w-[195px]'>Add to bag</button>
+                {/* Add to cart button  */}
+                <button className='bg-black rounded text-xs text-white py-1 uppercase h-[30px] w-[195px]' onClick={handleAddToCart}>
+                    Add to bag
+                </button>
                 <button className='bg-[#cecece80] rounded text-black h-[30px] flex items-center justify-start px-2 gap-2 group w-[36px] hover:w-[71px]' style={{transition: 'width .3s'}}>
                     <span className='w-5 h-5'>
                         <IoMdHeartEmpty className='text-[20px]' />
                     </span>
                     <span className='text-xs uppercase hidden group-hover:block'>Add</span>
                 </button>
-            </div>
+            </div>  
+            <div>
+                {`Cart: ${cartItem.length}`}
+            </div>   
         </div>
-        
+        {/* Product image popup modal  */}
         {isModalOpen && (
         <div className="image__popup fixed inset-0 bg-white z-[99999] flex justify-center items-center" onClick={closeModal}>
           <div className="relative w-full h-full">

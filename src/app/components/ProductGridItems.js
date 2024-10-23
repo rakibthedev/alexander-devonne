@@ -29,7 +29,7 @@ const ProductGridItems = ({ products, productCategory }) => {
 
   const handleMouseEnter = (id, images) => {
     const timeoutId = setTimeout(() => {
-      // Show the second image after 500ms
+      // Show the second image after 400ms
       setCurrentImages((prev) => ({
         ...prev,
         [id]: images[1]?.src || images[0]?.src, // Show second image or fallback to first
@@ -38,7 +38,7 @@ const ProductGridItems = ({ products, productCategory }) => {
         ...prev,
         [id]: true, // Show arrows after delay
       }));
-    }, 500); // Set the 500ms delay
+    }, 400); // Set the 400ms delay
 
     // Store the timeout ID to potentially clear it later
     setHoverTimeouts((prev) => ({
@@ -48,7 +48,7 @@ const ProductGridItems = ({ products, productCategory }) => {
   };
 
   const handleMouseLeave = (id, images) => {
-    // Clear the timeout to prevent image change if mouse leaves before 500ms
+    // Clear the timeout to prevent image change if mouse leaves before 400ms
     clearTimeout(hoverTimeouts[id]);
 
     // Reset the current image to the first image immediately
@@ -127,7 +127,7 @@ const ProductGridItems = ({ products, productCategory }) => {
               <div
                 className="product__wrapper relative" // Add the group class to manage hover
                 key={item.id}
-                onMouseEnter={() => handleMouseEnter(item.id, item.images)} // Set the hover image with 500ms delay
+                onMouseEnter={() => handleMouseEnter(item.id, item.images)} // Set the hover image with 400ms delay
                 onMouseLeave={() => handleMouseLeave(item.id, item.images)} // Reset the image immediately
               >
                 <Link href={`/shopping/${item.slug}`}>

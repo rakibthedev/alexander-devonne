@@ -1,13 +1,17 @@
+"use client"
 import Link from 'next/link'
-import React from 'react'
+import {React, useContext} from 'react'
 import Image from 'next/image'
 import { IoSearchOutline } from "react-icons/io5";
 import { IoIosHeartEmpty } from "react-icons/io";
 import { BsBag } from "react-icons/bs";
 import { HiMenuAlt4 } from "react-icons/hi";
 import Navbar from './Navbar';
+import { CartContext } from '@/context/cartContext';
 
 export default function HeaderMain() {
+  const {cartItem} = useContext(CartContext);
+  console.log(cartItem && cartItem.length)
   return (
     <div className='header__main bg-white sticky z-[100] w-full top-0'>
       <div className='px-2 py-2 lg:px-5 flex justify-between lg:pt-3 items-center'>
@@ -30,7 +34,12 @@ export default function HeaderMain() {
             <Link href="#" className='hidden lg:block border-none p-0 outline-none text-xs font-normal hover:underline'>Login</Link>
             <button className='border-none p-0 outline-none text-[18px] font-normal hover:underline'><IoSearchOutline /></button>
             <Link href="#" className='hidden lg:block text-[18px]'><IoIosHeartEmpty /></Link>
-            <Link href="#" className='text-[18px]'><BsBag /></Link>
+            <Link href="#" className='text-[18px]'>
+            <div className="relative">
+              <BsBag />
+              <span className='absolute top-[-4px] right-[-9px] text-[10px]'>{cartItem.length}</span>
+            </div>
+            </Link>
           </div>          
         </div>
       </div>

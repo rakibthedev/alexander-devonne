@@ -4,7 +4,7 @@ import HeaderTop from "./components/HeaderTop";
 import HeaderMain from "./components/HeaderMain";
 import Footer from "./components/Footer";
 import FooterBottom from "./components/FooterBottom";
-
+import { CartProvider } from "@/context/cartContext";
 
 const ibmPlexRegular = localFont({
   src: "./fonts/IBMPlexMono-Regular.ttf",
@@ -40,13 +40,15 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body
         className={`${geistMono.variable} ${geistSans.variable} ${ibmPlexMedium.variable} ${ibmPlexRegular.variable} ${bookish.variable}`}
-
       >
         <HeaderTop />
-        <HeaderMain />
-        {children}
+        <CartProvider>
+          <HeaderMain />
+        </CartProvider>
+          {children}
         <Footer />
         <FooterBottom />
+      
       </body>
     </html>
   );
