@@ -162,7 +162,6 @@ body{
   font-family: var(--ibm-plex-regular), sans-serif;
 }
 .nav__link{
-  padding: 5px 11px;
   font-size: 13px;
 }
 .nav__link:hover{
@@ -278,7 +277,7 @@ select.form__input,
 .color__variation__btn{
   width: 36px;
   height: 36px;
-  border: 1px solid #000000;
+  border: 0px solid #000000;
   border-radius: 8px;
   background: white;
   display: flex;
@@ -302,7 +301,6 @@ select.form__input,
   height: 20px;
   border-radius: 4px;
  }
-
 
 
  /* Swipper slider */
@@ -334,6 +332,27 @@ select.form__input,
   right: 10px; /* Position the right arrow on the right side */
 }
 
+@keyframes loading {
+  0% {
+      transform: rotate(0deg);
+  }
+  100% {
+      transform: rotate(360deg);
+  }
+}
+
+.loading {
+  display: inline-block; /* Ensure it behaves like a block for rotation */
+  animation: loading .5s linear infinite; /* Rotate infinitely */
+}
+
+.bag__item{
+  border-top: none;
+}
+.bag__item:first-child{
+  border-top: 1px solid #e8e8e8;
+}
+
 /* Adjust arrow size and styling for mobile */
 @media (max-width: 768px) {
   .custom-prev,
@@ -356,3 +375,4 @@ select.form__input,
   }
   
 }
+

@@ -1,10 +1,11 @@
 import React from 'react'
-import Cart from '../components/cart/Cart'
+import Bag from './../components/bag/Bag';
 
 export default function page() {
   return (
     <div>
-        <Cart />
+      <Bag />
     </div>
   )
 }
+

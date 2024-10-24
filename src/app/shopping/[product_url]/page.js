@@ -1,5 +1,4 @@
 import SingleProduct from "@/app/components/products/SingleProduct";
-import { CartContext, CartProvider } from "@/context/cartContext";
 
 const Page = async ({ params }) => {
   const responsData = {
@@ -31,10 +30,7 @@ const Page = async ({ params }) => {
 
   return (
     <div>
-        <CartProvider>
-          <SingleProduct product={responsData.product} />
-        </CartProvider>
-
+      <SingleProduct product={responsData.product} />
     </div>
   );
 };

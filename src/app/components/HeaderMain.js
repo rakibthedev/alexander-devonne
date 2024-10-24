@@ -7,11 +7,11 @@ import { IoIosHeartEmpty } from "react-icons/io";
 import { BsBag } from "react-icons/bs";
 import { HiMenuAlt4 } from "react-icons/hi";
 import Navbar from './Navbar';
-import { CartContext } from '@/context/cartContext';
+import { CartContext } from '@/app/context/cartContext';
 
 export default function HeaderMain() {
   const {cartItem} = useContext(CartContext);
-  console.log(cartItem && cartItem.length)
+  const cartItemCount = cartItem.length > 0 ? cartItem.length : "";
   return (
     <div className='header__main bg-white sticky z-[100] w-full top-0'>
       <div className='px-2 py-2 lg:px-5 flex justify-between lg:pt-3 items-center'>
@@ -37,7 +37,7 @@ export default function HeaderMain() {
             <Link href="#" className='text-[18px]'>
             <div className="relative">
               <BsBag />
-              <span className='absolute top-[-4px] right-[-9px] text-[10px]'>{cartItem.length}</span>
+              <span className='absolute top-[-4px] left-5 text-[8px]'>{cartItemCount}</span>
             </div>
             </Link>
           </div>          

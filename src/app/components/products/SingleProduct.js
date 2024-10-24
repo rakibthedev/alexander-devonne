@@ -1,10 +1,11 @@
 "use client";
-import React, {useContext, useState, useRef } from 'react';
+import React, {useContext, useState, useRef, useEffect } from 'react';
 import Image from 'next/image';
 import { IoArrowDownSharp } from "react-icons/io5";
 import VariationColor from '../VariationColor';
 import { IoMdHeartEmpty } from "react-icons/io";
-import { CartContext } from '@/context/cartContext';
+import { CartContext } from '@/app/context/cartContext';
+import { useRouter } from 'next/navigation';
 
 function removeHtmlTags(str) {
     return str.replace(/<[^>]*>/g, ''); // Removes everything between < and >
@@ -13,15 +14,23 @@ function removeHtmlTags(str) {
 function formatStringWithLineBreaks(inputString) {
     return inputString.replace(/\r\n/g, '<br>');
 }
-  
+
+
 export default function SingleProduct({ product }) {
   const [activeTab, setActiveTab] = useState('materials'); // Default active tab
+  const [selectedColor, setSelectedColor] = useState(null); // State for selected color
   const [selectedSize, setSelectedSize] = useState(null); // State for selected size
   const [isExpanded, setIsExpanded] = useState(false); // State for read more/less
   const detailsRef = useRef(null); // Create a ref for the details section
   const [isModalOpen, setIsModalOpen] = useState(false); // State for modal visibility
   const [modalImage, setModalImage] = useState(''); // State for the image that should be displayed in the modal
   const [imageNumber, setImageNumber] = useState(''); // State for the image that should be displayed in the modal
+  const [itemInCart, setItemInCart] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
+  
+  const isSizeSelectRef = useRef(null);
+  const addBagRef = useRef("Add to Bag");
 
   const materials = product.meta_data
     .filter(item => item.key === 'meterials')
@@ -41,13 +50,15 @@ export default function SingleProduct({ product }) {
     window.scrollTo({ top: y, behavior: 'smooth' });
   };
 
+  const handleColorClick = (color) => {
+    setSelectedColor(color); // Set the selected size
+  };
   const handleSizeClick = (size) => {
     setSelectedSize(size); // Set the selected size
+    isSizeSelectRef.current.innerHTML = 'Sizes (US):';
+    isSizeSelectRef.current.style.color = '#000';
   };
 
-  const toggleDescription = () => {
-    setIsExpanded(!isExpanded);
-  };
 
   const descriptionText = removeHtmlTags(product.description);
   const truncatedDescription = descriptionText.length > 100 ? `${descriptionText.slice(0, 100)}...` : descriptionText;
@@ -66,9 +77,61 @@ export default function SingleProduct({ product }) {
     
     // Add to cart 
     const {cartItem, setCartItem} = useContext(CartContext);
-    const handleAddToCart = () => {
-        setCartItem((prevItems) => [...prevItems, product]);
+
+
+    const productCartItem = {
+        id: product.id,
+        name: product.name,
+        image: product.images[0].src,
+        price: product.price,
+        quantity: 1,
+        color: selectedColor,
+        size: selectedSize,
     }
+
+    const handleAddToCart = () => {
+        const itemExists = cartItem.some(item => item.id === product.id && item.size === selectedSize && item.color === selectedColor);
+
+        if (!itemExists) {
+            if (selectedSize && selectedColor) {
+                setLoading(true); // Start loading
+                addBagRef.current.innerHTML = `<span class='loading'>/</span>`;
+                
+                setTimeout(() => {
+                    setCartItem(prevItems => [...prevItems, productCartItem]);
+                    addBagRef.current.innerHTML = "In Your Bag";
+                    setLoading(false); // Stop loading
+                }, 2000);
+            } else {
+                if (!selectedSize) {
+                    isSizeSelectRef.current.innerHTML = 'Please select your size first';
+                    isSizeSelectRef.current.style.color = '#f21515';
+                }
+            }
+        }else{
+            router.push('/bag');
+        }
+    }
+
+    useEffect(() => {
+        // Check if the item exists whenever selectedSize or cartItem changes
+        const itemExists = cartItem.some(item => item.id == product.id &&  item.size == selectedSize && item.color == selectedColor);
+        setItemInCart(itemExists);
+    }, [selectedSize, cartItem, product.id, selectedColor]);
+    
+      const toggleDescription = () => {
+        setIsExpanded(!isExpanded);
+      };
+
+    useEffect(() => {
+        const firstColor = product.attributes
+            .filter(item => item.slug === 'color')
+            .flatMap(item => item.options)[0]; // Make sure to get the first option properly
+        
+        if (firstColor) {
+            setSelectedColor(firstColor);
+        }
+    }, [product]); 
 
   return (
     <div className="block lg:flex px-2 lg:px-5 gap-5">
@@ -140,9 +203,16 @@ export default function SingleProduct({ product }) {
                             product.attributes
                             .filter(item => item.slug === 'color')
                             .flatMap(item => item.options)
-                            .map((option, index) => (
-                                <button key={index} className='color__variation__btn'>                           
-                                    <VariationColor variationColor={option} />
+                            .map((option, index) => (                                
+                                <button 
+                                    key={index} 
+                                    className={`color__variation__btn`}
+                                    style={{
+                                        border: selectedColor === option ? '1px solid #000' : '0px solid #000'
+                                    }} 
+                                    onClick={() => handleColorClick(option)}
+                                >                           
+                                    <VariationColor variationColor={option} />                                    
                                 </button>
                             ))                   
 
@@ -151,7 +221,7 @@ export default function SingleProduct({ product }) {
                 </div>
             </div>
             <div className="py-4">
-                <p className='text-xs uppercase'>Sizes (US):</p>
+                <p className='text-xs uppercase' ref={isSizeSelectRef}>Sizes (US):</p>
                 <div className="py-1">
                     <div className="flex items-center gap-[6px]">
                         {
@@ -162,7 +232,7 @@ export default function SingleProduct({ product }) {
                                 <button 
                                     className={`text-xs hover:text-white ${selectedSize === option ? 'bg-[#333] text-white hover:bg-[#333]' : 'bg-[#cecece80] text-black hover:bg-[#897f7b]'} py-3 px-2 rounded outline-none`} 
                                     key={index}
-                                    onClick={() => handleSizeClick(option)}
+                                    onClick={() => handleSizeClick(option)}                                    
                                 >
                                     {option}
                                 </button>
@@ -173,19 +243,16 @@ export default function SingleProduct({ product }) {
             </div>
             <div className="mt-5 flex items-center gap-2">
                 {/* Add to cart button  */}
-                <button className='bg-black rounded text-xs text-white py-1 uppercase h-[30px] w-[195px]' onClick={handleAddToCart}>
-                    Add to bag
+                <button className='bg-black rounded text-xs text-white py-1 uppercase h-[30px] w-[195px]' onClick={handleAddToCart} ref={addBagRef} disabled={loading}>
+                  {itemInCart ? 'In Your Bag' : 'Add to bag'}
                 </button>
                 <button className='bg-[#cecece80] rounded text-black h-[30px] flex items-center justify-start px-2 gap-2 group w-[36px] hover:w-[71px]' style={{transition: 'width .3s'}}>
                     <span className='w-5 h-5'>
                         <IoMdHeartEmpty className='text-[20px]' />
                     </span>
-                    <span className='text-xs uppercase hidden group-hover:block'>Add</span>
+                    <span className='text-xs uppercase overflow-hidden'>Add</span>
                 </button>
-            </div>  
-            <div>
-                {`Cart: ${cartItem.length}`}
-            </div>   
+            </div>             
         </div>
         {/* Product image popup modal  */}
         {isModalOpen && (

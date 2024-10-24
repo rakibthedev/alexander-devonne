@@ -16,7 +16,7 @@ export default function Navbar() {
       <ul className='flex justify-center items-center gap-2'>
         {megaMenuItems.map((item) => (
           <li key={item.category} className='group nav__link rounded'>
-            <Link className='hover:underline uppercase' href={item.href}>
+            <Link className='hover:underline uppercase px-[11px] py-[5px] block' href={item.href}>
               {item.category}
             </Link>
               {isMounted && item.menu && <MegaMenu menuItem={item.menu} />}
