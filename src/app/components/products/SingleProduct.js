@@ -76,12 +76,13 @@ export default function SingleProduct({ product }) {
     }; 
     
     // Add to cart 
-    const {cartItem, setCartItem} = useContext(CartContext);
+    const {cartItem, setCartItem, setPopupShow} = useContext(CartContext);
 
 
     const productCartItem = {
         id: product.id,
         name: product.name,
+        slug: product.slug,
         image: product.images[0].src,
         price: product.price,
         quantity: 1,
@@ -101,6 +102,7 @@ export default function SingleProduct({ product }) {
                     setCartItem(prevItems => [...prevItems, productCartItem]);
                     addBagRef.current.innerHTML = "In Your Bag";
                     setLoading(false); // Stop loading
+                    setPopupShow(true);
                 }, 2000);
             } else {
                 if (!selectedSize) {
