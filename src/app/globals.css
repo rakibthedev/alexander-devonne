@@ -345,6 +345,10 @@ select.form__input,
   display: inline-block; /* Ensure it behaves like a block for rotation */
   animation: loading .5s linear infinite; /* Rotate infinitely */
 }
+.loading__wishlist {
+  display: inline-block; /* Ensure it behaves like a block for rotation */
+  animation: loading .5s linear infinite; /* Rotate infinitely */
+}
 
 .bag__item{
   border-top: none;

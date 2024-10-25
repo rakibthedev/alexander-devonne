@@ -3,9 +3,10 @@ import React, {useContext, useState, useRef, useEffect } from 'react';
 import Image from 'next/image';
 import { IoArrowDownSharp } from "react-icons/io5";
 import VariationColor from '../VariationColor';
-import { IoMdHeartEmpty } from "react-icons/io";
 import { CartContext } from '@/app/context/cartContext';
+import { WishContext } from '@/app/context/wishContext';
 import { useRouter } from 'next/navigation';
+import { IoMdHeartEmpty, IoIosHeart } from "react-icons/io";
 
 function removeHtmlTags(str) {
     return str.replace(/<[^>]*>/g, ''); // Removes everything between < and >
@@ -27,10 +28,11 @@ export default function SingleProduct({ product }) {
   const [imageNumber, setImageNumber] = useState(''); // State for the image that should be displayed in the modal
   const [itemInCart, setItemInCart] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [loadingWishlist, setLoadingWishlist] = useState(false);
   const router = useRouter();
-  
   const isSizeSelectRef = useRef(null);
-  const addBagRef = useRef("Add to Bag");
+  const addBagRef = useRef(null);
+
 
   const materials = product.meta_data
     .filter(item => item.key === 'meterials')
@@ -74,10 +76,23 @@ export default function SingleProduct({ product }) {
     const closeModal = () => {
         setIsModalOpen(false);
     }; 
+
+    const toggleDescription = () => {
+        setIsExpanded(!isExpanded);
+      };
+
+    useEffect(() => {
+        const firstColor = product.attributes
+            .filter(item => item.slug === 'color')
+            .flatMap(item => item.options)[0]; // Make sure to get the first option properly
+        
+        if (firstColor) {
+            setSelectedColor(firstColor);
+        }
+    }, [product]); 
     
     // Add to cart 
     const {cartItem, setCartItem, setPopupShow} = useContext(CartContext);
-
 
     const productCartItem = {
         id: product.id,
@@ -100,7 +115,6 @@ export default function SingleProduct({ product }) {
                 
                 setTimeout(() => {
                     setCartItem(prevItems => [...prevItems, productCartItem]);
-                    addBagRef.current.innerHTML = "In Your Bag";
                     setLoading(false); // Stop loading
                     setPopupShow(true);
                 }, 2000);
@@ -120,21 +134,34 @@ export default function SingleProduct({ product }) {
         const itemExists = cartItem.some(item => item.id == product.id &&  item.size == selectedSize && item.color == selectedColor);
         setItemInCart(itemExists);
     }, [selectedSize, cartItem, product.id, selectedColor]);
-    
-      const toggleDescription = () => {
-        setIsExpanded(!isExpanded);
-      };
 
-    useEffect(() => {
-        const firstColor = product.attributes
-            .filter(item => item.slug === 'color')
-            .flatMap(item => item.options)[0]; // Make sure to get the first option properly
-        
-        if (firstColor) {
-            setSelectedColor(firstColor);
+    // Wish List
+    const wishState = useContext(WishContext);
+    const { wishItem, setWishItem } = wishState;
+
+    const itemInWishlist = wishItem.some(item => 
+        item.id === product.id 
+        // && 
+        // item.size === selectedSize && 
+        // item.color === selectedColor
+    );
+
+    const handleAddWishList = async () => {
+        if (!itemInWishlist) {
+            setLoadingWishlist(true);
+            try {
+                await new Promise(resolve => setTimeout(resolve, 2000)); // Simulating API call
+                setWishItem(prevItems => [...prevItems, productCartItem]);
+            } catch (error) {
+                console.error("Error adding to wishlist:", error);
+            } finally {
+                setLoadingWishlist(false);
+            }
+        }else {
+            router.push('/wishlist');
         }
-    }, [product]); 
-
+    };
+        
   return (
     <div className="block lg:flex px-2 lg:px-5 gap-5">
         <div className="lg:flex-[70%] flex-[100%]">
@@ -245,15 +272,38 @@ export default function SingleProduct({ product }) {
             </div>
             <div className="mt-5 flex items-center gap-2">
                 {/* Add to cart button  */}
-                <button className='bg-black rounded text-xs text-white py-1 uppercase h-[30px] w-[195px]' onClick={handleAddToCart} ref={addBagRef} disabled={loading}>
+                <button className='bg-black rounded text-xs text-white py-1 uppercase h-[30px] w-[195px]' 
+                onClick={handleAddToCart} ref={addBagRef} 
+                disabled={loading}>
                   {itemInCart ? 'In Your Bag' : 'Add to bag'}
                 </button>
-                <button className='bg-[#cecece80] rounded text-black h-[30px] flex items-center justify-start px-2 gap-2 group w-[36px] hover:w-[71px]' style={{transition: 'width .3s'}}>
-                    <span className='w-5 h-5'>
-                        <IoMdHeartEmpty className='text-[20px]' />
-                    </span>
-                    <span className='text-xs uppercase overflow-hidden'>Add</span>
-                </button>
+                <button 
+                className={`bg-[#cecece80] rounded text-black h-[30px] flex items-center justify-start px-2 gap-2 group w-[36px] overflow-hidden ${loadingWishlist ? 'hover:w-auto' : 'hover:w-[160px]'} hover:min-w-[36px]`} 
+                style={{ transition: '0.3s ease' }}
+                onClick={handleAddWishList}
+                disabled={loadingWishlist}
+                >
+                {loadingWishlist ? (    
+                <span className='loading__wishlist text-center w-full cursor-pointer text-xs'>/</span>
+                ) : (
+                    itemInWishlist ? (
+                        <div className="flex gap-2 items-center w-[141px] text-nowrap">
+                            <span className='w-5 h-5'>
+                                <IoIosHeart className={`text-[20px]`} />
+                            </span>
+                            <span className='text-xs uppercase'>Saved to wishlist</span>
+                        </div>
+                    ) : (
+                        <div className="flex gap-2 items-center w-[141px] text-nowrap">
+                            <span className='w-5 h-5'>
+                                <IoMdHeartEmpty className={`text-[20px]`} />
+                            </span>
+                            <span className='text-xs uppercase'>Add to wishlist</span>
+                        </div>
+                    )
+                )}
+            </button>
+
             </div>             
         </div>
         {/* Product image popup modal  */}

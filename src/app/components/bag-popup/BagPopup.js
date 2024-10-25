@@ -16,10 +16,10 @@ function formatString(input) {
     const truncateString = (str) => {
       if (str.length > 24) {
         return (
-          <>
+          <div>
             {str.slice(0, 24)}
             <span style={{ letterSpacing: '-4px' }}>...</span>
-          </>
+          </div>
         );
       }
       return str;
@@ -97,9 +97,9 @@ export default function BagPopup() {
                         </div>
                         <div className="flex justify-between w-full">
                         <div className="pl-3 pt-3 pb-2 relative">
-                            <p className='capitalize text-[14px] leading-4'>
+                            <div className='capitalize text-[14px] leading-4'>
                                 <TruncatedText text={item.name} />
-                            </p>
+                            </div>
                             <p className='mb-[6px] text-[12px] leading-5'>${item.price * item.quantity}</p>
                             <div className='flex items-center gap-1'>
                             <span className='text-[12px] leading-[18px] uppercase'>Color: </span>

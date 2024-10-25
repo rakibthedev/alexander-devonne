@@ -6,6 +6,7 @@ import Footer from "./components/Footer";
 import FooterBottom from "./components/FooterBottom";
 import { CartProvider } from "@/app/context/cartContext";
 import BagPopup from "./components/bag-popup/BagPopup";
+import { WishProvider } from "./context/wishContext";
 
 const ibmPlexRegular = localFont({
   src: "./fonts/IBMPlexMono-Regular.ttf",
@@ -43,13 +44,16 @@ export default function RootLayout({ children }) {
         className={`${geistMono.variable} ${geistSans.variable} ${ibmPlexMedium.variable} ${ibmPlexRegular.variable} ${bookish.variable}`}
       >
         <CartProvider>
-          <BagPopup />
-          <HeaderTop />
-          <HeaderMain />
-          {children}
-          <Footer />
-          <FooterBottom />
+          <WishProvider>
+            <BagPopup />
+            <HeaderTop />
+            <HeaderMain />
+            {children}
+            <Footer />
+            <FooterBottom />
+          </WishProvider>
         </CartProvider>
+
       </body>
     </html>
   );

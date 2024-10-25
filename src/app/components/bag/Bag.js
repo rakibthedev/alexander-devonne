@@ -45,8 +45,8 @@ const shipping = 8;
         <h1 className="text-[26px] font-bookish">
           Your Shopping Bag ({cartItem.length} items)
         </h1>
-        <div className="flex gap-8">
-          <div className="flex-[70%]">
+        <div className="block lg:flex gap-8">
+          <div className="lg:flex-[70%]">
             <div className="bag__wrapper mt-5">
               {
                 cartItem.map((item, index) => {
@@ -96,7 +96,7 @@ const shipping = 8;
               }
             </div>
           </div>
-          <div className={`flex-[30%] pt-5 ${cartItem.length > 0 ? "visible" : "invisible"}`}>
+          <div className={`lg:flex-[30%] pt-5 ${cartItem.length > 0 ? "block" : "hidden"}`}>
               <h2 className="text-[14px] font-ibmPlexMedium uppercase mb-5">
                 Your Order Summary
               </h2>
