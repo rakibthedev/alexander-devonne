@@ -42,7 +42,7 @@ export default function HeaderMain() {
           <div className='flex justify-between gap-[25px] items-center'>
             <Link href="#" className='hidden lg:block border-none p-0 outline-none text-xs font-normal hover:underline'>Login</Link>
             <button className='border-none p-0 outline-none text-[18px] font-normal hover:underline'><IoSearchOutline /></button>
-            <Link href="#" className='hidden lg:block text-[18px]'>
+            <Link href="/wishlist" className='hidden lg:block text-[18px]'>
              <div className="relative">
               <IoIosHeartEmpty />
               <span className='absolute top-[-4px] left-[18px] text-[8px]'>{wishItemCount}</span>

@@ -357,6 +357,28 @@ select.form__input,
   border-top: 1px solid #e8e8e8;
 }
 
+
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: white; /* Change this to your desired background color */
+  z-index: 50; /* Ensure it appears above all content */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* Optional: add transition for smooth appearance */
+  transition: opacity 0.3s ease;
+}
+
+.loading-text {
+  font-size: 11px; /* Adjust as needed */
+  color: black; /* Change text color as needed */
+}
+
+
 /* Adjust arrow size and styling for mobile */
 @media (max-width: 768px) {
   .custom-prev,

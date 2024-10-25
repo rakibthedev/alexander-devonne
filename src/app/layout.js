@@ -7,6 +7,8 @@ import FooterBottom from "./components/FooterBottom";
 import { CartProvider } from "@/app/context/cartContext";
 import BagPopup from "./components/bag-popup/BagPopup";
 import { WishProvider } from "./context/wishContext";
+import NextTopLoader from "nextjs-toploader";
+import LoadingIndicator from "./components/LoadingIndicator";
 
 const ibmPlexRegular = localFont({
   src: "./fonts/IBMPlexMono-Regular.ttf",
@@ -38,11 +40,14 @@ export const metadata = {
 };
 
 export default function RootLayout({ children }) {
+
   return (
     <html lang="en">
       <body
         className={`${geistMono.variable} ${geistSans.variable} ${ibmPlexMedium.variable} ${ibmPlexRegular.variable} ${bookish.variable}`}
       >
+        <NextTopLoader />
+        {/* <LoadingIndicator /> */}
         <CartProvider>
           <WishProvider>
             <BagPopup />
