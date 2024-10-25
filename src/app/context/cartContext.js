@@ -4,17 +4,30 @@ import { createContext, useState, useEffect } from "react";
 export const CartContext = createContext(null);
 
 export const CartProvider = ({ children }) => {
-  const [cartItem, setCartItem] = useState(() => {
-    // Initialize state from localStorage if available
-    const savedCartItems = localStorage.getItem('cartItem');
-    return savedCartItems ? JSON.parse(savedCartItems) : [];
-  });
+  const [cartItem, setCartItem] = useState([]);
   const [popupShow, setPopupShow] = useState(false);
+  const [isClient, setIsClient] = useState(false);
+
+  // Effect to initialize cartItem from localStorage
+  useEffect(() => {
+    setIsClient(true);
+    const savedCartItems = localStorage.getItem('cartItem');
+    
+    if (savedCartItems) {
+      try {
+        setCartItem(JSON.parse(savedCartItems));
+      } catch (error) {
+        console.error("Error parsing cart items from localStorage", error);
+      }
+    }
+  }, []);
 
   // Effect to update localStorage whenever cartItem changes
   useEffect(() => {
-    localStorage.setItem('cartItem', JSON.stringify(cartItem));
-  }, [cartItem]);
+    if (isClient) {
+      localStorage.setItem('cartItem', JSON.stringify(cartItem));
+    }
+  }, [cartItem, isClient]);
 
   return (
     <CartContext.Provider value={{ cartItem, setCartItem, popupShow, setPopupShow }}>

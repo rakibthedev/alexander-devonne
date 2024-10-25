@@ -48,16 +48,16 @@ export default function RootLayout({ children }) {
       >
         <NextTopLoader />
         {/* <LoadingIndicator /> */}
+        <WishProvider>
         <CartProvider>
-          <WishProvider>
             <BagPopup />
             <HeaderTop />
             <HeaderMain />
             {children}
             <Footer />
             <FooterBottom />
-          </WishProvider>
         </CartProvider>
+        </WishProvider>
 
       </body>
     </html>
