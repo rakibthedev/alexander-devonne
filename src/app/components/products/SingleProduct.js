@@ -137,7 +137,7 @@ export default function SingleProduct({ product }) {
 
     // Wish List
     const wishState = useContext(WishContext);
-    const { wishItem, setWishItem } = wishState;
+    const { wishItem, setWishItem, setWishPopupShow } = wishState;
 
     const itemInWishlist = wishItem.some(item => 
         item.id === product.id 
@@ -152,6 +152,10 @@ export default function SingleProduct({ product }) {
             try {
                 await new Promise(resolve => setTimeout(resolve, 2000)); // Simulating API call
                 setWishItem(prevItems => [...prevItems, productCartItem]);
+                setWishPopupShow(true);
+                setTimeout(()=>{
+                    setWishPopupShow(false);
+                  }, 20000);
             } catch (error) {
                 console.error("Error adding to wishlist:", error);
             } finally {

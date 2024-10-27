@@ -23,7 +23,7 @@ const LoadingIndicator = () => {
       {loading && (
         <div className="loading-overlay">
           {/* You can add a spinner or loading text here */}
-          <span className="text-xs loading-text loading">.</span>
+          <span className="text-xs loading-text loading"></span>
         </div>
       )}
     </>

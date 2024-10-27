@@ -72,7 +72,7 @@ export default function BagPopup() {
                 <p className="text-[18px] font-bookish mb-3">Your shopping bag ( {cartItem.length} items)</p>
                 <div className="bag__wrapper mt-5 overflow-y-auto" style={{ height: "calc(100vh - 280px)" }}>
                     {cartItem.map((item, index) => (
-                        <div className="bag__item flex border border-[#e8e8e8] border-solid" key={item.id || index}>
+                        <div className="bag__item flex border border-[#e8e8e8] border-solid" key={index}>
                             <div className="flex items-center justify-center border-r border-[#e8e8e8]">
                                 <Link href={`/shopping/${item.slug}`}>
                                     <Image
@@ -84,7 +84,7 @@ export default function BagPopup() {
                                     />
                                 </Link>
                             </div>
-                            <div className="flex justify-between w-full">
+                            <div className="w-full">
                                 <div className="pl-3 pt-3 pb-2 relative">
                                     <div className='capitalize text-[14px] leading-4'>
                                         <TruncatedText text={item.name} />
@@ -104,7 +104,7 @@ export default function BagPopup() {
                                     </div>
                                     <div className="absolute bottom-1 right-0">
                                         <button className='py-[5px] px-[10px] hover:cursor-pointer hover:bg-gray-100 rounded' onClick={() => handleRemoveCartItem(item.id, item.size, item.color)}>
-                                            <FaRegTrashAlt className='text-4' />
+                                            <FaRegTrashAlt className='text-[16px]' />
                                         </button>
                                     </div>
                                 </div>

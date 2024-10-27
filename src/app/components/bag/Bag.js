@@ -1,5 +1,5 @@
 "use client";
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { CartContext } from '@/app/context/cartContext';
 import Image from 'next/image';
 import { FaRegTrashAlt } from "react-icons/fa";
@@ -14,16 +14,21 @@ function formatString(input) {
 }
 
 export default function Bag() {
+  const [removeLoading, setRemoveLoading] = useState(false)
   const { cartItem = [], setCartItem } = useContext(CartContext) || {}; // Default to empty array
 
   const handleRemoveCartItem = (itemId, itemSize, itemColor) => {
-    setCartItem((prevItems) => 
-      prevItems.filter(filteredItem => 
-        !(filteredItem.id === itemId && 
-          filteredItem.size === itemSize && 
-          filteredItem.color === itemColor)
-      )
-    );
+    setRemoveLoading(true);
+    setTimeout(()=>{
+      setCartItem((prevItems) => 
+        prevItems.filter(filteredItem => 
+          !(filteredItem.id === itemId && 
+            filteredItem.size === itemSize && 
+            filteredItem.color === itemColor)
+        )
+      );
+      setRemoveLoading(false);
+    }, 1000);
   };
 
   const shipping = 8;
@@ -78,9 +83,13 @@ export default function Bag() {
                           <span>{`$${item.price * item.quantity}`}</span>
                         </div>
                         <div>
-                          <button className='py-[7px] px-[14px] hover:cursor-pointer hover:bg-gray-100 rounded' onClick={() => handleRemoveCartItem(item.id, item.size, item.color)}>
-                            <FaRegTrashAlt className='text-4' />
-                          </button>
+                            {removeLoading ? (
+                              <span className="loading text-xs">/</span>
+                            ):(
+                              <button className='py-[7px] px-[14px] hover:cursor-pointer hover:bg-gray-100 rounded' onClick={() => handleRemoveCartItem(item.id, item.size, item.color)}>
+                                <FaRegTrashAlt className='text-4' />
+                              </button>
+                            )}
                         </div>
                       </div>
                     </div>

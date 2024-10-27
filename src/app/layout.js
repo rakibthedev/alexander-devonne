@@ -9,6 +9,7 @@ import BagPopup from "./components/bag-popup/BagPopup";
 import { WishProvider } from "./context/wishContext";
 import NextTopLoader from "nextjs-toploader";
 import LoadingIndicator from "./components/LoadingIndicator";
+import WishlistPopup from './components/wishlist-popup/WishlistPopup';
 
 const ibmPlexRegular = localFont({
   src: "./fonts/IBMPlexMono-Regular.ttf",
@@ -48,16 +49,17 @@ export default function RootLayout({ children }) {
       >
         <NextTopLoader />
         {/* <LoadingIndicator /> */}
-        <WishProvider>
         <CartProvider>
+        <WishProvider>
             <BagPopup />
+            <WishlistPopup />
             <HeaderTop />
             <HeaderMain />
             {children}
             <Footer />
             <FooterBottom />
-        </CartProvider>
         </WishProvider>
+        </CartProvider>
 
       </body>
     </html>
