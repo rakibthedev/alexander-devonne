@@ -75,6 +75,7 @@ export default function SingleProduct({ product }) {
     // };
     const openModal = (imageSrc, imgNumber) => {
         const img = document.createElement('img'); // Create a temporary image element
+        setIsModalOpen(true);
         setIsLoading(true); // Start loading
 
         img.src = imageSrc;
@@ -83,7 +84,6 @@ export default function SingleProduct({ product }) {
             setModalImage(imageSrc);
             setImageNumber(imgNumber);
             setIsLoading(false); // Loading complete
-            setIsModalOpen(true);
         };
 
         img.onerror = () => {
