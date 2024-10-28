@@ -17,47 +17,86 @@ function formatString(input) {
 }
 
 export default function WishList() {
-  const Router = useRouter();
-  const { wishItem = [], setWishItem } = useContext(WishContext) || { wishItem: [] };
-  const { cartItem = [], setCartItem } = useContext(CartContext) || { cartItem: [] };
+  const router = useRouter();
+  const { wishItem, setWishItem } = useContext(WishContext);
+  const { cartItem, setCartItem, setPopupShow } = useContext(CartContext);
   const [loading, setLoading] = useState(true);
-  const [removeloading, setRemoveloading] = useState({});
-
+  const [removalLoading, setRemovalLoading] = useState({});
+  
   useEffect(() => {
-    // Simulate fetching wishlist items
     const fetchWishlistItems = async () => {
-      // Simulate delay
-      await new Promise(resolve => setTimeout(resolve, 100));
+      await new Promise(resolve => setTimeout(resolve, 300));
       setLoading(false);
     };
     fetchWishlistItems();
   }, []);
 
   const handleMoveToBag = (wishItemId, wishFullItem) => {
-    setCartItem((prevCartItem) => [...prevCartItem, wishFullItem]);
-    setWishItem((prevItem) => prevItem.filter(item => item.id !== wishItemId));    
+    setCartItem(prevCartItem => [...prevCartItem, wishFullItem]);
+    setWishItem(prevItems => prevItems.filter(item => item.id !== wishItemId));
+    setPopupShow(true);
   };
 
   const handleGoBag = () => {   
-    Router.push("/bag");
+    router.push("/bag");
   };
+
   const handleRemoveWishItem = (itemId) => {
-    setRemoveloading((prev) => ({ ...prev, [itemId]: true }));
+    setRemovalLoading(prev => ({ ...prev, [itemId]: true }));
+    setTimeout(() => {
+      setWishItem(prevItems => prevItems.filter(item => item.id !== itemId));  
+      setRemovalLoading(prev => ({ ...prev, [itemId]: false }));
+    }, 1000);
+  };
+
+  // Edit Wishlist
+  const [editItemId, setEditItemId] = useState(null);
+  const [selectedSize, setSelectedSize] = useState(null);
+  const [isWorking, setIsWorking] = useState(false);
+
+  const handleSelectSize = (itemId) => {
+    setEditItemId(itemId);
+  };
+
+  const handleSizeClick = (size, itemId) => {
+    setIsWorking(true);
     setTimeout(()=>{
-      setWishItem((prevItem) => prevItem.filter(item => item.id !== itemId));  
-      setRemoveloading((prev) => ({ ...prev, [itemId]: false }));
-    }, 1000)
+      setSelectedSize(size);
+      setWishItem(prevItems => 
+        prevItems.map(item => 
+          item.id === itemId 
+            ? { ...item, size: size }
+            : item
+        )
+      );
+      // Reset after selecting size
+      setEditItemId(null);
+      setSelectedSize(null);
+      setIsWorking(false);
+    },800)
+  };
+  
+  const handleEdit = (id) =>{
+    setWishItem(prevItems => 
+      prevItems.map(item => 
+        item.id === id 
+          ? { ...item, size: null }
+          : item
+      )
+    )
+    setEditItemId(id);
   }
+
   return (
     <div className='pt-12 pb-[160px] px-2 lg:px-5'>
       {loading ? (
-        <p className='loading text-[10px]'></p> // You can customize this loading message or spinner
+        <p className='loading text-[10px]'></p>
       ) : wishItem.length > 0 ? (
-        <div>
+        <div className="slide__up">
           <h1 className="text-[26px] font-bookish mb-6">
             {`Your wishlist (${wishItem.length} item${wishItem.length > 1 ? 's' : ''})`}
           </h1>
-          <div className="product__grid grid grid-cols-4">
+          <div className="product__grid grid grid-cols-2 lg:grid-cols-4">
             {wishItem.map((item, index) => (
               <div className="product__wrapper w-full relative" key={index}>
                 <Link href={`/shopping/${item.slug}`}>
@@ -70,60 +109,95 @@ export default function WishList() {
                       alt={item.name}
                     />
                   </div>
-                  </Link>
-                  <div className="pl-[18px] py-5">
-                    <p className="text-[12px] capitalize">{item.name}</p>
-                    <p className="text-[12px]">{`$${item.price}`}</p>
-                    <div className="mt-4">
-                      <div className="flex items-center text-[11px] gap-2 uppercase">
-                        <span>Color:</span>
-                        <span>{formatString(item.color)}</span>
-                      </div>
-                      <div className="flex items-center text-[11px] gap-2 uppercase">
-                        <span>Size:</span>
-                        <span>{formatString(item.size)}</span>
-                      </div>
+                </Link>
+                <div className="pl-[18px] py-5">
+                  <p className="text-[12px] capitalize">{item.name}</p>
+                  <p className="text-[12px]">{`$${item.price}`}</p>
+                  <div className="mt-4">
+                    <div className="flex items-center text-[11px] gap-2 uppercase">
+                      <span>Color:</span>
+                      <span>{formatString(item.color)}</span>
                     </div>
-                    <div>
-                      {
-                        cartItem.some(cartItem => cartItem.id === item.id) ? (
-                          <button 
-                            className="bg-[#e1e1e180] text-black hover:bg-[#897f7b] rounded px-[55px] py-[5px] text-[14px] hover:text-white uppercase mt-4" 
-                            onClick={handleGoBag}
-                          >
-                            In your bag
-                          </button>
+                    <div className="flex items-center gap-2 text-[11px] uppercase">
+                      <span>Size:</span>
+                      <span>{item.size || "--"}</span>
+                    </div>                                              
+                  </div>
+                  <div>
+                    {cartItem.some(cartItem => cartItem.id === item.id && cartItem.size === item.size) && item.size ? (
+                      <button 
+                        className="bg-[#e1e1e180] text-black hover:bg-[#897f7b] rounded px-[55px] py-[5px] text-[14px] hover:text-white uppercase mt-4" 
+                        onClick={handleGoBag}
+                      >
+                        In your bag
+                      </button>
+                    ) : (
+                      item.size ? (
+                        <button 
+                          className="bg-[#000000cc] rounded px-[55px] py-[5px] text-[14px] text-white uppercase hover:bg-[#897f7b] mt-4"
+                          onClick={() => handleMoveToBag(item.id, item)}
+                        >
+                          Move to bag
+                        </button>
+                        
+                      ) : (
+                        editItemId === item.id ? (
+                          <div className='mt-4'>
+                            <div className="flex items-center gap-[6px]">
+                              {item.allSize.map((size, index) => (
+                                <button 
+                                  className={`text-xs hover:text-white ${isWorking ? 'bg-[#cecece80] text-black/50 cursor-not-allowed' : 'bg-[#cecece80] text-black hover:bg-[#897f7b] cursor-pointer'} py-2 px-2 rounded outline-none`} 
+                                  key={index}
+                                  onClick={() => handleSizeClick(size, item.id)}   
+                                  disabled={isWorking}                               
+                                >
+                                  {size}
+                                </button>
+                              ))}
+                            </div>
+                          </div>
                         ) : (
-                          <button 
-                            className="bg-[#000000cc] rounded px-[55px] py-[5px] text-[14px] text-white uppercase hover:bg-[#897f7b] mt-4"
-                            onClick={(e) => handleMoveToBag(item.id, item)}
-                          >
-                            Move to bag
-                          </button>
+                          <div>
+                            <button 
+                              className="bg-[#000000cc] rounded px-[55px] py-[5px] text-[14px] text-white uppercase hover:bg-[#897f7b] mt-4"
+                              onClick={() => handleSelectSize(item.id)}
+                            >
+                              Select Size
+                            </button>                            
+                          </div>
                         )
-                      }
+                      )
+                    )}
+                  </div>
+                  {item.size && (
+                    <div className='mt-1'>
+                      <button 
+                        className="underline text-xs mt-2"
+                        onClick={() => handleEdit(item.id)}
+                      >
+                        Edit
+                      </button>
                     </div>
-                  </div>  
-                  <div className="absolute top-0 right-0 p-3 z-30 w-[45px] h-[45px] flex justify-center items-center">
-                  
-                    {removeloading[item.id] ? (
-                      <span className="loading text-xs">/</span>
-                    ):(
+                  )}
+                </div>
+                <div className="absolute top-0 right-0 p-3 z-30 w-[45px] h-[45px] flex justify-center items-center">
+                  {removalLoading[item.id] ? (
+                    <span className="loading text-xs">/</span>
+                  ) : (
                     <button 
-                    className="outline-none"
-                    onClick={()=> handleRemoveWishItem(item.id)}
+                      className="outline-none"
+                      onClick={() => handleRemoveWishItem(item.id)}
                     >
                       <IoIosHeart className="text-black text-[20px]" />
                     </button>
-                    )}
-                  
+                  )}
                 </div>            
               </div>
             ))}
           </div>
         </div>
       ) : (
-        <div>
+        <div className="slide__up">
           <h1 className="text-[26px] font-bookish mb-8">Your wishlist</h1>
           <p className="my-8 text-xs">{`Add items to your wishlist so you can save them for later. Click or tap 'Add to Wishlist' throughout the site.`}</p>
           <div className='pt-2'>

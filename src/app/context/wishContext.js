@@ -7,6 +7,7 @@ export const WishProvider = ({ children }) => {
   const [wishItem, setWishItem] = useState([]);
   const [wishPopupShow, setWishPopupShow] = useState(false);
   const [isClient, setIsClient] = useState(false); // Track if we're on the client
+  const [lastWishItem, setLastWishItem] = useState([]);
   
   // Effect to initialize wishItem from localStorage
   useEffect(() => {
@@ -29,7 +30,7 @@ export const WishProvider = ({ children }) => {
   }, [wishItem, isClient]);
 
   return (
-    <WishContext.Provider value={{ wishItem, setWishItem, wishPopupShow, setWishPopupShow}}>
+    <WishContext.Provider value={{ wishItem, setWishItem, wishPopupShow, setWishPopupShow, lastWishItem, setLastWishItem}}>
       {children}
     </WishContext.Provider>
   );

@@ -7,6 +7,7 @@ import { CartContext } from '@/app/context/cartContext';
 import { WishContext } from '@/app/context/wishContext';
 import { useRouter } from 'next/navigation';
 import { IoMdHeartEmpty, IoIosHeart } from "react-icons/io";
+import WishPopup from '../wishlist-popup/WishlistPopup';
 
 function removeHtmlTags(str) {
     return str.replace(/<[^>]*>/g, ''); // Removes everything between < and >
@@ -32,7 +33,7 @@ export default function SingleProduct({ product }) {
   const router = useRouter();
   const isSizeSelectRef = useRef(null);
   const addBagRef = useRef(null);
-
+  const [isLoading, setIsLoading] = useState(false)
 
   const materials = product.meta_data
     .filter(item => item.key === 'meterials')
@@ -66,15 +67,37 @@ export default function SingleProduct({ product }) {
   const truncatedDescription = descriptionText.length > 100 ? `${descriptionText.slice(0, 100)}...` : descriptionText;
 
     // Function to open the modal with the selected image
+    const [isPopupClose, setIsPopupClose] = useState(false);
+    // const openModal = (imageSrc, imgNumber) => {
+    //     setModalImage(imageSrc);
+    //     setImageNumber(imgNumber);
+    //     setIsModalOpen(true);
+    // };
     const openModal = (imageSrc, imgNumber) => {
-        setModalImage(imageSrc);
-        setImageNumber(imgNumber);
-        setIsModalOpen(true);
-    };
+        const img = document.createElement('img'); // Create a temporary image element
+        setIsLoading(true); // Start loading
 
+        img.src = imageSrc;
+
+        img.onload = () => {
+            setModalImage(imageSrc);
+            setImageNumber(imgNumber);
+            setIsLoading(false); // Loading complete
+            setIsModalOpen(true);
+        };
+
+        img.onerror = () => {
+            console.error('Error loading image:', imageSrc);
+            setIsLoading(false); // Stop loading on error
+        };
+    };
     // Function to close the modal
     const closeModal = () => {
-        setIsModalOpen(false);
+        setIsPopupClose(true);
+        setTimeout(()=>{
+            setIsModalOpen(false);
+            setIsPopupClose(false);
+        },400)
     }; 
 
     const toggleDescription = () => {
@@ -94,6 +117,10 @@ export default function SingleProduct({ product }) {
     // Add to cart 
     const {cartItem, setCartItem, setPopupShow} = useContext(CartContext);
 
+    const allSize = product.attributes
+        .filter(item => item.slug === 'size')
+        .flatMap(item => item.options);
+
     const productCartItem = {
         id: product.id,
         name: product.name,
@@ -103,6 +130,7 @@ export default function SingleProduct({ product }) {
         quantity: 1,
         color: selectedColor,
         size: selectedSize,
+        allSize: allSize
     }
 
     const handleAddToCart = () => {
@@ -137,7 +165,12 @@ export default function SingleProduct({ product }) {
 
     // Wish List
     const wishState = useContext(WishContext);
-    const { wishItem, setWishItem, setWishPopupShow } = wishState;
+    const { wishItem, setWishItem, lastWishItem, setLastWishItem } = wishState;
+
+    // Reset lastWishItem when the component mounts
+    useEffect(() => {
+        setLastWishItem([]); // Clear all items from lastWishItem
+    }, []);
 
     const itemInWishlist = wishItem.some(item => 
         item.id === product.id 
@@ -148,13 +181,14 @@ export default function SingleProduct({ product }) {
 
     const handleAddWishList = async () => {
         if (!itemInWishlist) {
-            setLoadingWishlist(true);
+            setLoadingWishlist(true);           
             try {
                 await new Promise(resolve => setTimeout(resolve, 2000)); // Simulating API call
                 setWishItem(prevItems => [...prevItems, productCartItem]);
-                setWishPopupShow(true);
+                setLastWishItem(prevItems => [...prevItems, productCartItem]);
+                
                 setTimeout(()=>{
-                    setWishPopupShow(false);
+                    setLastWishItem((prevItems) => prevItems.filter(item => item.id !== product.id));
                   }, 20000);
             } catch (error) {
                 console.error("Error adding to wishlist:", error);
@@ -165,166 +199,188 @@ export default function SingleProduct({ product }) {
             router.push('/wishlist');
         }
     };
-        
+  
   return (
-    <div className="block lg:flex px-2 lg:px-5 gap-5">
-        <div className="lg:flex-[70%] flex-[100%]">
-            <div className='grid grid-cols-2 mb-16'>
-                {product.images.map((item, index) => (
-                    <div key={index} className='product__image__wrapper relative flex justify-center items-center'>
-                        <Image onClick={() => openModal(item.src, (index+1))} className='w-full h-auto' src={item.src} height={339} width={254} alt={product.name} />
-                        <div className='absolute top-0 left-0 py-2 px-3'>
-                            <span className='text-xs'>{`[${index + 1}/${product.images.length}]`}</span>
+    <div>
+        <div className='fixed top-[100px] right-4 z-[9999]'>
+        {
+          lastWishItem.length > 0 &&(
+            lastWishItem.map((item, index)=> {
+                return (
+                  <WishPopup key={index} wishProduct={item} />
+                )
+              })              
+          )
+        }
+        </div>
+        <div className="block lg:flex px-2 lg:px-5 gap-5 slide__up">
+            <div className="lg:flex-[70%] flex-[100%]">
+                <div className='grid grid-cols-2 mb-16'>
+                    {product.images.map((item, index) => (
+                        <div key={index} className='product__image__wrapper relative flex justify-center items-center'>
+                            <Image onClick={() => openModal(item.src, (index+1))} className='w-full h-auto' src={item.src} height={339} width={254} alt={product.name} />
+                            <div className='absolute top-0 left-0 py-2 px-3'>
+                                <span className='text-xs'>{`[${index + 1}/${product.images.length}]`}</span>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+
+                <div className='mb-16' ref={detailsRef}>
+                    <div className='flex items-start gap-5'>
+                        <button 
+                            className={`uppercase text-[14px] font-ibmPlexMedium ${activeTab === 'materials' ? 'border-b border-black pb-1' : ''}`}
+                            onClick={() => handleToggle('materials')}
+                        >
+                            Materials
+                        </button>
+                        <button 
+                            className={`uppercase text-[14px] font-ibmPlexMedium ${activeTab === 'fitting' ? 'border-b border-black pb-1' : ''}`}
+                            onClick={() => handleToggle('fitting')}
+                        >
+                            Fitting
+                        </button>
+                    </div>
+
+                    {activeTab === 'materials' && (
+                        <div className='py-2 pt-4 text-xs'
+                            dangerouslySetInnerHTML={{ __html: formatStringWithLineBreaks(materials) }} />
+                    )}
+                    {activeTab === 'fitting' && (
+                        <div className='py-2 pt-4 text-xs'
+                            dangerouslySetInnerHTML={{ __html: formatStringWithLineBreaks(fitting) }} />
+                    )}
+                </div>
+            </div>
+
+            <div className="lg:flex-[30%] flex-[100%]">
+                <h1 className="text-[22px] leading-[150%] font-ibmPlexRegular capitalize">
+                    {product.name}
+                </h1>
+                <p className="text-[22px] leading-[140%] font-ibmPlexRegular capitalize">
+                    {`$${product.price}`}
+                </p>
+                <p className="text-xs leading-[150%] mt-2">
+                    {isExpanded ? descriptionText : truncatedDescription}
+                    {descriptionText.length > 100 && (
+                        <button onClick={toggleDescription} className="underline ml-[2px]">
+                            {isExpanded ? 'Read less' : 'Read more'}
+                        </button>
+                    )}
+                </p>
+                <div className="py-2 pt-5 flex items-center gap-1">
+                    <span className="text-xs"><IoArrowDownSharp /></span>
+                    <button className='text-xs uppercase hover:underline' onClick={scrollToDetails}>
+                        Product Details
+                    </button>
+                </div>
+                <div className="pt-3 pb-0">
+                    <p className='text-xs uppercase'>Colors:</p>
+                    <div className="py-1">
+                        <div className="flex items-center gap-2">
+                            {
+                                product.attributes
+                                .filter(item => item.slug == 'color')
+                                .flatMap(item => item.options)
+                                .map((option, index) => (                                
+                                    <button 
+                                        key={index} 
+                                        className={`color__variation__btn`}
+                                        style={{
+                                            border: selectedColor === option ? '1px solid #000' : '0px solid #000'
+                                        }} 
+                                        onClick={() => handleColorClick(option)}
+                                    >                           
+                                        <VariationColor variationColor={option} />                                    
+                                    </button>
+                                ))                   
+
+                            }
                         </div>
                     </div>
-                ))}
-            </div>
-
-            <div className='mb-16' ref={detailsRef}>
-                <div className='flex items-start gap-5'>
-                    <button 
-                        className={`uppercase text-[14px] font-ibmPlexMedium ${activeTab === 'materials' ? 'border-b border-black pb-1' : ''}`}
-                        onClick={() => handleToggle('materials')}
-                    >
-                        Materials
-                    </button>
-                    <button 
-                        className={`uppercase text-[14px] font-ibmPlexMedium ${activeTab === 'fitting' ? 'border-b border-black pb-1' : ''}`}
-                        onClick={() => handleToggle('fitting')}
-                    >
-                        Fitting
-                    </button>
                 </div>
-
-                {activeTab === 'materials' && (
-                    <div className='py-2 pt-4 text-xs'
-                         dangerouslySetInnerHTML={{ __html: formatStringWithLineBreaks(materials) }} />
-                )}
-                {activeTab === 'fitting' && (
-                    <div className='py-2 pt-4 text-xs'
-                         dangerouslySetInnerHTML={{ __html: formatStringWithLineBreaks(fitting) }} />
-                )}
-            </div>
-        </div>
-
-        <div className="lg:flex-[30%] flex-[100%]">
-            <h1 className="text-[22px] leading-[150%] font-ibmPlexRegular capitalize">
-                {product.name}
-            </h1>
-            <p className="text-[22px] leading-[140%] font-ibmPlexRegular capitalize">
-                {`$${product.price}`}
-            </p>
-            <p className="text-xs leading-[150%] mt-2">
-                {isExpanded ? descriptionText : truncatedDescription}
-                {descriptionText.length > 100 && (
-                    <button onClick={toggleDescription} className="underline ml-[2px]">
-                        {isExpanded ? 'Read less' : 'Read more'}
-                    </button>
-                )}
-            </p>
-            <div className="py-2 pt-5 flex items-center gap-1">
-                <span className="text-xs"><IoArrowDownSharp /></span>
-                <button className='text-xs uppercase hover:underline' onClick={scrollToDetails}>
-                    Product Details
-                </button>
-            </div>
-            <div className="pt-3 pb-0">
-                <p className='text-xs uppercase'>Colors:</p>
-                <div className="py-1">
-                    <div className="flex items-center gap-2">
-                        {
-                            product.attributes
-                            .filter(item => item.slug === 'color')
-                            .flatMap(item => item.options)
-                            .map((option, index) => (                                
-                                <button 
-                                    key={index} 
-                                    className={`color__variation__btn`}
-                                    style={{
-                                        border: selectedColor === option ? '1px solid #000' : '0px solid #000'
-                                    }} 
-                                    onClick={() => handleColorClick(option)}
-                                >                           
-                                    <VariationColor variationColor={option} />                                    
-                                </button>
-                            ))                   
-
-                        }
+                <div className="py-4">
+                    <p className='text-xs uppercase' ref={isSizeSelectRef}>Sizes (US):</p>
+                    <div className="py-1">
+                        <div className="flex items-center gap-[6px]">
+                            {
+                                product.attributes
+                                .filter(item => item.slug === 'size')
+                                .flatMap(item => item.options)
+                                .map((option, index) => (
+                                    <button 
+                                        className={`text-xs hover:text-white ${selectedSize === option ? 'bg-[#333] text-white hover:bg-[#333]' : 'bg-[#cecece80] text-black hover:bg-[#897f7b]'} py-3 px-2 rounded outline-none`} 
+                                        key={index}
+                                        onClick={() => handleSizeClick(option)}                                    
+                                    >
+                                        {option}
+                                    </button>
+                                ))                   
+                            }
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div className="py-4">
-                <p className='text-xs uppercase' ref={isSizeSelectRef}>Sizes (US):</p>
-                <div className="py-1">
-                    <div className="flex items-center gap-[6px]">
-                        {
-                            product.attributes
-                            .filter(item => item.slug === 'size')
-                            .flatMap(item => item.options)
-                            .map((option, index) => (
-                                <button 
-                                    className={`text-xs hover:text-white ${selectedSize === option ? 'bg-[#333] text-white hover:bg-[#333]' : 'bg-[#cecece80] text-black hover:bg-[#897f7b]'} py-3 px-2 rounded outline-none`} 
-                                    key={index}
-                                    onClick={() => handleSizeClick(option)}                                    
-                                >
-                                    {option}
-                                </button>
-                            ))                   
-                        }
-                    </div>
-                </div>
-            </div>
-            <div className="mt-5 flex items-center gap-2">
-                {/* Add to cart button  */}
-                <button className='bg-black rounded text-xs text-white py-1 uppercase h-[30px] w-[195px]' 
-                onClick={handleAddToCart} ref={addBagRef} 
-                disabled={loading}>
-                  {itemInCart ? 'In Your Bag' : 'Add to bag'}
+                <div className="mt-5 flex items-center gap-2">
+                    {/* Add to cart button  */}
+                    <button className='bg-black rounded text-xs text-white py-1 uppercase h-[30px] w-[195px]' 
+                    onClick={handleAddToCart} ref={addBagRef} 
+                    disabled={loading}>
+                    {itemInCart ? 'In Your Bag' : 'Add to bag'}
+                    </button>
+                    <button 
+                    className={`bg-[#cecece80] rounded text-black h-[30px] flex items-center justify-start px-2 gap-2 group w-[36px] overflow-hidden ${loadingWishlist ? 'hover:w-auto' : 'hover:w-[160px]'} hover:min-w-[36px]`} 
+                    style={{ transition: '0.3s ease' }}
+                    onClick={handleAddWishList}
+                    disabled={loadingWishlist}
+                    >
+                    {loadingWishlist ? (    
+                    <span className='loading__wishlist text-center w-full cursor-pointer text-xs'>/</span>
+                    ) : (
+                        itemInWishlist ? (
+                            <div className="flex gap-2 items-center w-[141px] text-nowrap">
+                                <span className='w-5 h-5'>
+                                    <IoIosHeart className={`text-[20px]`} />
+                                </span>
+                                <span className='text-xs uppercase'>Saved to wishlist</span>
+                            </div>
+                        ) : (
+                            <div className="flex gap-2 items-center w-[141px] text-nowrap">
+                                <span className='w-5 h-5'>
+                                    <IoMdHeartEmpty className={`text-[20px]`} />
+                                </span>
+                                <span className='text-xs uppercase'>Add to wishlist</span>
+                            </div>
+                        )
+                    )}
                 </button>
-                <button 
-                className={`bg-[#cecece80] rounded text-black h-[30px] flex items-center justify-start px-2 gap-2 group w-[36px] overflow-hidden ${loadingWishlist ? 'hover:w-auto' : 'hover:w-[160px]'} hover:min-w-[36px]`} 
-                style={{ transition: '0.3s ease' }}
-                onClick={handleAddWishList}
-                disabled={loadingWishlist}
-                >
-                {loadingWishlist ? (    
-                <span className='loading__wishlist text-center w-full cursor-pointer text-xs'>/</span>
-                ) : (
-                    itemInWishlist ? (
-                        <div className="flex gap-2 items-center w-[141px] text-nowrap">
-                            <span className='w-5 h-5'>
-                                <IoIosHeart className={`text-[20px]`} />
-                            </span>
-                            <span className='text-xs uppercase'>Saved to wishlist</span>
+
+                </div>             
+            </div>
+            {/* Product image popup modal  */}
+            {isModalOpen && (
+            <div 
+                className={`${isPopupClose ? 'zoom__out' : ''} zoom__in image__popup fixed inset-0 bg-white z-[99999] flex justify-center items-center`} 
+                onClick={closeModal}
+            >
+                <div className="relative w-full h-full">
+                    <div className="absolute top-3 left-3 text-xs">{`[${imageNumber}/${product.images.length}]`}</div>
+                    {isLoading ? (
+                        <div className="w-full min-h-screen flex items-center justify-center">
+                            <p className="text-xs">Loading...</p>
                         </div>
                     ) : (
-                        <div className="flex gap-2 items-center w-[141px] text-nowrap">
-                            <span className='w-5 h-5'>
-                                <IoMdHeartEmpty className={`text-[20px]`} />
-                            </span>
-                            <span className='text-xs uppercase'>Add to wishlist</span>
-                        </div>
-                    )
-                )}
-            </button>
+                        <img
+                            className="w-full h-auto object-contain"
+                            src={modalImage}
+                            alt="Full-size product image"
+                            style={{ maxWidth: '100vw', maxHeight: '100vh' }} // Ensure image doesn't exceed the viewport
+                        />
+                    )}
+                </div>
+            </div>
+        )}
 
-            </div>             
         </div>
-        {/* Product image popup modal  */}
-        {isModalOpen && (
-        <div className="image__popup fixed inset-0 bg-white z-[99999] flex justify-center items-center" onClick={closeModal}>
-          <div className="relative w-full h-full">
-            <div className="absolute top-3 left-3 text-xs">{`[${imageNumber}/${product.images.length}]`}</div>
-            {/* Use an img tag instead of Image component */}
-            <img
-              className="w-full h-auto object-contain"
-              src={modalImage}
-              alt="Full-size product image"
-              style={{ maxWidth: '100vw', maxHeight: '100vh' }} // Ensure image doesn't exceed the viewport
-            />
-          </div>
-        </div>
-      )}
     </div>
   );
 }

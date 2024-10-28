@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { IoChevronDownSharp, IoChevronUpSharp } from "react-icons/io5";
 import { IoMdHeartEmpty, IoIosHeart } from "react-icons/io";
 import { GoChevronLeft, GoChevronRight } from "react-icons/go";
-import { useState, useRef, useContext } from "react";
+import { useState, useRef, useContext, useEffect } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation } from "swiper/modules";
 import VariationColor from './VariationColor';
@@ -13,6 +13,7 @@ import { WishContext } from '@/app/context/wishContext';
 // Import Swiper styles
 import "swiper/css";
 import "swiper/css/navigation";
+import WishPopup from './wishlist-popup/WishlistPopup';
 
 function slugToWords(slug) {
   return decodeURIComponent(slug)
@@ -97,12 +98,20 @@ const ProductGridItems = ({ products, productCategory }) => {
 
   // Wishlist funcitionalities 
   const [loadingAddWish, setLoadingAddWish] = useState({});
-  const {wishItem, setWishItem, setWishPopupShow} = useContext(WishContext);
-  
+  const {wishItem, setWishItem, lastWishItem, setLastWishItem} = useContext(WishContext);
+
+    // Reset lastWishItem when the component mounts
+    useEffect(() => {
+      setLastWishItem([]); // Clear all items from lastWishItem
+  }, []);
+
   const handleAddToWishlist = (product) =>{
    const selectedColor = product.attributes
   .filter(item => item.slug === 'color')
   .flatMap(item => item.options)[0];
+   const allSize = product.attributes
+  .filter(item => item.slug === 'size')
+  .flatMap(item => item.options);
     const productItem = {
       id: product.id,
       name: product.name,
@@ -111,35 +120,48 @@ const ProductGridItems = ({ products, productCategory }) => {
       price: product.price,
       quantity: 1,
       color: selectedColor,
-      size: "",
+      size: null,
+      allSize: allSize
     }
     setLoadingAddWish((prev) => ({ ...prev, [product.id]: true }));
 
     setTimeout(() => {
       setWishItem((prevItems) => [...prevItems, productItem]);
       setLoadingAddWish((prev) => ({ ...prev, [product.id]: false }));
-      setWishPopupShow(true);
 
+      setLastWishItem((prev) => [...prev, productItem]);
+      
       setTimeout(()=>{
-        setWishPopupShow(false);
+        setLastWishItem((prevItems) => prevItems.filter(item => item.id !== product.id));
       }, 20000);
     
     }, 1000);
   }
-
 
   const handleRemoveWishItem = (productId) =>{
     setLoadingAddWish((prev) => ({ ...prev, [productId]: true }));
     
     setTimeout(() => {
       setWishItem((prevItems) => prevItems.filter(item => item.id !== productId));
+      setLastWishItem((prevItems) => prevItems.filter(item => item.id !== productId));
       setLoadingAddWish((prev) => ({ ...prev, [productId]: false }));
     }, 1000);
   }
   
   return (
     <div>
-      <section className="px-2 lg:px-5 mb-36 relative">
+      <div className='fixed top-[100px] right-4 z-[9999] flex flex-col gap-5'>
+        {
+          lastWishItem.length > 0 &&(
+            lastWishItem.map((item, index)=> {
+                return (
+                  <WishPopup key={index} wishProduct={item} />
+                )
+              })              
+          )
+        }
+        </div>
+      <section className="px-2 lg:px-5 mb-36 relative slide__up">
         <h1 className="capitalize font-bookish text-2xl pb-10 pt-5">{slugToWords(productCategory)}</h1>
         <div className="flex justify-between mb-8">
           <div className="flex items-center gap-[6px]">

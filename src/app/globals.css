@@ -382,6 +382,80 @@ select.form__input,
 }
 
 
+.wish__poupup__item{
+  animation: leftSlide 0.3s ease-in-out;
+}
+
+@keyframes leftSlide {
+  0%{
+    width: 0;
+    opacity: 0;
+  }
+  100%{
+    width: 375px;
+    opacity: 1;
+  }
+}
+
+.wish__poupup__item.exit {
+  animation: rightSlide 0.3s ease-in-out forwards; /* or another direction */
+}
+
+@keyframes rightSlide {
+  0% {
+    width: 375px;
+    opacity: 1;
+  }
+  100% {
+    width: 0;
+    opacity: 0;
+  }
+}
+
+.slide__up{
+  animation: slideUp 0.7s ease;
+}
+@keyframes slideUp{
+  0%{
+    transform: translateY(100px);
+  }
+  100%{
+    transform: translateY(0px);
+  }
+}
+
+.zoom__in{
+  animation: zoomIn 0.5s ease;
+}
+@keyframes zoomIn{
+  0%{
+    transform: scale(0.7);
+  }
+  100%{
+    transform: scale(1);
+  }
+}
+.zoom__out{
+  animation: zoomOut 0.5s ease;
+}
+@keyframes zoomOut{
+  0%{
+    transform: translateY(0);
+  }
+  100%{
+    transform: translateY(100vh);
+  }
+}
+
+
+
+
+
+
+
+
+
+
 /* Adjust arrow size and styling for mobile */
 @media (max-width: 768px) {
   .custom-prev,
