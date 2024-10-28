@@ -146,7 +146,7 @@ export default function WishList() {
                             <div className="flex items-center gap-[6px]">
                               {item.allSize.map((size, index) => (
                                 <button 
-                                  className={`text-xs hover:text-white ${isWorking ? 'bg-[#cecece80] text-black/50 cursor-not-allowed' : 'bg-[#cecece80] text-black hover:bg-[#897f7b] cursor-pointer'} py-2 px-2 rounded outline-none`} 
+                                  className={`text-xs hover:text-white ${item.size === size ? "bg-[#333333] text-white hover:bg-[#333333] hover:text-white" : ""} ${isWorking ? 'bg-[#cecece80] text-black/50 cursor-not-allowed' : 'bg-[#cecece80] text-black hover:bg-[#897f7b] cursor-pointer'} py-2 px-2 rounded outline-none`} 
                                   key={index}
                                   onClick={() => handleSizeClick(size, item.id)}   
                                   disabled={isWorking}                               

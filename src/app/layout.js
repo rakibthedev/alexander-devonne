@@ -48,7 +48,7 @@ export default function RootLayout({ children }) {
         className={`${geistMono.variable} ${geistSans.variable} ${ibmPlexMedium.variable} ${ibmPlexRegular.variable} ${bookish.variable}`}
       >
         {/* <NextTopLoader /> */}
-        {/* <LoadingIndicator /> */}
+        <LoadingIndicator />
         <CartProvider>
         <WishProvider>
             <BagPopup />

@@ -13,7 +13,7 @@ const LoadingIndicator = () => {
 
     const timer = setTimeout(() => {
       setLoading(false);
-    }, 1000); // Adjust duration as necessary
+    }, 500); // Adjust duration as necessary
 
     return () => clearTimeout(timer);
   }, [pathname]);
