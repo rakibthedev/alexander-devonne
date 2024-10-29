@@ -432,11 +432,10 @@ select.form__input,
     transform: scale(0.7);
   }
   100%{
-    transform: scale(1);
   }
 }
 .zoom__out{
-  animation: zoomOut 0.5s ease;
+  animation: zoomOut 1.5s ease;
 }
 @keyframes zoomOut{
   0%{
@@ -445,6 +444,16 @@ select.form__input,
   100%{
     transform: translateY(100vh);
   }
+}
+
+
+.image__modal::-webkit-scrollbar {
+    display: none; /* Hides scrollbar for WebKit browsers (Chrome, Safari) */
+}
+
+.image__modal {
+    -ms-overflow-style: none; /* Hides scrollbar for Internet Explorer and Edge */
+    scrollbar-width: none; /* Hides scrollbar for Firefox */
 }
 
 

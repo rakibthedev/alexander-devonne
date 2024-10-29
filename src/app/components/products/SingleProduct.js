@@ -24,16 +24,84 @@ export default function SingleProduct({ product }) {
   const [selectedSize, setSelectedSize] = useState(null); // State for selected size
   const [isExpanded, setIsExpanded] = useState(false); // State for read more/less
   const detailsRef = useRef(null); // Create a ref for the details section
-  const [isModalOpen, setIsModalOpen] = useState(false); // State for modal visibility
-  const [modalImage, setModalImage] = useState(''); // State for the image that should be displayed in the modal
-  const [imageNumber, setImageNumber] = useState(''); // State for the image that should be displayed in the modal
   const [itemInCart, setItemInCart] = useState(false);
   const [loading, setLoading] = useState(false);
   const [loadingWishlist, setLoadingWishlist] = useState(false);
   const router = useRouter();
   const isSizeSelectRef = useRef(null);
   const addBagRef = useRef(null);
-  const [isLoading, setIsLoading] = useState(false)
+  const [modalImage, setModalImage] = useState(''); // State for the image that should be displayed in the modal
+  const [isLoading, setIsLoading] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false); // State for modal visibility
+  const [imageNumber, setImageNumber] = useState(null); // State for the image that should be displayed in the modal
+  const modalRef = useRef(null);
+  const [isPopupClose, setIsPopupClose] = useState(false);
+  const [currentImageIndex, setCurrentImageIndex] = useState(null);
+
+      // Function to open the modal with the selected image
+    // const openModal = (imageSrc, imgNumber) => {
+    //     setModalImage(imageSrc);
+    //     setImageNumber(imgNumber);
+    //     setIsModalOpen(true);
+    // };
+    const openModal = (imageSrc, imgNumber) => {
+        const img = document.createElement('img'); // Create a temporary image element
+        setCurrentImageIndex(imgNumber - 1);
+        setIsModalOpen(true);
+        setIsLoading(true); // Start loading
+        img.src = imageSrc;
+
+
+        img.onload = () => {
+            setModalImage(imageSrc);
+            setImageNumber(imgNumber);
+            setIsLoading(false); // Loading complete
+        };
+
+        img.onerror = () => {
+            console.error('Error loading image:', imageSrc);
+            setIsLoading(false); // Stop loading on error
+        };
+
+    };
+    // Function to close the modal
+    const closeModal = () => {
+        setIsPopupClose(true);
+        setTimeout(()=>{
+            setIsModalOpen(false);
+            setIsPopupClose(false);
+            setCurrentImageIndex(null);
+        },400)
+    }; 
+
+    const scrollTimeoutRef = useRef(null);
+
+    useEffect(() => {
+        if (isModalOpen && modalRef.current) {
+            modalRef.current.focus();
+
+            const imageElement = document.getElementById(`image-${currentImageIndex}`);
+            if (imageElement) {
+                // Clear any existing timeout to prevent previous scrolls
+                if (scrollTimeoutRef.current) {
+                    clearTimeout(scrollTimeoutRef.current);
+                }
+
+                // Set a new timeout for scrolling
+                scrollTimeoutRef.current = setTimeout(() => {
+                    imageElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }, 0); // Using 0 to push to the end of the call stack
+            }
+        }
+
+        // Cleanup function to clear timeout if component unmounts or modal closes
+        return () => {
+            if (scrollTimeoutRef.current) {
+                clearTimeout(scrollTimeoutRef.current);
+            }
+        };
+    }, [isModalOpen, currentImageIndex]);
+    
 
   const materials = product.meta_data
     .filter(item => item.key === 'meterials')
@@ -66,39 +134,6 @@ export default function SingleProduct({ product }) {
   const descriptionText = removeHtmlTags(product.description);
   const truncatedDescription = descriptionText.length > 100 ? `${descriptionText.slice(0, 100)}...` : descriptionText;
 
-    // Function to open the modal with the selected image
-    const [isPopupClose, setIsPopupClose] = useState(false);
-    // const openModal = (imageSrc, imgNumber) => {
-    //     setModalImage(imageSrc);
-    //     setImageNumber(imgNumber);
-    //     setIsModalOpen(true);
-    // };
-    const openModal = (imageSrc, imgNumber) => {
-        const img = document.createElement('img'); // Create a temporary image element
-        setIsModalOpen(true);
-        setIsLoading(true); // Start loading
-
-        img.src = imageSrc;
-
-        img.onload = () => {
-            setModalImage(imageSrc);
-            setImageNumber(imgNumber);
-            setIsLoading(false); // Loading complete
-        };
-
-        img.onerror = () => {
-            console.error('Error loading image:', imageSrc);
-            setIsLoading(false); // Stop loading on error
-        };
-    };
-    // Function to close the modal
-    const closeModal = () => {
-        setIsPopupClose(true);
-        setTimeout(()=>{
-            setIsModalOpen(false);
-            setIsPopupClose(false);
-        },400)
-    }; 
 
     const toggleDescription = () => {
         setIsExpanded(!isExpanded);
@@ -218,7 +253,7 @@ export default function SingleProduct({ product }) {
                 <div className='grid grid-cols-2 mb-16'>
                     {product.images.map((item, index) => (
                         <div key={index} className='product__image__wrapper relative flex justify-center items-center'>
-                            <Image onClick={() => openModal(item.src, (index+1))} className='w-full h-auto' src={item.src} height={339} width={254} alt={product.name} />
+                            <img onClick={() => openModal(item.src, (index+1))} className='w-full h-auto' src={item.src} height={339} width={254} alt={product.name} />
                             <div className='absolute top-0 left-0 py-2 px-3'>
                                 <span className='text-xs'>{`[${index + 1}/${product.images.length}]`}</span>
                             </div>
@@ -359,24 +394,31 @@ export default function SingleProduct({ product }) {
             {/* Product image popup modal  */}
             {isModalOpen && (
             <div 
-                className={`${isPopupClose ? 'zoom__out' : ''} zoom__in image__popup fixed inset-0 bg-white z-[99999] flex justify-center items-center`} 
+                className={`${isPopupClose ? 'zoom__out' : ''} outline-none zoom__in image__popup image__modal fixed inset-0 bg-white z-[99999] overflow-y-auto`} 
                 onClick={closeModal}
+                ref={modalRef}
+                style={{scrollBehavior: 'smooth'}}
             >
-                <div className="relative w-full h-full">
-                    <div className="absolute top-3 left-3 text-xs">{`[${imageNumber}/${product.images.length}]`}</div>
-                    {isLoading ? (
-                        <div className="w-full min-h-screen flex items-center justify-center">
-                            <p className="text-xs">Loading...</p>
+                {product.images.map((image, index) => {
+                    return (
+                        <div className="relative w-full h-auto flex flex-col justify-center items-center border-b border-[#e8e8e8]" key={index}>
+                            <div className="absolute top-3 left-3 text-xs">{`[${index + 1}/${product.images.length}]`}</div>
+                            {isLoading ? (
+                                <div className="w-full min-h-screen flex items-center justify-center">
+                                    <p className="text-xs">Loading...</p>
+                                </div>
+                            ) : (
+                                <img
+                                    id={`image-${index}`}
+                                    className="w-full h-auto"
+                                    src={image.src}
+                                    alt="Full-size product image"
+                                    style={{ maxWidth: '100vw', maxHeight: 'auto' }} // Ensure image doesn't exceed the viewport
+                                />
+                            )}
                         </div>
-                    ) : (
-                        <img
-                            className="w-full h-auto object-contain"
-                            src={modalImage}
-                            alt="Full-size product image"
-                            style={{ maxWidth: '100vw', maxHeight: '100vh' }} // Ensure image doesn't exceed the viewport
-                        />
-                    )}
-                </div>
+                    )
+                })}
             </div>
         )}
 
