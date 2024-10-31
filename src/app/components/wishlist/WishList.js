@@ -52,6 +52,7 @@ export default function WishList() {
   // Edit Wishlist
   const [editItemId, setEditItemId] = useState(null);
   const [selectedSize, setSelectedSize] = useState(null);
+  const [currentSize, setCurrentSize] = useState(null);
   const [isWorking, setIsWorking] = useState(false);
 
   const handleSelectSize = (itemId) => {
@@ -76,7 +77,8 @@ export default function WishList() {
     },800)
   };
   
-  const handleEdit = (id) =>{
+  const handleEdit = (id, size) =>{
+    setCurrentSize(size);
     setWishItem(prevItems => 
       prevItems.map(item => 
         item.id === id 
@@ -120,7 +122,7 @@ export default function WishList() {
                     </div>
                     <div className="flex items-center gap-2 text-[11px] uppercase">
                       <span>Size:</span>
-                      <span>{item.size || "--"}</span>
+                      <span>{editItemId === item.id ? '' : (item.size || "--")}</span>
                     </div>                                              
                   </div>
                   <div>
@@ -143,10 +145,10 @@ export default function WishList() {
                       ) : (
                         editItemId === item.id ? (
                           <div className='mt-4'>
-                            <div className="flex items-center gap-[6px]">
+                            <div className="flex items-center gap-[6px] flex-wrap">
                               {item.allSize.map((size, index) => (
                                 <button 
-                                  className={`text-xs hover:text-white ${item.size === size ? "bg-[#333333] text-white hover:bg-[#333333] hover:text-white" : ""} ${isWorking ? 'bg-[#cecece80] text-black/50 cursor-not-allowed' : 'bg-[#cecece80] text-black hover:bg-[#897f7b] cursor-pointer'} py-2 px-2 rounded outline-none`} 
+                                  className={`${currentSize === size && 'bg-black text-white hover:bg-black hover:text-white'} text-xs hover:text-white ${item.size === size ? "bg-[#333333] text-white hover:bg-[#333333] hover:text-white" : ""} ${isWorking ? 'bg-[#cecece80] text-black/50 cursor-not-allowed' : 'bg-[#cecece80] text-black hover:bg-[#897f7b] cursor-pointer'} py-2 px-2 rounded outline-none`} 
                                   key={index}
                                   onClick={() => handleSizeClick(size, item.id)}   
                                   disabled={isWorking}                               
@@ -173,7 +175,7 @@ export default function WishList() {
                     <div className='mt-1'>
                       <button 
                         className="underline text-xs mt-2"
-                        onClick={() => handleEdit(item.id)}
+                        onClick={() => handleEdit(item.id, item.size)}
                       >
                         Edit
                       </button>

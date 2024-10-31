@@ -30,78 +30,60 @@ export default function SingleProduct({ product }) {
   const router = useRouter();
   const isSizeSelectRef = useRef(null);
   const addBagRef = useRef(null);
+  //Modal 
   const [modalImage, setModalImage] = useState(''); // State for the image that should be displayed in the modal
-  const [isLoading, setIsLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false); // State for modal visibility
   const [imageNumber, setImageNumber] = useState(null); // State for the image that should be displayed in the modal
-  const modalRef = useRef(null);
   const [isPopupClose, setIsPopupClose] = useState(false);
-  const [currentImageIndex, setCurrentImageIndex] = useState(null);
+  const modalRef = useRef(null);
+  //Image Zoom 
+  const [isZoom, setIsZoom] = useState(false);
+  const imgContainerRef = useRef(null);
+  
+  const handleZoomImage = (index, imageSrc) => {           
+    if(isZoom){
+        setIsZoom(false);   
+    }else{
+        setIsZoom(true);
+        setModalImage(imageSrc);
+        setImageNumber(`${index + 1}`);
+        setIsModalOpen(true);        
+             
+        const id = `image-${index}`;
+        const childElement = document.getElementById(id);
 
-      // Function to open the modal with the selected image
-    // const openModal = (imageSrc, imgNumber) => {
-    //     setModalImage(imageSrc);
-    //     setImageNumber(imgNumber);
-    //     setIsModalOpen(true);
-    // };
-    const openModal = (imageSrc, imgNumber) => {
-        const img = document.createElement('img'); // Create a temporary image element
-        setCurrentImageIndex(imgNumber - 1);
-        setIsModalOpen(true);
-        setIsLoading(true); // Start loading
-        img.src = imageSrc;
-
-
-        img.onload = () => {
-            setModalImage(imageSrc);
-            setImageNumber(imgNumber);
-            setIsLoading(false); // Loading complete
-        };
-
-        img.onerror = () => {
-            console.error('Error loading image:', imageSrc);
-            setIsLoading(false); // Stop loading on error
-        };
-
-    };
-    // Function to close the modal
-    const closeModal = () => {
-        setIsPopupClose(true);
         setTimeout(()=>{
-            setIsModalOpen(false);
-            setIsPopupClose(false);
-            setCurrentImageIndex(null);
-        },400)
-    }; 
-
-    const scrollTimeoutRef = useRef(null);
-
-    useEffect(() => {
-        if (isModalOpen && modalRef.current) {
-            modalRef.current.focus();
-
-            const imageElement = document.getElementById(`image-${currentImageIndex}`);
-            if (imageElement) {
-                // Clear any existing timeout to prevent previous scrolls
-                if (scrollTimeoutRef.current) {
-                    clearTimeout(scrollTimeoutRef.current);
-                }
-
-                // Set a new timeout for scrolling
-                scrollTimeoutRef.current = setTimeout(() => {
-                    imageElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }, 0); // Using 0 to push to the end of the call stack
+            if (childElement && imgContainerRef.current) {                
+                imgContainerRef.current.scrollTop = childElement.offsetTop; // Scroll within the container
             }
-        }
-
-        // Cleanup function to clear timeout if component unmounts or modal closes
-        return () => {
-            if (scrollTimeoutRef.current) {
-                clearTimeout(scrollTimeoutRef.current);
+        }, 600)
+    }
+  }
+     
+useEffect(()=>{
+    if(isModalOpen){
+        setTimeout(()=>{
+            if(modalRef.current){
+                modalRef.current.focus();
+                modalRef.current.addEventListener('scroll', ()=>{
+                    setIsModalOpen(false);
+                    imgContainerRef.current.focus();              
+                })
             }
-        };
-    }, [isModalOpen, currentImageIndex]);
-    
+        },1600);
+    }
+},[isModalOpen]);
+   
+
+const closeModal = () => {
+    setIsPopupClose(true);
+    setIsZoom(false);
+    setTimeout(()=>{
+        setIsModalOpen(false);
+        setIsPopupClose(false);
+    },500)
+}; 
+
 
   const materials = product.meta_data
     .filter(item => item.key === 'meterials')
@@ -250,12 +232,18 @@ export default function SingleProduct({ product }) {
         </div>
         <div className="block lg:flex px-2 lg:px-5 gap-5 slide__up">
             <div className="lg:flex-[70%] flex-[100%]">
-                <div className='grid grid-cols-2 mb-16'>
+                <div ref={imgContainerRef} className={`bg-white outline-none ${isZoom ? 'fixed top-0 left-0 w-full h-screen overflow-y-auto z-[9999] image__modal image__popup zoom__in' : 'grid grid-cols-2 mb-16'}`}>
                     {product.images.map((item, index) => (
-                        <div key={index} className='product__image__wrapper relative flex justify-center items-center'>
-                            <img onClick={() => openModal(item.src, (index+1))} className='w-full h-auto' src={item.src} height={339} width={254} alt={product.name} />
-                            <div className='absolute top-0 left-0 py-2 px-3'>
-                                <span className='text-xs'>{`[${index + 1}/${product.images.length}]`}</span>
+                        <div 
+                        id={`image-${index}`} 
+                        key={index} 
+                        className={`${isZoom ? 'border-b border-[#e8e8e8]' : 'product__image__wrapper'}`}                        
+                        >
+                            <div className={`relative flex justify-center items-center`}>
+                                <img onClick={()=>handleZoomImage(index, item.src)} className='w-full h-auto' src={item.src} height={339} width={254} alt={product.name} />
+                                <div className='absolute top-0 left-0 py-2 px-3'>
+                                    <span className='text-xs'>{`[${index + 1}/${product.images.length}]`}</span>
+                                </div>
                             </div>
                         </div>
                     ))}
@@ -337,16 +325,17 @@ export default function SingleProduct({ product }) {
                 <div className="py-4">
                     <p className='text-xs uppercase' ref={isSizeSelectRef}>Sizes (US):</p>
                     <div className="py-1">
-                        <div className="flex items-center gap-[6px]">
+                        <div className="flex items-center gap-[6px] flex-wrap">
                             {
                                 product.attributes
                                 .filter(item => item.slug === 'size')
                                 .flatMap(item => item.options)
                                 .map((option, index) => (
                                     <button 
-                                        className={`text-xs hover:text-white ${selectedSize === option ? 'bg-[#333] text-white hover:bg-[#333]' : 'bg-[#cecece80] text-black hover:bg-[#897f7b]'} py-3 px-2 rounded outline-none`} 
+                                        className={`text-xs hover:text-white ${selectedSize === option ? 'bg-[#333] text-white hover:bg-[#333]' : 'bg-[#cecece80] text-black hover:bg-[#897f7b]'} py-3 px-2 rounded outline-none ${loading ? 'disabled:cursor-not-allowed' : 'cursor-pointer'}`} 
                                         key={index}
-                                        onClick={() => handleSizeClick(option)}                                    
+                                        onClick={() => handleSizeClick(option)}     
+                                        disabled={loading}                               
                                     >
                                         {option}
                                     </button>
@@ -357,7 +346,7 @@ export default function SingleProduct({ product }) {
                 </div>
                 <div className="mt-5 flex items-center gap-2">
                     {/* Add to cart button  */}
-                    <button className='bg-black rounded text-xs text-white py-1 uppercase h-[30px] w-[195px]' 
+                    <button className={`bg-black rounded text-xs text-white py-1 uppercase h-[30px] w-[195px] ${loading ? 'disabled:cursor-not-allowed' : 'cursor-pointer'}`} 
                     onClick={handleAddToCart} ref={addBagRef} 
                     disabled={loading}>
                     {itemInCart ? 'In Your Bag' : 'Add to bag'}
@@ -394,34 +383,21 @@ export default function SingleProduct({ product }) {
             {/* Product image popup modal  */}
             {isModalOpen && (
             <div 
-                className={`${isPopupClose ? 'zoom__out' : ''} outline-none zoom__in image__popup image__modal fixed inset-0 bg-white z-[99999] overflow-y-auto`} 
-                onClick={closeModal}
-                ref={modalRef}
-                style={{scrollBehavior: 'smooth'}}
+            className={`${isPopupClose ? 'zoom__out' : ''} outline-none zoom__in image__popup image__modal fixed inset-0 bg-white/40 h-screen z-[99999] overflow-y-auto outline-none`} 
+            onClick={closeModal}      
+            ref={modalRef}                     
             >
-                {product.images.map((image, index) => {
-                    return (
-                        <div className="relative w-full h-auto flex flex-col justify-center items-center border-b border-[#e8e8e8]" key={index}>
-                            <div className="absolute top-3 left-3 text-xs">{`[${index + 1}/${product.images.length}]`}</div>
-                            {isLoading ? (
-                                <div className="w-full min-h-screen flex items-center justify-center">
-                                    <p className="text-xs">Loading...</p>
-                                </div>
-                            ) : (
-                                <img
-                                    id={`image-${index}`}
-                                    className="w-full h-auto"
-                                    src={image.src}
-                                    alt="Full-size product image"
-                                    style={{ maxWidth: '100vw', maxHeight: 'auto' }} // Ensure image doesn't exceed the viewport
-                                />
-                            )}
-                        </div>
-                    )
-                })}
+                <div className="relative w-full h-auto flex flex-col justify-center items-center border-b border-[#e8e8e8]">
+                    <div className="absolute top-3 left-3 text-xs">{`[${imageNumber}/${product.images.length}]`}</div>
+                    <img                        
+                        className="w-full h-auto"
+                        src={modalImage}
+                        alt="Full-size product image"
+                        style={{ maxWidth: '100vw', maxHeight: 'auto' }} // Ensure image doesn't exceed the viewport
+                    />
+                </div>                
             </div>
         )}
-
         </div>
     </div>
   );

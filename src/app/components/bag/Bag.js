@@ -185,24 +185,16 @@ export default function Bag() {
                             <div className="absolute z-30 top-2 right-2">
                               {wishItem.some(w_Item => w_Item.id === item.id) ? (
                                 <Link href="/wishlist" className="outline-none group">
-                                  {moveToWishLoading[item.id] && moveToWishLoading[item.size] && moveToWishLoading[item.color] ? (
-                                    <span className="loading text-xs">/</span>
-                                  ) : (
                                     <div>
                                       <IoIosHeart className="text-black text-[20px]" />
                                     </div>
-                                  )}
                                 </Link>
                               ) : (
                                 <button 
                                   className="outline-none group"
                                   onClick={() => handleMoveToWishlist(item)}
                                 >
-                                  {moveToWishLoading[item.id] && editItemId.some(editItem => 
-                                editItem.id === item.id && 
-                                editItem.color === item.color &&
-                                editItem.size === item.size
-                              ) ? (
+                                   {moveToWishLoading[item.id] && moveToWishLoading[item.size] && moveToWishLoading[item.color] ? (
                                     <span className="loading text-xs">/</span>
                                   ) : (
                                     <div>
@@ -239,12 +231,12 @@ export default function Bag() {
                               ) && (
                                 <div className='mt-2 mb-3'>
                                   <p className='text-[12px] leading-5 uppercase mb-2'>Size: </p>
-                                  <div className="flex items-center gap-[6px]">
+                                  <div className="flex items-center gap-[6px] flex-wrap">
                                     {item.allSize.map((size, index) => (
                                       cartItem.some(cartItem => cartItem.id === item.id) &&
                                       !cartItem.some(cartItem => cartItem.size === size && cartItem.size !== item.size) &&                    
                                       <button 
-                                        className={`text-xs hover:text-white ${size === item.size && 'bg-[#333333] text-white hover:bg-[#333333] hover:text-white'} ${isWorking ? 'text-black/50 bg-[#cecece80] cursor-not-allowed' : 'bg-[#cecece80] text-black hover:bg-[#897f7b] cursor-pointer'} py-3 px-2 rounded outline-none`} 
+                                        className={`text-xs hover:text-white ${size === item.size && 'bg-black text-white hover:bg-black hover:text-white'} ${isWorking ? 'text-black/50 bg-[#cecece80] cursor-not-allowed' : 'bg-[#cecece80] text-black hover:bg-[#897f7b] cursor-pointer'} py-3 px-2 rounded outline-none`} 
                                         key={index}
                                         onClick={() => handleSizeClick(size, item.id, item.size, item.color)}
                                         disabled={isWorking}                                  
