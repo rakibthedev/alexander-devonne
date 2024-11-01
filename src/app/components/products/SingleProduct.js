@@ -66,8 +66,12 @@ useEffect(()=>{
             if(modalRef.current){
                 modalRef.current.focus();
                 modalRef.current.addEventListener('scroll', ()=>{
-                    setIsModalOpen(false);
-                    imgContainerRef.current.focus();              
+                    setTimeout(()=>{
+                        setIsModalOpen(false);
+                        setTimeout(()=>{
+                        imgContainerRef.current.focus();   
+                        },110)           
+                    },100)
                 })
             }
         },1600);
@@ -383,7 +387,7 @@ const closeModal = () => {
             {/* Product image popup modal  */}
             {isModalOpen && (
             <div 
-            className={`${isPopupClose ? 'zoom__out' : ''} outline-none zoom__in image__popup image__modal fixed inset-0 bg-white/40 h-screen z-[99999] overflow-y-auto outline-none`} 
+            className={`${isPopupClose ? 'zoom__out' : ''} outline-none zoom__in image__popup image__modal fixed inset-0 bg-white/40 h-screen z-[99999] overflow-y-auto`} 
             onClick={closeModal}      
             ref={modalRef}                     
             >
