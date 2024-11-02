@@ -62,19 +62,11 @@ export default function SingleProduct({ product }) {
      
 useEffect(()=>{
     if(isModalOpen){
+        modalRef.current.focus();
         setTimeout(()=>{
-            if(modalRef.current){
-                modalRef.current.focus();
-                modalRef.current.addEventListener('scroll', ()=>{
-                    setTimeout(()=>{
-                        setIsModalOpen(false);
-                        setTimeout(()=>{
-                        imgContainerRef.current.focus();   
-                        },110)           
-                    },100)
-                })
-            }
-        },1600);
+            setIsModalOpen(false);
+            imgContainerRef.current.focus();   
+        },2000);
     }
 },[isModalOpen]);
    
@@ -244,7 +236,7 @@ const closeModal = () => {
                         className={`${isZoom ? 'border-b border-[#e8e8e8]' : 'product__image__wrapper'}`}                        
                         >
                             <div className={`relative flex justify-center items-center`}>
-                                <img onClick={()=>handleZoomImage(index, item.src)} className='w-full h-auto' src={item.src} height={339} width={254} alt={product.name} />
+                                <img onClick={()=>handleZoomImage(index, item.src)} className={`w-full h-auto`} src={item.src} height={339} width={254} alt={product.name} />
                                 <div className='absolute top-0 left-0 py-2 px-3'>
                                     <span className='text-xs'>{`[${index + 1}/${product.images.length}]`}</span>
                                 </div>
@@ -280,7 +272,7 @@ const closeModal = () => {
                 </div>
             </div>
 
-            <div className="lg:flex-[30%] flex-[100%]">
+            <div className="lg:flex-[30%] flex-[100%] mb-20 lg:mb-0">
                 <h1 className="text-[22px] leading-[150%] font-ibmPlexRegular capitalize">
                     {product.name}
                 </h1>
@@ -387,9 +379,9 @@ const closeModal = () => {
             {/* Product image popup modal  */}
             {isModalOpen && (
             <div 
-            className={`${isPopupClose ? 'zoom__out' : ''} outline-none zoom__in image__popup image__modal fixed inset-0 bg-white/40 h-screen z-[99999] overflow-y-auto`} 
+            className={`w-full ${isPopupClose ? 'zoom__out' : ''} outline-none zoom__in image__popup image__modal fixed inset-0 bg-white/40 h-screen z-[99999] overflow-y-hidden`} 
             onClick={closeModal}      
-            ref={modalRef}                     
+            ref={modalRef}                             
             >
                 <div className="relative w-full h-auto flex flex-col justify-center items-center border-b border-[#e8e8e8]">
                     <div className="absolute top-3 left-3 text-xs">{`[${imageNumber}/${product.images.length}]`}</div>
@@ -399,7 +391,13 @@ const closeModal = () => {
                         alt="Full-size product image"
                         style={{ maxWidth: '100vw', maxHeight: 'auto' }} // Ensure image doesn't exceed the viewport
                     />
-                </div>                
+                </div>  
+                <div className="absolute min-h-screen w-full top-0 left-0 z-[999999]  flex flex-col items-center justify-center">
+                    <div className="text-center p-2 px-2 rounded-md" style={{backdropFilter: "blur(3rem)", background: "#e1e1e180"}}>
+                        <div className="text-xs leading-3">loading...</div> 
+                        <span className='loading text-xs leading-4 text-black'>/</span>
+                    </div>
+                </div>
             </div>
         )}
         </div>
