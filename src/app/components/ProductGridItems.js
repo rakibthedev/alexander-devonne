@@ -206,9 +206,14 @@ const ProductGridItems = ({ products, productCategory }) => {
     }
   }
   // Dragg Quick Shop 
-  const [position, setPosition] = useState({ top: 100, left: window.innerWidth - 370 }); // Initial position
+  const [position, setPosition] = useState({ top: 100, left: 0 }); // Default left to 0
   const [isDragging, setIsDragging] = useState(false);
   const [offset, setOffset] = useState({ x: 0, y: 0 });
+
+  useEffect(() => {
+    // This will run only on the client side
+    setPosition({ top: 100, left: window.innerWidth - 370 });
+  }, []);
 
   useEffect(() => {
       // Clean up event listeners on unmount
@@ -259,89 +264,95 @@ const ProductGridItems = ({ products, productCategory }) => {
         }
         </div>
         {/* QuickShop UI  */}
-      <div>
+        <div>
         {quickShop.length > 0 && (
-            <div
-            className="select-none cursor-move py-4 pl-4 pr-4 fixed bg-[#e1e1e180] z-[9999] rounded w-[350px] overflow-hidden"
-            style={{
-                height: "calc(100vh - 130px)",
-                backdropFilter: "blur(3rem)",
-                top: `${position.top}px`,
-                left: `${position.left}px`,
-            }}
-            onMouseDown={handleMouseDown}
-        >
-            <div className="flex justify-between mb-8">
-              <p className="text-xs uppercase">Quick Shop</p>
-              <button onClick={handleQuickShopClose} className='outline-none text-[22px]'>
-                  <IoMdClose />
-              </button>
-            </div>
-            <div>
-              <p className="text-[22px] leading-6 font-bookish capitalize">
-                {quickShop[quickShop.length - 1].name}
-              </p>
-              <p className="text-[22px] leading-6 font-bookish capitalize">
-                ${quickShop[quickShop.length - 1].price}
-              </p>
-              <div className='overflow-y-auto pb-10' style={{height: "calc(100vh - 252px)"}}>
-                <p className="mt-2 text-xs">
-                  {removeHtmlTags(quickShop[quickShop.length - 1].description)}
-                </p>
-                <div className='mt-6'>
-                  <ImageSlider images={quickShop[quickShop.length - 1].images}/>
-                </div>
-                <div>
-                  <p className='mt-5 mb-2 text-xs uppercase' ref={selectSizeError}>1. Confirm your size (IT) selection</p>
-                  <div className="flex items-center gap-[6px] flex-wrap">
-                      {
-                          quickShop[quickShop.length - 1].attributes
-                          .filter(item => item.slug === 'size')
-                          .flatMap(item => item.options)
-                          .map((option, index) => (
-                              <button 
-                                  className={`text-xs hover:text-white ${selectedSize === option ? 'bg-[#333] text-white hover:bg-[#333]' : 'bg-[#cecece80] text-black hover:bg-[#897f7b]'} py-3 px-2 rounded outline-none ${loading ? 'disabled:cursor-not-allowed' : 'cursor-pointer'}`} 
-                                  key={index}
-                                  onClick={() => handleSizeClick(option)}     
-                                  disabled={loading}                               
+            quickShop.map((qs_item, index) =>{
+                return (
+                  <div
+                    key={index}
+                    className="select-none cursor-move py-4 pl-4 pr-4 fixed bg-[#e1e1e180] z-[9999] rounded w-[350px] overflow-hidden"
+                    style={{
+                        height: "calc(100vh - 130px)",
+                        backdropFilter: "blur(3rem)",
+                        top: `${position.top}px`,
+                        left: `${position.left}px`,
+                    }}
+                    onMouseDown={handleMouseDown}
+                >
+                    <div className="flex justify-between mb-8">
+                      <p className="text-xs uppercase">Quick Shop</p>
+                      <button onClick={handleQuickShopClose} className='outline-none text-[22px]'>
+                          <IoMdClose />
+                      </button>
+                    </div>
+                    <div>
+                      <p className="text-[22px] leading-6 font-bookish capitalize">
+                        {qs_item.name}
+                      </p>
+                      <p className="text-[22px] leading-6 font-bookish capitalize">
+                        ${qs_item.price}
+                      </p>
+                      <div className='overflow-y-auto pb-3' style={{height: "calc(100vh - 252px)"}}>
+                        <p className="mt-2 text-xs">
+                          {removeHtmlTags(qs_item.description)}
+                        </p>
+                        <div className='mt-6'>
+                          <ImageSlider images={qs_item.images}/>
+                        </div>
+                        <div>
+                          <p className='mt-5 mb-2 text-xs uppercase' ref={selectSizeError}>1. Confirm your size (IT) selection</p>
+                          <div className="flex items-center gap-[6px] flex-wrap">
+                              {
+                                  qs_item.attributes
+                                  .filter(item => item.slug === 'size')
+                                  .flatMap(item => item.options)
+                                  .map((option, index) => (
+                                      <button 
+                                          className={`text-xs hover:text-white ${selectedSize === option ? 'bg-[#333] text-white hover:bg-[#333]' : 'bg-[#cecece80] text-black hover:bg-[#897f7b]'} py-3 px-2 rounded outline-none ${loading ? 'disabled:cursor-not-allowed' : 'cursor-pointer'}`} 
+                                          key={index}
+                                          onClick={() => handleSizeClick(option)}     
+                                          disabled={loading}                               
+                                      >
+                                          {option}
+                                      </button>
+                                  ))                   
+                              }
+                          </div>
+                        </div>
+                        <div>
+                          <p className='mt-5 mb-4 text-xs uppercase'>2. Confirm your action</p>
+                          {cartItem.some(checkItem => 
+                            checkItem.id === qs_item.id &&                        
+                            checkItem.size === selectedSize) ? (
+                              <Link 
+                              href="/bag"
+                              className="inline-block hover:bg-[#897f7b] min-w-[94px] min-h-[34px] rounded bg-black py-[7px] px-[14px] text-xs text-white uppercase"
                               >
-                                  {option}
-                              </button>
-                          ))                   
-                      }
+                                In Your Bag
+                              </Link>
+                          ):(
+                          <button 
+                          className="min-w-[94px] hover:bg-[#897f7b] rounded disabled:cursor-not-allowed bg-black py-[7px] px-[14px] text-xs text-white uppercase"
+                          disabled={loading}
+                          onClick={()=>handleAddToBagQuicKShop(qs_item)}
+                          >
+                            {loading ? (
+                              <span className='loading text-xs'>/</span>
+                            ):(
+                                `Add to bag`
+                            )}
+                          </button>
+                        )}
+                        </div>
+                        <div className="mt-6">
+                          <Link className="text-xs hover:underline capitalize" href={`/shopping/${qs_item.slug}`}> More Details</Link>
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                </div>
-                <div>
-                  <p className='mt-5 mb-4 text-xs uppercase'>2. Confirm your action</p>
-                  {cartItem.some(checkItem => 
-                    checkItem.id === quickShop[quickShop.length - 1].id &&                        
-                    checkItem.size === selectedSize) ? (
-                      <Link 
-                      href="/bag"
-                      className="inline-block hover:bg-[#897f7b] min-w-[94px] min-h-[34px] rounded bg-black py-[7px] px-[14px] text-xs text-white uppercase"
-                      >
-                        In Your Bag
-                      </Link>
-                  ):(
-                  <button 
-                  className="min-w-[94px] hover:bg-[#897f7b] rounded disabled:cursor-not-allowed bg-black py-[7px] px-[14px] text-xs text-white uppercase"
-                  disabled={loading}
-                  onClick={()=>handleAddToBagQuicKShop(quickShop[quickShop.length - 1])}
-                  >
-                    {loading ? (
-                      <span className='loading text-xs'>/</span>
-                    ):(
-                        `Add to bag`
-                    )}
-                  </button>
-                )}
-                </div>
-                <div className="mt-6">
-                  <Link className="text-xs hover:underline capitalize" href={`/shopping/${quickShop[quickShop.length - 1].slug}`}> More Details</Link>
-                </div>
-              </div>
-            </div>
-          </div>
+                )
+            })
+          
         )}
       </div>
       {/* Main Content Start  */}

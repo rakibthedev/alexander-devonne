@@ -4,7 +4,7 @@ import SubscribeForm from './SubscribeForm'
 
 export default function Footer() {
   return (
-    <div className="block lg:flex gap-24 px-2 pb-2 lg:px-5">
+    <div className="block lg:flex gap-24 px-2 pb-2 pt-5 lg:px-5">
       <div className="lg:flex-[25%]">
         <SubscribeForm />
       </div>
@@ -16,7 +16,7 @@ export default function Footer() {
               <Link className="text-xs uppercase hover:underline" href="#">Contact Us</Link>
             </li>
             <li className="text-[12px] uppercase">
-              <Link className="text-xs uppercase hover:underline" href="#">FAQs</Link>
+              <Link className="text-xs uppercase hover:underline" href="/faq">FAQs</Link>
             </li>
             <li className="text-[12px] uppercase">
               <Link className="text-xs uppercase hover:underline" href="#">Shipping & Returns</Link>

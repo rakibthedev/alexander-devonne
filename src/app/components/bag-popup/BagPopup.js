@@ -1,5 +1,5 @@
 "use client";
-import { React, useContext } from 'react';
+import { React, useContext, useState } from 'react';
 import { CartContext } from '@/app/context/cartContext';
 import { FaRegTrashAlt } from "react-icons/fa";
 import Image from 'next/image';
@@ -31,18 +31,23 @@ function TruncatedText({ text }) {
 
 export default function BagPopup() {
     const { cartItem = [], setCartItem, popupShow, setPopupShow } = useContext(CartContext) || {};
+    const [loading, setLoading] = useState([])
 
     const showBagPopup = () => setPopupShow(true);
     const hideBagPopup = () => setPopupShow(false);
 
     const handleRemoveCartItem = (itemId, itemSize, itemColor) => {
-        setCartItem((prevItems) =>
-            prevItems.filter(filteredItem =>
-                !(filteredItem.id === itemId &&
-                  filteredItem.size === itemSize &&
-                  filteredItem.color === itemColor)
-            )
-        );
+        setLoading([{id: itemId, size: itemSize, color: itemColor}]);
+        setTimeout(()=>{
+            setCartItem((prevItems) =>
+                prevItems.filter(filteredItem =>
+                    !(filteredItem.id === itemId &&
+                      filteredItem.size === itemSize &&
+                      filteredItem.color === itemColor)
+                )
+            );
+            setLoading([]);
+        }, 1000)
     };
 
     const shipping = 8;
@@ -103,8 +108,18 @@ export default function BagPopup() {
                                         <span className='text-[12px] leading-[18px] uppercase'>{item.quantity}</span>
                                     </div>
                                     <div className="absolute bottom-1 right-0">
-                                        <button className='py-[5px] px-[10px] hover:cursor-pointer hover:bg-gray-100 rounded' onClick={() => handleRemoveCartItem(item.id, item.size, item.color)}>
-                                            <FaRegTrashAlt className='text-[16px]' />
+                                        <button 
+                                        className='py-[5px] px-[10px] hover:cursor-pointer hover:bg-gray-100 rounded' 
+                                        onClick={() => handleRemoveCartItem(item.id, item.size, item.color)}
+                                        disabled={loading.length > 0 && (loading[0].id === item.id && loading[0].size === item.size && loading[0].color === item.color) ? 'true' : ''}>
+                                            {loading.length > 0 &&
+                                            (loading[0].id === item.id &&
+                                            loading[0].size === item.size &&
+                                            loading[0].color === item.color) ? (
+                                                <span className='text-xs loading'>/</span>
+                                            ) : (
+                                                <FaRegTrashAlt className='text-[16px]' />
+                                            )}
                                         </button>
                                     </div>
                                 </div>

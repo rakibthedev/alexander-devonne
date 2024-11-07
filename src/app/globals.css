@@ -182,7 +182,6 @@ body{
 }
 .form__input{
   z-index: 10;
-  background-color: transparent;
 }
 select.form__input,
 .form__checkbox{
@@ -458,6 +457,73 @@ select.form__input,
     scrollbar-width: none; /* Hides scrollbar for Firefox */
 }
 
+/* Checkout Style  */
+.checkout__form .form__label {
+  color: #000000a6;
+  top: -6px;
+  z-index: 9;
+  width: 100%;
+  padding-left: 14px;
+  padding-right: 14px;
+  cursor: text;
+}
+.checkout__form .form__input{
+  z-index: 8;
+  width: 100%;
+  border-radius: 4px;
+  top: -20px;
+  padding-top: 3px;
+  padding-left: 14px;
+  padding-right: 14px;
+}
+.checkout__form select.form__input,
+.checkout__form .form__checkbox{
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  outline: none;
+  cursor: pointer;
+}
+.checkout__form .form__input.active + .form__label{
+  font-size: 9px; 
+  top: -19px;
+}
+.checkout__form .form__checkbox + label{
+  cursor: pointer;
+}
+.checkout__form .form__checkbox::before{
+  content: "";
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  border: 1px solid #000000;
+  border-radius: 4px;
+  top: 0;
+  left: 0;
+  cursor: pointer;
+}
+.checkout__form .form__checkbox:checked + label::before{
+  content: "";
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border: 1px solid #000000;
+  top: 3px;
+  left: 3px;
+  background: #000000;
+}
+
+/* Auto fill bg color transparent */
+/* input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active,
+select:-webkit-autofill,
+select:-webkit-autofill:hover,
+select:-webkit-autofill:focus,
+select:-webkit-autofill:active {
+    transition: background-color 100s ease-in-out 0s;
+} */
 
 
 
