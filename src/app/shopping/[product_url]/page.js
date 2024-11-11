@@ -7,7 +7,7 @@ const Page = async ({ params }) => {
     error: null,
   };
 
-  const appDomain = process.env.DOMAIN_ADDRESS;
+  const appDomain = process.env.NEXT_PUBLIC_DOMAIN_ADDRESS;
   const slug = params.product_url; // Extract the slug from params
 
   try {

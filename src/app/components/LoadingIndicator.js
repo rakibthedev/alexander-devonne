@@ -21,9 +21,10 @@ const LoadingIndicator = () => {
   return (
     <>
       {loading && (
-        <div className="loading-overlay">
+        <div className="loading-overlay flex flex-col">
           {/* You can add a spinner or loading text here */}
-          <span className="text-xs loading-text loading"></span>
+          {/* <span className="text-xs">Loading...</span>
+          <span className="text-xs loading-text loading">/</span> */}
         </div>
       )}
     </>

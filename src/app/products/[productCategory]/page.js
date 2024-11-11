@@ -7,7 +7,7 @@ const Page = async ({params}) => {
     products: [],
     error: null,
   };
-const appDomain = process.env.DOMAIN_ADDRESS
+const appDomain = process.env.NEXT_PUBLIC_DOMAIN_ADDRESS
   try {
     const response = await fetch(`${appDomain}/api/products`); 
     const data = await response.json();

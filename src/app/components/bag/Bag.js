@@ -345,7 +345,7 @@ export default function Bag() {
                       </span>
                     </div>
                     <div className='pt-8'>
-                      <button className='bg-[#000000cc] text-center text-white text-[14px] uppercase rounded block w-full p-2 font-ibmPlexMedium hover:bg-[#897f7b]'>Checkout</button>
+                      <Link href="/checkout" className='bg-[#000000cc] text-center text-white text-[14px] uppercase rounded block w-full p-2 font-ibmPlexMedium hover:bg-[#897f7b]'>Checkout</Link>
                     </div>
                   </div>
                 </div>

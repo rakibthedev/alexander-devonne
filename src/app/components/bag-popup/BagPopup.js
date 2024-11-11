@@ -4,6 +4,7 @@ import { CartContext } from '@/app/context/cartContext';
 import { FaRegTrashAlt } from "react-icons/fa";
 import Image from 'next/image';
 import Link from 'next/link';
+import { IoClose } from "react-icons/io5";
 
 function formatString(input) {
     return input
@@ -62,7 +63,14 @@ export default function BagPopup() {
         >
             <div className={`p-5 w-[375px] min-h-screen ${cartEmpty ? "flex flex-col justify-between" : "hidden"}`}>
                 <div>
-                    <p className="text-[18px] font-bookish mb-3">Your shopping bag</p>
+                    <div className="flex justify-between mb-3">
+                        <p className="text-[18px] font-bookish">Your shopping bag</p>
+                        <button
+                        onClick={hideBagPopup}
+                        >
+                            <IoClose className='text-[20px]' />
+                        </button>
+                    </div>
                     <p className="my-10 text-[14px]">Your shopping bag is currently empty.</p>
                     <div className='pt-2 pb-5 text-center border-b border-black'>
                         <Link href="/" className='bg-[#000000cc] text-center text-white text-[14px] uppercase rounded py-[6px] w-full block font-ibmPlexMedium hover:bg-[#897f7b]'>Continue Shopping</Link>
@@ -74,7 +82,15 @@ export default function BagPopup() {
             </div>
 
             <div className={`p-5 w-[375px] ${cartEmpty ? "hidden" : "block"}`}>
-                <p className="text-[18px] font-bookish mb-3">Your shopping bag ( {cartItem.length} items)</p>
+                
+                <div className="flex justify-between mb-3">
+                    <p className="text-[18px] font-bookish">Your shopping bag ( {cartItem.length} items)</p>
+                    <button
+                    onClick={hideBagPopup}
+                    >
+                        <IoClose className='text-[20px]' />
+                    </button>
+                </div>
                 <div className="bag__wrapper mt-5 overflow-y-auto" style={{ height: "calc(100vh - 280px)" }}>
                     {cartItem.map((item, index) => (
                         <div className="bag__item flex border border-[#e8e8e8] border-solid" key={index}>
@@ -149,7 +165,7 @@ export default function BagPopup() {
                         </span>
                     </div>
                     <div className='pt-6'>
-                        <button className='bg-[#000000cc] text-white text-[14px] uppercase rounded block w-full p-[6px] font-ibmPlexMedium hover:bg-[#897f7b] text-center'>Checkout Securely</button>
+                        <Link href="/checkout" className='bg-[#000000cc] text-white text-[14px] uppercase rounded block w-full p-[6px] font-ibmPlexMedium hover:bg-[#897f7b] text-center'>Checkout Securely</Link>
                     </div>
                 </div>
                 <div className='py-5 text-[14px] text-center underline uppercase'>

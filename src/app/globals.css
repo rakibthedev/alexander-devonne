@@ -526,12 +526,47 @@ select:-webkit-autofill:active {
 } */
 
 
+/* Stripe card element Payment Form styling */
+
+.form-field {
+  position: relative;
+  padding: 0 14px;
+  padding-top: 20px;
+}
 
 
-
-
-
-
+.payment__method .radio__box{
+  position: relative;
+  padding-left: 30px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+.payment__method input[type="radio"]{
+  -webkit-appearance: none;
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  border: 1px solid #000;
+  border-radius: 50%;
+  left: 0;
+  top: 5px;
+  cursor: pointer;
+}
+.payment__method input[type="radio"] + label{
+  cursor: pointer;
+}
+.payment__method input[type="radio"]:checked + label::before{
+  content: "";
+  height: 10px;
+  width: 10px;
+  background: #000;
+  border-radius: 50%;
+  position: absolute;
+  top: 8px;
+  left: 3px;
+}
 
 /* Adjust arrow size and styling for mobile */
 @media (max-width: 768px) {
