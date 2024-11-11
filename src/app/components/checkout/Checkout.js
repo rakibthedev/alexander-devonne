@@ -264,12 +264,13 @@ export default function Checkout() {
     }
   };
 
+  // Page Loading 
   const [pageLoading, setPageLoading] = useState(true);
 
   useEffect(() => {
     const timer = setTimeout(() => {
       setPageLoading(false);
-    }, 1000);
+    }, 0);
 
     // Cleanup the timer when the component unmounts
     return () => clearTimeout(timer);
@@ -873,7 +874,7 @@ export default function Checkout() {
                     <div className={`form__step`}>
                         {step === 2 && shippingAsBilling === true && (
                         <div>
-                            <p className="text-xs uppercase mt-5s mb-5">Billing Address</p>
+                            <p className="text-xs uppercase mt-8 mb-5">Billing Address</p>
                             <div className="relative flex items-center justify-start gap-2 pb-5">
                                 <input
                                 className="form__checkbox"
