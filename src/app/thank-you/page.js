@@ -68,7 +68,7 @@ const Page = () => {
                             </div>
                             <div className="mt-10">
                                 <h3 className='font-bookish text-[16px]'>
-                                    Your order is confirmed. We are preparing your items for shipment and will notify you when it's on its way!
+                                    Your order is confirmed. We are preparing your items for shipment and will notify you when it is on its way!
                                 </h3>
                             </div>
                             <div className="mt-8 mb-10">

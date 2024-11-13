@@ -61,7 +61,7 @@ function CheckoutProduct({cartItem}) {
                     )
                 })} 
             </div>
-            <div className='mt-8 block'>
+            <div className='mt-5 block'>
                 <div className='flex justify-between text-[11px] uppercase leading-4'>
                     <span>Subtotal</span>
                     <span>

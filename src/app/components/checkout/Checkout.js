@@ -42,7 +42,9 @@ export default function Checkout() {
   const [cardInfo, setCardInfo] = useState({});
 
   //Guest Checkout function 
-  const handleGuestCheckout = () => {
+  const handleGuestCheckout = (e) => {
+    e.preventDefault();
+
     if(guestEmail){
       if(validateEmail(guestEmail)){
         setGuestEmailError(null);
@@ -59,6 +61,13 @@ export default function Checkout() {
       setGuestEmailError("Please enter your email address");
       formData.email = '';
     }
+  }
+
+  const handleChangeEmail = (e) => {
+      e.preventDefault();
+
+      setLoginCheckout(false);
+      setGuestEmail(guestEmail);
   }
 
   const [formData, setFormData] = useState({
@@ -382,10 +391,8 @@ export default function Checkout() {
                   <p>You are checking out as {guestEmail}. </p>
                   <button
                   className="underline"
-                  onClick={()=>{
-                    setLoginCheckout(false);
-                    setGuestEmail(guestEmail);
-                  }}
+                  type="button"
+                  onClick={handleChangeEmail}
                   >
                   Change
                   </button>
