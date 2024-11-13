@@ -1,10 +1,8 @@
 import { useState, useImperativeHandle, forwardRef } from 'react';
 import { useStripe, useElements, CardNumberElement, CardExpiryElement, CardCvcElement } from '@stripe/react-stripe-js';
-import { CartContext } from '@/app/context/cartContext';
-import { useContext } from 'react';
 
 // eslint-disable-next-line react/display-name
-const CheckoutForm = forwardRef(({ cartItems, formData, setLoading }, ref) => {
+const CheckoutForm = forwardRef(({ cartItems, formData, setLoading , sendOrderData}, ref) => {
   const stripe = useStripe();
   const elements = useElements();
   const [loading, setInternalLoading] = useState(false);
@@ -16,8 +14,6 @@ const CheckoutForm = forwardRef(({ cartItems, formData, setLoading }, ref) => {
   const [paymentError, setPaymentError] = useState(null);
   const [cardBrand, setCardBrand] = useState('');
 
-  // cart state 
-  const {setCartItem} = useContext(CartContext);
 
   // Expose handleSubmit function to the parent component
   useImperativeHandle(ref, () => ({
@@ -128,22 +124,18 @@ const CheckoutForm = forwardRef(({ cartItems, formData, setLoading }, ref) => {
 
       if (data.success === true) {        
         setInternalLoading(true);  // Stop loading when payment is successful
-        setLoading(false);  // Notify parent to stop loading
+        setLoading(true);  // Notify parent to stop loading
         console.log({
           success: data.success,          
-          message: "Payment successfull and order has been updated succefully in woocommerce",
+          message: "Payment successfull",
           // data: data.paymentDetails,
           // orderId: data.orderId,
         });
-        
-        // Clear cart items 
-        setCartItem([]);
-
         // Convert the object to a URL-safe query string format
-        const serializedObject = encodeURIComponent(JSON.stringify(data.paymentDetails.metadata.items));
+        const orderedItems = JSON.stringify(cartItems);
+        localStorage.setItem("orderedItems", orderedItems);          
 
-        // Redirect to thank you page
-        window.location.href = `/thank-you?order_id=${data.orderId}&data=${serializedObject}`;
+        sendOrderData();
 
       } else {
         setPaymentError(data.error || 'Payment failed. Please try again.');

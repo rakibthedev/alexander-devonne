@@ -17,8 +17,8 @@ const LoadingFallback = () => (
 const Page = () => {
     const searchParams = useSearchParams();
     const [orderData, setOrderData] = useState(null);
+    const [products, setProducts] = useState(null); // State for storing products
     const order_id = searchParams.get('order_id'); // Get the query parameter 'order_id'  
-    const products = searchParams.get('data'); // Get the query parameter 'data'  
 
     useEffect(() => {
         // Only make the API call if order_id is available
@@ -45,15 +45,18 @@ const Page = () => {
 
             fetchOrderData();
         }
+
+        // Fetch products from localStorage
+        const storedProducts = JSON.parse(localStorage.getItem('orderedItems'));
+        if (storedProducts) {
+            setProducts(storedProducts); // Parse and set products
+        }
     }, [order_id]); // Runs when order_id changes
 
     // If no order_id or orderData is still loading
-    if (!order_id || !orderData) {
+    if (!order_id || !orderData || !products) {
         return <LoadingFallback />;
     }
-
-    // If the 'products' parameter exists, parse it back to an array of objects
-    const parsedProducts = products ? JSON.parse(JSON.parse(decodeURIComponent(products))) : [];
 
     return (
         <div className="px-2 lg:px-5 py-20 min-h-[500px] bg-[#E2DBC8]">
@@ -82,10 +85,9 @@ const Page = () => {
                             </div>
                         </div>
                         <div className="lg:flex-[30%] max-w-[350px] flex-[100%]">
-                            <OrderSummary items={parsedProducts} />
+                            <OrderSummary items={products} />
                         </div>
                     </div>
-
                 </div>
             ) : (
                 <LoadingFallback />

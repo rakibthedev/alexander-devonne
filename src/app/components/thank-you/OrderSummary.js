@@ -1,5 +1,13 @@
 import Image from 'next/image';
 
+function formatString(input) {
+    return input
+    .toUpperCase()
+    .replace(/[_\s,]+/g, ' - ')
+    .replace(/[^A-Z0-9 -]/g, '')
+    .trim();
+}
+
 function OrderSummary({items}) {
 
 const shipping = 8;
@@ -41,7 +49,7 @@ const shipping = 8;
                                                 <div className='mt-4'>
                                                     <p className="flex items-center gap-1 text-[11px] uppercase">
                                                         <span>Color:</span> 
-                                                        <span>{item.color}</span> 
+                                                        <span>{formatString(item.color)}</span> 
                                                     </p>
                                                     <p className="flex items-center gap-1 text-[11px] uppercase">
                                                         <span>Size:</span> 

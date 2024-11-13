@@ -230,6 +230,50 @@ export default function Checkout() {
 
   }
 
+   // Send data to woocommerce to create order 
+   const sendOrderData = async () => {    
+
+    try{
+      const response = await fetch(`${process.env.NEXT_PUBLIC_DOMAIN_ADDRESS}/api/checkout/create_order`, {
+        method: "POST",
+        headers: {
+          "Content-Type" : "application/json",
+        },
+        body: JSON.stringify(formData)
+      });
+
+      const result = await response.json();
+
+      if(response.ok){
+        console.log({message: "Order has been created successfully"});
+        // If Order Creation Success Then Update Status 
+        const responseOrder = await fetch(`${process.env.NEXT_PUBLIC_DOMAIN_ADDRESS}/api/checkout/update_order`, {
+          method: "POST",
+          headers: {
+            "Content-Type" : "application/json"
+          },
+          body: JSON.stringify({orderId: result.id})
+        });
+        const resultOrder = await responseOrder.json();
+        if(responseOrder.ok){
+          console.log({message: "Order status updated successfully"});
+          setCartItem([]);
+          setLoading(false);
+          window.location.href = `/thank-you?order_id=${result.id}`;         
+        }else{
+          console.log(resultOrder);
+          console.log({message: "Order status not updated successfully"});
+        }
+      }else{
+        console.error("error: ", result);
+      }
+      
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+
   // Set Billing info from shipping 
   const setBilingAutomatically = () => {
     formData.billing = formData.shipping;
@@ -949,7 +993,8 @@ export default function Checkout() {
                         <CheckoutForm
                           ref={formRef} 
                           cartItems={cartItem} 
-                          formData={formData}                          
+                          formData={formData}   
+                          sendOrderData={sendOrderData}                       
                           setLoading={setLoading} // Pass setLoading function to the child
                         />
                       </Elements>
