@@ -113,43 +113,49 @@ const CheckoutForm = forwardRef(({ cartItems, formData, setLoading }, ref) => {
         return;
       }
 
-      // Call backend to create PaymentIntent and process the payment
-      const paymentIntentResponse = await fetch(`${process.env.NEXT_PUBLIC_DOMAIN_ADDRESS}/api/stripe/payment-intent`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          paymentMethodId: paymentMethod.id, 
-          cartItems,
-          formData, 
-        }),
-      });
-
-      const data = await paymentIntentResponse.json();
-
-      if (data.success === true) {        
-        setInternalLoading(true);  // Stop loading when payment is successful
-        setLoading(false);  // Notify parent to stop loading
-        console.log({
-          success: data.success,          
-          message: "Payment successfull and order has been updated succefully in woocommerce",
-          // data: data.paymentDetails,
-          // orderId: data.orderId,
+      try {
+        // Call backend to create PaymentIntent and process the payment
+        const paymentIntentResponse = await fetch(`${process.env.NEXT_PUBLIC_DOMAIN_ADDRESS}/api/stripe/payment-intent`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ 
+            paymentMethodId: paymentMethod.id, 
+            cartItems,
+            formData, 
+          }),
         });
-        
-        // Clear cart items 
-        setCartItem([]);
-
-        // Convert the object to a URL-safe query string format
-        const serializedObject = encodeURIComponent(JSON.stringify(data.paymentDetails.metadata.items));
-
-        // Redirect to thank you page
-        window.location.href = `/thank-you?order_id=${data.orderId}&data=${serializedObject}`;
-
-      } else {
-        setPaymentError(data.error || 'Payment failed. Please try again.');
-        setInternalLoading(false);  // Stop loading on failure
-        setLoading(false);  // Stop loading in the parent
+      
+        const data = await paymentIntentResponse.json();
+      
+        if (data.success === true) {        
+          setInternalLoading(true);  // Stop loading when payment is successful
+          setLoading(false);  // Notify parent to stop loading
+          console.log({
+            success: data.success,          
+            message: "Payment successful and order has been updated successfully in WooCommerce",
+          });
+          
+          // Clear cart items
+          setCartItem([]);
+      
+          // Store the metadata in localStorage (optional)
+          localStorage.setItem('orderDetails', JSON.stringify(data.paymentDetails.metadata.items));
+      
+          // Redirect to thank you page with order ID
+          window.location.href = `/thank-you?order_id=${data.orderId}`;
+          
+        } else {
+          setPaymentError(data.error || 'Payment failed. Please try again.');
+          setInternalLoading(false);  // Stop loading on failure
+          setLoading(false);  // Stop loading in the parent
+        }
+      
+      } catch (error) {
+        setPaymentError('An unexpected error occurred. Please try again.');
+        setInternalLoading(false);
+        setLoading(false);
       }
+      
     },
 
   }));
