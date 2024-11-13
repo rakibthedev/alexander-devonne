@@ -114,7 +114,7 @@ const CheckoutForm = forwardRef(({ cartItems, formData, setLoading }, ref) => {
       }
 
       // Call backend to create PaymentIntent and process the payment
-      const paymentIntentResponse = await fetch('/api/stripe/payment-intent', {
+      const paymentIntentResponse = await fetch(`${process.env.NEXT_PUBLIC_DOMAIN_ADDRESS}/api/stripe/payment-intent`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 

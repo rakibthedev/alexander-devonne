@@ -25,7 +25,7 @@ const Page = () => {
         if (order_id) {
             const fetchOrderData = async () => {
                 try {
-                    const response = await fetch(`/api/order/get_order?order_id=${order_id}`, {
+                    const response = await fetch(`${process.env.NEXT_PUBLIC_DOMAIN_ADDRESS}/api/order/get_order?order_id=${order_id}`, {
                         method: 'GET',
                         headers: {
                             'Content-Type': 'application/json',
