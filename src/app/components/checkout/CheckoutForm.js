@@ -126,11 +126,11 @@ const CheckoutForm = forwardRef(({ cartItems, formData, setLoading }, ref) => {
 
       const data = await paymentIntentResponse.json();
 
-      if (paymentIntentResponse.ok) {        
+      if (data.success === true) {        
         setInternalLoading(true);  // Stop loading when payment is successful
         setLoading(false);  // Notify parent to stop loading
         console.log({
-          success: true,
+          success: data.success,          
           message: "Payment successfull and order has been updated succefully in woocommerce",
           // data: data.paymentDetails,
           // orderId: data.orderId,

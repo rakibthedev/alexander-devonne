@@ -64,6 +64,7 @@ export default async function handler(req, res) {
         if (paymentIntent.status === 'succeeded') {    
           const orderId = await createOrder(formData, paymentIntent);    
           return res.status(200).json({
+            success: true,
             paymentDetails: paymentIntent,
             orderId: orderId,
           });
