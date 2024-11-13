@@ -1,9 +1,18 @@
-"use client"
+'use client';
+
 import { useSearchParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react'; // Import Suspense for boundary handling
 import OrderSummary from '../components/thank-you/OrderSummary';
 import { CiCircleCheck } from "react-icons/ci";
 import Link from 'next/link';
+
+// Fallback loading component
+const LoadingFallback = () => (
+    <div className="px-2 lg:px-5 py-10 min-h-[500px] bg-[#E2DBC8]">
+        <div className='text-[11px]'>Loading...</div>
+        <div className='text-[11px] loading'>/</div>
+    </div>
+);
 
 const Page = () => {
     const searchParams = useSearchParams();
@@ -38,31 +47,26 @@ const Page = () => {
         }
     }, [order_id]); // Runs when order_id changes
 
-    if (!order_id) {
-        return (
-            <div className="px-2 lg:px-5 py-10 min-h-[500px] bg-[#E2DBC8]">
-                <div className='text-[11px]'>Loading...</div>
-                <div className='text-[11px] loading'>/</div>
-            </div>
-        );
+    // If no order_id or orderData is still loading
+    if (!order_id || !orderData) {
+        return <LoadingFallback />;
     }
-
 
     // If the 'products' parameter exists, parse it back to an array of objects
     const parsedProducts = products ? JSON.parse(JSON.parse(decodeURIComponent(products))) : [];
 
     return (
         <div className="px-2 lg:px-5 py-20 min-h-[500px] bg-[#E2DBC8]">
-            {orderData && orderData.status === "completed" ? (
+            {orderData.status === "completed" ? (
                 <div>
                     <div className="flex-col gap-10 lg:flex lg:flex-row lg:gap-20 w-full">
                         <div className="lg:flex-[70%] flex-[100%]">
                             <div className="flex gap-1">
                                 <div>
-                                    <CiCircleCheck className='text-[35px]'/>
+                                    <CiCircleCheck className='text-[35px]' />
                                 </div>
                                 <div>
-                                    <p className='text-[11px] leading-3'>Order #{order_id}</p>            
+                                    <p className='text-[11px] leading-3'>Order #{order_id}</p>
                                     <h2 className='font-bookish text-[28px] leading-7'>Thank you!</h2>
                                 </div>
                             </div>
@@ -72,23 +76,29 @@ const Page = () => {
                                 </h3>
                             </div>
                             <div className="mt-8 mb-10">
-                                <Link href="/" className='bg-[#000000cc] inline-block text-center text-white text-[14px] uppercase rounded py-2 px-[14px] font-ibmPlexMedium hover:bg-[#897f7b]'>Continue Shopping</Link>
+                                <Link href="/" className='bg-[#000000cc] inline-block text-center text-white text-[14px] uppercase rounded py-2 px-[14px] font-ibmPlexMedium hover:bg-[#897f7b]'>
+                                    Continue Shopping
+                                </Link>
                             </div>
                         </div>
                         <div className="lg:flex-[30%] max-w-[350px] flex-[100%]">
-                            <OrderSummary items={parsedProducts}/>
+                            <OrderSummary items={parsedProducts} />
                         </div>
                     </div>
-                    
+
                 </div>
-            ):(
-                <div>
-                    <div className='text-[11px]'>Loading...</div>
-                    <div className='text-[11px] loading'>/</div>
-                </div>
+            ) : (
+                <LoadingFallback />
             )}
         </div>
     );
 };
 
-export default Page;
+// Wrap the Page component with Suspense to handle asynchronous behavior
+export default function PageWithSuspense() {
+    return (
+        <Suspense fallback={<LoadingFallback />}>
+            <Page />
+        </Suspense>
+    );
+}
