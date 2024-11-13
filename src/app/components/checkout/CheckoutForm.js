@@ -1,8 +1,10 @@
 import { useState, useImperativeHandle, forwardRef } from 'react';
 import { useStripe, useElements, CardNumberElement, CardExpiryElement, CardCvcElement } from '@stripe/react-stripe-js';
+import { CartContext } from '@/app/context/cartContext';
+import { useContext } from 'react';
 
 // eslint-disable-next-line react/display-name
-const CheckoutForm = forwardRef(({ cartItems, updateOrder, setLoading }, ref) => {
+const CheckoutForm = forwardRef(({ cartItems, formData, setLoading }, ref) => {
   const stripe = useStripe();
   const elements = useElements();
   const [loading, setInternalLoading] = useState(false);
@@ -13,6 +15,9 @@ const CheckoutForm = forwardRef(({ cartItems, updateOrder, setLoading }, ref) =>
   const [cardCvcError, setCardCvcError] = useState(null);
   const [paymentError, setPaymentError] = useState(null);
   const [cardBrand, setCardBrand] = useState('');
+
+  // cart state 
+  const {setCartItem} = useContext(CartContext);
 
   // Expose handleSubmit function to the parent component
   useImperativeHandle(ref, () => ({
@@ -86,7 +91,19 @@ const CheckoutForm = forwardRef(({ cartItems, updateOrder, setLoading }, ref) =>
       const { error: paymentError, paymentMethod } = await stripe.createPaymentMethod({
         type: 'card',
         card: cardNumber,
-        billing_details: { name: cardHolderName },
+        billing_details: {
+          name: cardHolderName,
+          email: formData.email,
+          address: {
+            line1: formData.billing.address_1,
+            line2: formData.billing.address_2,
+            city: formData.billing.city,
+            state: formData.billing.state,
+            postal_code: formData.billing.postcode,
+            country: formData.billing.country,
+          },
+          phone: formData.billing.phone,
+        },
       });
 
       if (paymentError) {
@@ -102,16 +119,32 @@ const CheckoutForm = forwardRef(({ cartItems, updateOrder, setLoading }, ref) =>
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
           paymentMethodId: paymentMethod.id, 
-          cartItems 
+          cartItems,
+          formData, 
         }),
       });
 
       const data = await paymentIntentResponse.json();
 
-      if (data.success) {
-        updateOrder();
+      if (paymentIntentResponse.ok) {        
         setInternalLoading(true);  // Stop loading when payment is successful
-        setLoading(true);  // Notify parent to stop loading
+        setLoading(false);  // Notify parent to stop loading
+        console.log({
+          success: true,
+          message: "Payment successfull and order has been updated succefully in woocommerce",
+          // data: data.paymentDetails,
+          // orderId: data.orderId,
+        });
+        
+        // Clear cart items 
+        setCartItem([]);
+
+        // Convert the object to a URL-safe query string format
+        const serializedObject = encodeURIComponent(JSON.stringify(data.paymentDetails.metadata.items));
+
+        // Redirect to thank you page
+        window.location.href = `/thank-you?order_id=${data.orderId}&data=${serializedObject}`;
+
       } else {
         setPaymentError(data.error || 'Payment failed. Please try again.');
         setInternalLoading(false);  // Stop loading on failure

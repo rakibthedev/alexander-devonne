@@ -12,11 +12,22 @@ import { loadStripe } from '@stripe/stripe-js';
 import { IoCard } from "react-icons/io5";
 import { SiVisa } from "react-icons/si";
 import { SiMastercard } from "react-icons/si";
+import Link from "next/link";
+
+function validateEmail(email) {
+  // Regular expression for validating an email address
+  const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+  
+  return emailPattern.test(email);
+}
 
 // Stripe Payment Method Code 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY);
 
 export default function Checkout() {
+  const [guestEmail, setGuestEmail] = useState(null);
+  const [guestEmailError, setGuestEmailError] = useState(null);
+  const [loginCheckout, setLoginCheckout] = useState(false);
   const formRef = useRef(null);
   const [loading, setLoading] = useState(false);
   const {cartItem, setCartItem} = useContext(CartContext);
@@ -25,6 +36,30 @@ export default function Checkout() {
   const [shippingAsBilling, setShippingAsBilling] = useState(true);
   const [loadingStep, setLoadingStep] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState('card');
+  const [tcCheck, setTcCheck] = useState(false);
+  const [showTcErrMsg, setShowTcErrMsg] = useState(false);
+  // its child CheckoutForm state 
+  const [cardInfo, setCardInfo] = useState({});
+
+  //Guest Checkout function 
+  const handleGuestCheckout = () => {
+    if(guestEmail){
+      if(validateEmail(guestEmail)){
+        setGuestEmailError(null);
+        setLoadingStep(true);
+        setTimeout(()=>{
+          setLoadingStep(false);
+          setLoginCheckout(true);
+          formData.email = guestEmail;
+        }, 1000);
+      }else{
+        setGuestEmailError("Please enter a valid email address");
+      }
+    }else{
+      setGuestEmailError("Please enter your email address");
+      formData.email = '';
+    }
+  }
 
   const [formData, setFormData] = useState({
     payment_method: "",
@@ -40,7 +75,7 @@ export default function Checkout() {
         total: "8.00"
       }
     ],
-    email: "alexander@example.com"
+    email: '',
   });
 
   // Method for every Input change 
@@ -174,8 +209,7 @@ export default function Checkout() {
         city: "",
         state: "",
         postcode: "",
-        country: "US",
-        email: "",
+        country: "US",        
         phone: "",
       }  
 
@@ -202,68 +236,6 @@ export default function Checkout() {
     })
   }
 
-  // Send data to woocommerce to create order 
-  const sendOrderData = async () => {    
-
-    try{
-      const response = await fetch(`/api/checkout/create_order`, {
-        method: "POST",
-        headers: {
-          "Content-Type" : "application/json",
-        },
-        body: JSON.stringify(formData)
-      });
-
-      const result = await response.json();
-
-      if(response.ok){
-        console.log({message: "Order has been created successfully"});
-        // If Order Creation Success Then Update Status 
-        const responseOrder = await fetch('/api/checkout/update_order', {
-          method: "POST",
-          headers: {
-            "Content-Type" : "application/json"
-          },
-          body: JSON.stringify({orderId: result.id})
-        });
-        const resultOrder = await responseOrder.json();
-        if(responseOrder.ok){
-          console.log({message: "Order status updated successfully"});
-          setCartItem([]);
-          setLoading(false);
-          // window.location.href = '/thank-you';         
-        }else{
-          console.log(resultOrder);
-          console.log({message: "Order status not updated successfully"});
-        }
-      }else{
-        console.error("error: ", result);
-      }
-      
-    } catch (error) {
-      console.error(error);
-    }
-  }
-
-  const [cardInfo, setCardInfo] = useState({});
-
-  const handleValidate = async (e) => {
-    const isValid = await formRef.current.handleValidate();
-    if (isValid) {
-      setCardInfo(isValid);
-      nextStep(e);
-    } 
-  };
-
-  const handleSubmit = async () => {
-    if(tcCheck === true){
-      setShowTcErrMsg(false);
-      await formRef.current.handleSubmit();
-    }else{
-      setShowTcErrMsg(true);
-    }
-  };
-
   // Page Loading 
   const [pageLoading, setPageLoading] = useState(true);
 
@@ -285,8 +257,6 @@ export default function Checkout() {
     }
   }
   // Terms And Condition Check 
-  const [tcCheck, setTcCheck] = useState(false);
-  const [showTcErrMsg, setShowTcErrMsg] = useState(false);
   const handleTcCheck = () => {
     if(tcCheck === false){
       setTcCheck(true);
@@ -296,8 +266,102 @@ export default function Checkout() {
       setShowTcErrMsg(true);
     }
   }
+
+  // CheckoutForm.js's Function Access From this parent
+  const handleValidate = async (e) => {
+    const isValid = await formRef.current.handleValidate();
+    if (isValid) {
+      setCardInfo(isValid);
+      nextStep(e);
+    } 
+  };
+
+  const handleSubmit = async () => {
+    if(tcCheck === true){
+      setShowTcErrMsg(false);
+      await formRef.current.handleSubmit();
+    }else{
+      setShowTcErrMsg(true);
+    }
+  };
+
   return (
-    <div className="min-h-[400px] px-2 lg:px-5 py-10 bg-[#E2DBC8]">
+    <div className="min-h-[400px] px-2 lg:px-5 py-20 bg-[#E2DBC8]">
+      {/* Checkout Login Form  */}
+      {!loginCheckout &&
+      <div className="min-h-[400px] flex flex-col">       
+        <p className="text-xs uppercase mb-16">
+          Secure Checkout
+        </p>
+        <p className="text-xs uppercase mb-3">
+          Guest Checkout
+        </p>
+        <div className="checkout__form flex gap-[120px]">
+          <div className="w-[350px]">
+          <p className="text-xs uppercase">
+            Guest Checkout
+          </p>
+          {/* Input row */}
+          <div className={`flex items-stretch gap-4 w-full`}>
+              {/* Form Input  */}
+              <div
+                className={`input__group relative w-full ${
+                  guestEmailError ? "h-[72px]" : "h-12"
+                }`}
+              >
+                <input
+                  onChange={(e) => {
+                    setGuestEmail(e.target.value);
+                    setGuestEmailError(null);
+                  }}
+                  id="guestEmail"
+                  name="guestEmail"
+                  className={`absolute form__input ${
+                    guestEmailError ? "bg-[#B5BDBC]" : "bg-white w-full"
+                  } ${
+                    guestEmail ? "active" : ""
+                  } h-12 outline-none text-xs leading-5`}
+                  type="text"
+                  autoComplete="off"
+                  value={guestEmail || ''}
+                />
+                <label
+                  className={`form__label text-xs absolute capitalize`}
+                  htmlFor="guestEmail"
+                >
+                  Email Address
+                </label>
+                {guestEmailError && (
+                  <div className="absolute bottom-4 left-0 w-full text-[#196cb1] text-xs">
+                    {guestEmailError}                
+                  </div>
+                )}
+              </div>
+            </div>
+            <div>
+              <p className="text-xs">
+                We will process your data to manage your purchase. Please see the <Link href="#" className="underline">Privacy policy</Link>.
+              </p>
+            </div>
+            {/* Login button  */}
+            <div className="mt-5">
+              <button
+                className="min-w-[145px] flex items-center justify-center px-4 py-[6px] bg-black rounded text-xs text-white uppercase hover:bg-[#897f7b] disabled:hover:bg-black"
+                onClick={handleGuestCheckout}
+                disabled={loadingStep}
+              >
+                {loadingStep ? (
+                  <span className="loading">/</span>
+                ) : "Guest Checkout"}                          
+              </button>
+            </div>
+            </div>
+        </div>
+      </div>
+      }
+      {/* Chekout Main Page  */}
+      {loginCheckout &&
+      <div>
       {pageLoading ? (
         <div>
           <div className="text-[11px]">Loading...</div>
@@ -311,6 +375,21 @@ export default function Checkout() {
               <div className="customer__info flex-[100%] lg:flex-[70%]">
                 {/* Form step  */}
                 <div>
+                <p className="text-xs leading-7 uppercase">
+                  Secure Checkout
+                </p>
+                <div className="flex gap-1 text-xs mb-10">
+                  <p>You are checking out as {guestEmail}. </p>
+                  <button
+                  className="underline"
+                  onClick={()=>{
+                    setLoginCheckout(false);
+                    setGuestEmail(guestEmail);
+                  }}
+                  >
+                  Change
+                  </button>
+                </div>
                   <div className="flex justify-between mb-5 mt-6">
                     <p className="text-xs uppercase">1. Shipping Information</p>
                     {step >= 2 && (
@@ -863,7 +942,7 @@ export default function Checkout() {
                         <CheckoutForm
                           ref={formRef} 
                           cartItems={cartItem} 
-                          updateOrder={sendOrderData} 
+                          formData={formData}                          
                           setLoading={setLoading} // Pass setLoading function to the child
                         />
                       </Elements>
@@ -1437,7 +1516,7 @@ export default function Checkout() {
                               className="select-none text-xs mt-[-2px] ml-4"
                               htmlFor="tc_check"
                               >
-                              I have read and agree to the website Terms and Conditions and I have read the Privacy policy.
+                              I have read and agree to the website Terms and Conditions and I have read the <Link href="#" className="underline">Privacy policy</Link>.
                               </label>                              
                           </div>
                           {showTcErrMsg && <div className="text-xs text-[#196cb1] mt-1">Please accept conditions of sale to complete your order.</div>}
@@ -1502,6 +1581,7 @@ export default function Checkout() {
           )}
       </div>
       )}
+      </div>}
     </div>
   );
 }
