@@ -132,7 +132,11 @@ const CheckoutForm = forwardRef(({ cartItems, formData, setLoading , sendOrderDa
           // orderId: data.orderId,
         });
         // Convert the object to a URL-safe query string format
-        const orderedItems = JSON.stringify(cartItems);
+        const orderData = {
+          orderId: '',
+          items: cartItems,
+        }
+        const orderedItems = JSON.stringify(orderData);
         localStorage.setItem("orderedItems", orderedItems);          
 
         sendOrderData();

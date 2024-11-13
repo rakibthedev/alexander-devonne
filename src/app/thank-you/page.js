@@ -1,6 +1,5 @@
 'use client';
 
-import { useSearchParams } from 'next/navigation';
 import { useEffect, useState, Suspense } from 'react'; // Import Suspense for boundary handling
 import OrderSummary from '../components/thank-you/OrderSummary';
 import { CiCircleCheck } from "react-icons/ci";
@@ -15,17 +14,25 @@ const LoadingFallback = () => (
 );
 
 const Page = () => {
-    const searchParams = useSearchParams();
     const [orderData, setOrderData] = useState(null);
     const [products, setProducts] = useState(null); // State for storing products
-    const order_id = searchParams.get('order_id'); // Get the query parameter 'order_id'  
+    const [orderId, setOrderId] = useState(null); // State for storing order ID
 
     useEffect(() => {
-        // Only make the API call if order_id is available
-        if (order_id) {
-            const fetchOrderData = async () => {
+        // Fetch products from localStorage when the component mounts
+        const storedProducts = JSON.parse(localStorage.getItem('orderedItems'));
+        if (storedProducts) {
+            setProducts(storedProducts.items); // Parse and set products
+            setOrderId(storedProducts.orderId); // Set orderId
+        }
+    }, []); // Only run once on mount
+
+    useEffect(() => {
+        // Only fetch order data if orderId is available
+        const fetchOrderData = async () => {
+            if (orderId) {
                 try {
-                    const response = await fetch(`${process.env.NEXT_PUBLIC_DOMAIN_ADDRESS}/api/order/get_order?order_id=${order_id}`, {
+                    const response = await fetch(`${process.env.NEXT_PUBLIC_DOMAIN_ADDRESS}/api/order/get_order?order_id=${orderId}`, {
                         method: 'GET',
                         headers: {
                             'Content-Type': 'application/json',
@@ -37,24 +44,20 @@ const Page = () => {
                     }
 
                     const data = await response.json();
-                    setOrderData(data);
+                    setOrderData(data); // Set the fetched order data
                 } catch (error) {
                     console.error('Error fetching order data:', error);
                 }
-            };
+            }
+        };
 
+        if (orderId) {
             fetchOrderData();
         }
+    }, [orderId]); // Run this effect whenever the orderId changes
 
-        // Fetch products from localStorage
-        const storedProducts = JSON.parse(localStorage.getItem('orderedItems'));
-        if (storedProducts) {
-            setProducts(storedProducts); // Parse and set products
-        }
-    }, [order_id]); // Runs when order_id changes
-
-    // If no order_id or orderData is still loading
-    if (!order_id || !orderData || !products) {
+    // If no orderId or orderData is still loading
+    if (!orderData || !products) {
         return <LoadingFallback />;
     }
 
@@ -69,7 +72,7 @@ const Page = () => {
                                     <CiCircleCheck className='text-[35px]' />
                                 </div>
                                 <div>
-                                    <p className='text-[11px] leading-3'>Order #{order_id}</p>
+                                    <p className='text-[11px] leading-3'>Order #{orderId}</p>
                                     <h2 className='font-bookish text-[28px] leading-7'>Thank you!</h2>
                                 </div>
                             </div>

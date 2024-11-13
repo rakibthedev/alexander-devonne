@@ -259,7 +259,25 @@ export default function Checkout() {
           console.log({message: "Order status updated successfully"});
           setCartItem([]);
           setLoading(false);
-          window.location.href = `/thank-you?order_id=${result.id}`;         
+          
+          // Retrieve the order data from localStorage using the correct key
+          let orderData = JSON.parse(localStorage.getItem("orderedItems"));
+
+          // Check if orderData exists to avoid errors
+          if (orderData) {
+            // Add the orderId to the orderData object
+            orderData.orderId = await result.id;
+
+            // Convert the updated orderData back to a JSON string
+            const updatedOrderData = JSON.stringify(orderData);
+
+            // Save the updated orderData back to localStorage
+            localStorage.setItem("orderedItems", updatedOrderData);
+          } else {
+            console.error("No order data found in localStorage.");
+          } 
+
+          window.location.href = `/thank-you`;         
         }else{
           console.log(resultOrder);
           console.log({message: "Order status not updated successfully"});
@@ -322,10 +340,13 @@ export default function Checkout() {
 
   // CheckoutForm.js's Function Access From this parent
   const handleValidate = async (e) => {
+    setLoadingStep(true);
     const isValid = await formRef.current.handleValidate();
     if (isValid) {
       setCardInfo(isValid);
       nextStep(e);
+    }else{
+      setLoadingStep(false);
     } 
   };
 
