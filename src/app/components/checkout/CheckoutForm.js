@@ -1,5 +1,7 @@
 import { useState, useImperativeHandle, forwardRef } from 'react';
 import { useStripe, useElements, CardNumberElement, CardExpiryElement, CardCvcElement } from '@stripe/react-stripe-js';
+import { CartContext } from '@/app/context/cartContext';
+import { useContext } from "react"; 
 
 // eslint-disable-next-line react/display-name
 const CheckoutForm = forwardRef(({ cartItems, formData, setLoading , sendOrderData}, ref) => {
@@ -13,7 +15,7 @@ const CheckoutForm = forwardRef(({ cartItems, formData, setLoading , sendOrderDa
   const [cardCvcError, setCardCvcError] = useState(null);
   const [paymentError, setPaymentError] = useState(null);
   const [cardBrand, setCardBrand] = useState('');
-
+  const {setCartItem} = useContext(CartContext);  
 
   // Expose handleSubmit function to the parent component
   useImperativeHandle(ref, () => ({
@@ -109,9 +111,10 @@ const CheckoutForm = forwardRef(({ cartItems, formData, setLoading , sendOrderDa
         return;
       }
 
-      sendOrderData();
+      // Place the order 
+      const placeOrder = await sendOrderData();
 
-      if(sendOrderData !== "error"){
+      if(placeOrder !== "error"){
         // Call backend to create PaymentIntent and process the payment
         const paymentIntentResponse = await fetch(`${process.env.NEXT_PUBLIC_DOMAIN_ADDRESS}/api/stripe/payment-intent`, {
           method: 'POST',
@@ -134,14 +137,17 @@ const CheckoutForm = forwardRef(({ cartItems, formData, setLoading , sendOrderDa
             // data: data.paymentDetails,
             // orderId: data.orderId,
           });
-          // Convert the object to a URL-safe query string format
-          const orderData = {
-            orderId: '',
-            items: cartItems,
-          }
+
+          // const orderData = {
+          //   orderId: '',
+          //   items: cartItems,
+          // }
           // const orderedItems = JSON.stringify(orderData);
-          // localStorage.setItem("orderedItems", orderedItems);         
-  
+          // localStorage.setItem("orderedItems", orderedItems);   
+          setCartItem([]);
+          // Redirect to thank you page  
+          window.location.href = `/thank-you`;  
+
         } else {        
           setPaymentError('Payment failed. Please try again.');
           setInternalLoading(false);  // Stop loading on failure

@@ -247,6 +247,8 @@ export default function Checkout() {
 
       if(response.ok){
         console.log({message: "Order has been created successfully"});
+        localStorage.removeItem('orderedItems');
+
         // If Order Creation Success Then Update Status 
         const responseOrder = await fetch(`${process.env.NEXT_PUBLIC_DOMAIN_ADDRESS}/api/checkout/update_order`, {
           method: "POST",
@@ -258,12 +260,11 @@ export default function Checkout() {
         const resultOrder = await responseOrder.json();
         if(responseOrder.ok){
           console.log({message: "Order status updated successfully"});
-          setCartItem([]);
+          
           setLoading(false);
           
-         
-            // Add the orderId to the orderData object
-           orderId = await result.id;
+           // Add the orderId to the orderData object
+           const orderId = await result.id;
 
            const orderData = {orderId: orderId, items: cartItem};
 
@@ -271,27 +272,27 @@ export default function Checkout() {
             const updatedOrderData = JSON.stringify(orderData);
 
             // Save the updated orderData back to localStorage
-            localStorage.setItem("orderedItems", updatedOrderData);
-
-            // Redirect to thank you page 
-            window.location.href = `/thank-you`;         
+            localStorage.setItem("orderedItems", updatedOrderData);      
 
         }else{
           console.log(resultOrder);
           console.log({message: "Order status not updated successfully"});
-          setOrderError("Opps! Something went wrong in placing the order.");
+          setOrderError("Opps! Something went wrong in placing the order. Try again.");
           setLoading(false);
           return "error";
         }
       }else{
         console.error("error: ", result);
-        setOrderError("Opps! Something went wrong in placing the order.");
+        setOrderError("Opps! Something went wrong in placing the order. Try again.");
         setLoading(false);
         return "error";
       }
       
     } catch (error) {
       console.error(error);
+      setLoading(false);
+      setOrderError("Opps! Something went wrong in placing the order. Try again.");
+      return "error";
     }
   }
 
