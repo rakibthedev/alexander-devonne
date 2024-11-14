@@ -275,10 +275,6 @@ export default function Checkout() {
 
             // Redirect to thank you page 
             window.location.href = `/thank-you`;         
-          
-          } else {
-            console.error("No order data found in localStorage.");
-          } 
 
         }else{
           console.log(resultOrder);
