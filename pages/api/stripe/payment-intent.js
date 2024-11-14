@@ -19,6 +19,13 @@ function formatItemColor(input) {
       .replace(/[^A-Z0-9 -]/g, '')
       .trim();
 }
+function resizeMetadata(str) {
+  if (str.length > 480) {
+    return str.slice(0, 480);
+  }
+  return str;
+}
+
 
 export default async function handler(req, res) {
   if (req.method === 'POST') {
@@ -44,7 +51,6 @@ export default async function handler(req, res) {
           price: item.price,
           color: formatItemColor(item.color),
           size: item.size,
-          image: item.image,
         }));
   
         // Create PaymentIntent with total amount and metadata
@@ -56,7 +62,8 @@ export default async function handler(req, res) {
           confirm: true,
           return_url: `${process.env.NEXT_PUBLIC_DOMAIN_ADDRESS}/thank-you`, // Provide the return URL
           metadata: {
-            items: JSON.stringify(metadata), // Pass product info as metadata
+            total_items: cartItems.length,
+            items: resizeMetadata(JSON.stringify(metadata)), // Pass product info as metadata
           },
         });
   
@@ -76,8 +83,7 @@ export default async function handler(req, res) {
       }
 
     } catch (error) {
-      console.error('Payment processing failed:', error);
-      return res.status(500).json({ success: false, message: error.message });
+      return res.status(500).json({ success: false, message: error });
     }
   } else {
     // Method Not Allowed for anything other than POST

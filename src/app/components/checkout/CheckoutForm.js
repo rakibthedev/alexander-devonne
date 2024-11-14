@@ -105,7 +105,7 @@ const CheckoutForm = forwardRef(({ cartItems, formData, setLoading , sendOrderDa
       if (paymentError) {
         setPaymentError(paymentError.message);
         setInternalLoading(false); // Stop loading in case of error
-        setLoading(false);  // Stop loading in the parent
+        setLoading(false);  // Stop loading in the parent        
         return;
       }
 
@@ -122,7 +122,7 @@ const CheckoutForm = forwardRef(({ cartItems, formData, setLoading , sendOrderDa
 
       const data = await paymentIntentResponse.json();
 
-      if (data.success === true) {        
+      if (paymentIntentResponse.ok) {        
         setInternalLoading(true);  // Stop loading when payment is successful
         setLoading(true);  // Notify parent to stop loading
         console.log({
@@ -141,10 +141,11 @@ const CheckoutForm = forwardRef(({ cartItems, formData, setLoading , sendOrderDa
 
         sendOrderData();
 
-      } else {
-        setPaymentError(data.error || 'Payment failed. Please try again.');
+      } else {        
+        setPaymentError('Payment failed. Please try again.');
         setInternalLoading(false);  // Stop loading on failure
         setLoading(false);  // Stop loading in the parent
+        return "error_found";
       }
     },
 
@@ -230,8 +231,7 @@ const CheckoutForm = forwardRef(({ cartItems, formData, setLoading , sendOrderDa
   return (
     <div className="payment-form w-full flex flex-col gap-4">
       {/* Payment Error */}
-      {paymentError && <div className="text-xs text-[#ff0000]">{paymentError}</div>}
-
+      {paymentError && <div className="text-xs text-[#ff0000]">{paymentError}</div>}  
       {/* Cardholder Name Input */}
       <div className={`field-container`}>
         <div className={`form-field relative rounded h-12 ${cardNameError ? 'bg-[#00448a33]' : 'bg-white'}`}>

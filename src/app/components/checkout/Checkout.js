@@ -38,6 +38,7 @@ export default function Checkout() {
   const [paymentMethod, setPaymentMethod] = useState('card');
   const [tcCheck, setTcCheck] = useState(false);
   const [showTcErrMsg, setShowTcErrMsg] = useState(false);
+  const [orderError, setOrderError] = useState(null);
   // its child CheckoutForm state 
   const [cardInfo, setCardInfo] = useState({});
 
@@ -273,11 +274,14 @@ export default function Checkout() {
 
             // Save the updated orderData back to localStorage
             localStorage.setItem("orderedItems", updatedOrderData);
+
+            // Redirect to thank you page 
+            window.location.href = `/thank-you`;         
+          
           } else {
             console.error("No order data found in localStorage.");
           } 
 
-          window.location.href = `/thank-you`;         
         }else{
           console.log(resultOrder);
           console.log({message: "Order status not updated successfully"});
@@ -353,7 +357,11 @@ export default function Checkout() {
   const handleSubmit = async () => {
     if(tcCheck === true){
       setShowTcErrMsg(false);
-      await formRef.current.handleSubmit();
+      const orderSubmit = await formRef.current.handleSubmit();
+      if(orderSubmit === "error_found") setOrderError("Opps! Something went wrong in placing order.");
+      setTimeout(()=>{
+        setOrderError(null);
+      }, 5000)
     }else{
       setShowTcErrMsg(true);
     }
@@ -361,6 +369,15 @@ export default function Checkout() {
 
   return (
     <div className="min-h-[400px] px-2 lg:px-5 py-20 bg-[#E2DBC8]">
+      <div>
+      {orderError && (
+        <div 
+        className="fixed z-[999999] rounded min-w-[340px] py-6 p-5 bg-[#d1d1d180] min-h-20 text-xs top-[160px] right-5"
+        style={{backdropFilter: "blur(30rem)"}}
+        >
+          {orderError}
+         </div>
+      )}
       {/* Checkout Login Form  */}
       {!loginCheckout &&
       <div className="min-h-[400px] flex flex-col">       
@@ -972,7 +989,7 @@ export default function Checkout() {
                         <span>{formData.shipping.address_2}</span>
                         <span>
                           {formData.shipping.city} {formData.shipping.state}{" "}
-                          <CountryName code={formData.shipping.country} />{" "}
+                          <CountryName code={formData.shipping.country || "us"} />{" "}
                         </span>
                         <span>{formData.shipping.postcode}</span>
                       </div>
@@ -1571,7 +1588,7 @@ export default function Checkout() {
                               <span>{formData.billing.address_2}</span>
                               <span>
                                   {formData.billing.city} {formData.billing.state}{" "}
-                                  <CountryName code={formData.billing.country} />{" "}
+                                  <CountryName code={formData.billing.country || 'us'} />{" "}
                               </span>
                               <span>{formData.billing.postcode}</span>
                               </div>
@@ -1655,6 +1672,7 @@ export default function Checkout() {
       </div>
       )}
       </div>}
+      </div>
     </div>
   );
 }
