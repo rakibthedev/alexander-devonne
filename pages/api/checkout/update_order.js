@@ -19,11 +19,15 @@ export default async function handler(req, res) {
             `orders/${orderResult.orderId}`,
             {
               status: 'completed', // Change order status to 'completed'
+              payment_method: "stripe",
+              payment_method_title: "Stripe Card",
+              transaction_id: orderResult.paymentData.id,
             }
           );          
           res.status(200).json(response.data);
         } catch (error) {
           res.status(500).json(error);
+          
         }
 
     } else {

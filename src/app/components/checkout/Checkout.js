@@ -248,39 +248,10 @@ export default function Checkout() {
       if(response.ok){
         console.log({message: "Order has been created successfully"});
         localStorage.removeItem('orderedItems');
+        const orderId = result.id;
 
-        // If Order Creation Success Then Update Status 
-        const responseOrder = await fetch(`${process.env.NEXT_PUBLIC_DOMAIN_ADDRESS}/api/checkout/update_order`, {
-          method: "POST",
-          headers: {
-            "Content-Type" : "application/json"
-          },
-          body: JSON.stringify({orderId: result.id})
-        });
-        const resultOrder = await responseOrder.json();
-        if(responseOrder.ok){
-          console.log({message: "Order status updated successfully"});
-          
-          setLoading(false);
-          
-           // Add the orderId to the orderData object
-           const orderId = await result.id;
-
-           const orderData = {orderId: orderId, items: cartItem};
-
-            // Convert the updated orderData back to a JSON string
-            const updatedOrderData = JSON.stringify(orderData);
-
-            // Save the updated orderData back to localStorage
-            localStorage.setItem("orderedItems", updatedOrderData);      
-
-        }else{
-          console.log(resultOrder);
-          console.log({message: "Order status not updated successfully"});
-          setOrderError("Opps! Something went wrong in placing the order. Try again.");
-          setLoading(false);
-          return "error";
-        }
+        return orderId;
+           
       }else{
         console.error("error: ", result);
         setOrderError("Opps! Something went wrong in placing the order. Try again.");

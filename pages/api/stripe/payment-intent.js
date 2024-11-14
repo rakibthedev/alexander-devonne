@@ -30,7 +30,7 @@ function resizeMetadata(str) {
 export default async function handler(req, res) {
   if (req.method === 'POST') {
     try {
-      const { paymentMethodId, cartItems, formData } = req.body;
+      const { paymentMethodId, cartItems, formData, orderId } = req.body;
       
       // Shipping Rate
       const shippingRate = parseFloat(formData.shipping_lines[0].total);
@@ -68,12 +68,21 @@ export default async function handler(req, res) {
         });
   
         // Check if payment was successful
-        if (paymentIntent.status === 'succeeded') {    
-          // const orderId = await createOrder(formData, paymentIntent);    
+        if (paymentIntent.status === 'succeeded') {  
+          // update the order to woocommerce   
+          let isOrderUpdate = false;
+          const orderUpdateStatus = await updateOrder(orderId, paymentIntent);
+          
+          if(orderUpdateStatus === "order_update_error"){
+            isOrderUpdate = false;
+          }else{
+            isOrderUpdate = true;
+          }
+
           return res.status(200).json({
             success: true,
             paymentDetails: paymentIntent,
-            // orderId: orderId,
+            orderUpdated: isOrderUpdate,
           });
         } else {
           return res.status(400).json({ success: false, message: 'Payment failed' });        
@@ -147,6 +156,7 @@ const createOrder = async (orderData, paymentData) => {
   }
 }
 
+
 const updateOrder = async (orderId, paymentData) => {
   try {
     const response = await WooCommerce.put(
@@ -171,7 +181,8 @@ const updateOrder = async (orderId, paymentData) => {
     console.log({
       success: false,
       error: error,
-    })
+    });
+    return "order_update_error";
   }
 }
 

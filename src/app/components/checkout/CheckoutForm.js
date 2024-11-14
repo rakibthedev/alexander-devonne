@@ -1,4 +1,4 @@
-import { useState, useImperativeHandle, forwardRef } from 'react';
+import { useState, useImperativeHandle, forwardRef, useEffect } from 'react';
 import { useStripe, useElements, CardNumberElement, CardExpiryElement, CardCvcElement } from '@stripe/react-stripe-js';
 import { CartContext } from '@/app/context/cartContext';
 import { useContext } from "react"; 
@@ -15,7 +15,10 @@ const CheckoutForm = forwardRef(({ cartItems, formData, setLoading , sendOrderDa
   const [cardCvcError, setCardCvcError] = useState(null);
   const [paymentError, setPaymentError] = useState(null);
   const [cardBrand, setCardBrand] = useState('');
-  const {setCartItem} = useContext(CartContext);  
+  const {setCartItem} = useContext(CartContext); 
+  const [isOrderUpdated, setIsOrderUpdated] = useState(true);
+  const [finalOrderId, setFinalOrderId] = useState('');
+  const [finalPaymentData, setFinalPaymentData] = useState('');
 
   // Expose handleSubmit function to the parent component
   useImperativeHandle(ref, () => ({
@@ -115,51 +118,124 @@ const CheckoutForm = forwardRef(({ cartItems, formData, setLoading , sendOrderDa
       const placeOrder = await sendOrderData();
 
       if(placeOrder !== "error"){
-        // Call backend to create PaymentIntent and process the payment
-        const paymentIntentResponse = await fetch(`${process.env.NEXT_PUBLIC_DOMAIN_ADDRESS}/api/stripe/payment-intent`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ 
-            paymentMethodId: paymentMethod.id, 
-            cartItems,
-            formData, 
-          }),
-        });
-  
-        const data = await paymentIntentResponse.json();
-  
-        if (paymentIntentResponse.ok) {        
-          setInternalLoading(true);  // Stop loading when payment is successful
-          setLoading(true);  // Notify parent to stop loading
-          console.log({
-            success: data.success,          
-            message: "Payment successfull",
-            // data: data.paymentDetails,
-            // orderId: data.orderId,
-          });
+        const orderId = placeOrder;
+        try{
+            // Call backend to create PaymentIntent and process the payment
+            const paymentIntentResponse = await fetch(`${process.env.NEXT_PUBLIC_DOMAIN_ADDRESS}/api/stripe/payment-intent`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ 
+                paymentMethodId: paymentMethod.id, 
+                cartItems,
+                formData, 
+                orderId,
+              }),
+            });
+      
+            const data = await paymentIntentResponse.json();
+      
+            if (paymentIntentResponse.ok) {
+                console.log({
+                  success: data.success,          
+                  message: "Payment successfull",
+                  // data: data.paymentDetails,
+                  orderUpdateStatus: data.orderUpdated,
+                });                
+    
+                const orderData = {orderId: orderId, items: cartItems};
+      
+                // Convert the updated orderData back to a JSON string
+                const updatedOrderData = JSON.stringify(orderData);
+      
+                // Save the updated orderData back to localStorage
+                localStorage.setItem("orderedItems", updatedOrderData);  
+                
+                if(data.orderUpdated === true){
 
-          // const orderData = {
-          //   orderId: '',
-          //   items: cartItems,
-          // }
-          // const orderedItems = JSON.stringify(orderData);
-          // localStorage.setItem("orderedItems", orderedItems);   
-          setCartItem([]);
-          // Redirect to thank you page  
-          window.location.href = `/thank-you`;  
+                  setInternalLoading(false);  // Stop loading when payment is successful
+                  setLoading(false);  // Notify parent to stop loading
+                  
+                  setCartItem([]);
+                  // Redirect to thank you page  
+                  window.location.href = `/thank-you`;  
 
-        } else {        
-          setPaymentError('Payment failed. Please try again.');
-          setInternalLoading(false);  // Stop loading on failure
-          setLoading(false);  // Stop loading in the parent
+                }else{
+
+                  setIsOrderUpdated(data.orderUpdated);
+                  setFinalOrderId(orderId);
+                  setFinalPaymentData(data.paymentDetails);
+                }
+
+            } else {        
+              setPaymentError('Payment failed. Please try again.');
+              setInternalLoading(false);  // Stop loading on failure
+              setLoading(false);  // Stop loading in the parent
+              return "error_found";
+            }
+        }catch (error) {
+          console.log(error);
           return "error_found";
         }
+
       }else{
         return "error_found";
       }
     },
 
   }));
+
+  useEffect(() => {
+    // Trigger the update when the order is not updated yet
+    if (!isOrderUpdated) {
+      setInternalLoading(true);
+      setLoading(true);
+      // Start updating the order
+      updateOrder(finalOrderId, finalPaymentData);
+    }
+  }, [isOrderUpdated]); // The effect will run whenever `isOrderUpdated` changes
+
+  const updateOrder = async (orderId, paymentData) => {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_DOMAIN_ADDRESS}/api/checkout/update_order`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          orderId: orderId,
+          paymentData: paymentData,
+        }),
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        // If the update is successful
+        setIsOrderUpdated(true); // Mark the order as updated
+        setLoading(false); // Stop the loading state
+        setInternalLoading(false); // Clear the internal loading state
+
+        console.log({ message: 'Order has been updated successfully' });
+        setCartItem([]); // Clear cart items
+
+        // Redirect to the thank you page
+        window.location.href = '/thank-you';
+      } else {
+        // If the response is not ok, we retry immediately
+        console.log('Order update failed! Retrying...');
+        setIsOrderUpdated(false); // Ensure that the effect will run again
+        updateOrder(orderId, paymentData); // Call updateOrder recursively
+      }
+    } catch (error) {
+      // Handle errors (e.g., network issues)
+      console.log('Error updating order, retrying...', error);
+      setIsOrderUpdated(false); // Ensure that the effect will run again
+      updateOrder(orderId, paymentData); // Call updateOrder recursively
+    }
+  };
+
+
+// Card Validation start 
 
   const handleCardNameChange = (event) => {
     const { value } = event.target;
@@ -237,6 +313,7 @@ const CheckoutForm = forwardRef(({ cartItems, formData, setLoading , sendOrderDa
       color: '#000',
     },
   };
+
 
   return (
     <div className="payment-form w-full flex flex-col gap-4">
