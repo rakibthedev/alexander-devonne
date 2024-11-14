@@ -109,42 +109,46 @@ const CheckoutForm = forwardRef(({ cartItems, formData, setLoading , sendOrderDa
         return;
       }
 
-      // Call backend to create PaymentIntent and process the payment
-      const paymentIntentResponse = await fetch(`${process.env.NEXT_PUBLIC_DOMAIN_ADDRESS}/api/stripe/payment-intent`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          paymentMethodId: paymentMethod.id, 
-          cartItems,
-          formData, 
-        }),
-      });
+      sendOrderData();
 
-      const data = await paymentIntentResponse.json();
-
-      if (paymentIntentResponse.ok) {        
-        setInternalLoading(true);  // Stop loading when payment is successful
-        setLoading(true);  // Notify parent to stop loading
-        console.log({
-          success: data.success,          
-          message: "Payment successfull",
-          // data: data.paymentDetails,
-          // orderId: data.orderId,
+      if(sendOrderData !== "error"){
+        // Call backend to create PaymentIntent and process the payment
+        const paymentIntentResponse = await fetch(`${process.env.NEXT_PUBLIC_DOMAIN_ADDRESS}/api/stripe/payment-intent`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ 
+            paymentMethodId: paymentMethod.id, 
+            cartItems,
+            formData, 
+          }),
         });
-        // Convert the object to a URL-safe query string format
-        const orderData = {
-          orderId: '',
-          items: cartItems,
+  
+        const data = await paymentIntentResponse.json();
+  
+        if (paymentIntentResponse.ok) {        
+          setInternalLoading(true);  // Stop loading when payment is successful
+          setLoading(true);  // Notify parent to stop loading
+          console.log({
+            success: data.success,          
+            message: "Payment successfull",
+            // data: data.paymentDetails,
+            // orderId: data.orderId,
+          });
+          // Convert the object to a URL-safe query string format
+          const orderData = {
+            orderId: '',
+            items: cartItems,
+          }
+          // const orderedItems = JSON.stringify(orderData);
+          // localStorage.setItem("orderedItems", orderedItems);         
+  
+        } else {        
+          setPaymentError('Payment failed. Please try again.');
+          setInternalLoading(false);  // Stop loading on failure
+          setLoading(false);  // Stop loading in the parent
+          return "error_found";
         }
-        const orderedItems = JSON.stringify(orderData);
-        localStorage.setItem("orderedItems", orderedItems);          
-
-        sendOrderData();
-
-      } else {        
-        setPaymentError('Payment failed. Please try again.');
-        setInternalLoading(false);  // Stop loading on failure
-        setLoading(false);  // Stop loading in the parent
+      }else{
         return "error_found";
       }
     },

@@ -261,13 +261,11 @@ export default function Checkout() {
           setCartItem([]);
           setLoading(false);
           
-          // Retrieve the order data from localStorage using the correct key
-          let orderData = JSON.parse(localStorage.getItem("orderedItems"));
-
-          // Check if orderData exists to avoid errors
-          if (orderData) {
+         
             // Add the orderId to the orderData object
-            orderData.orderId = await result.id;
+           orderId = await result.id;
+
+           const orderData = {orderId: orderId, items: cartItem};
 
             // Convert the updated orderData back to a JSON string
             const updatedOrderData = JSON.stringify(orderData);
@@ -285,9 +283,15 @@ export default function Checkout() {
         }else{
           console.log(resultOrder);
           console.log({message: "Order status not updated successfully"});
+          setOrderError("Opps! Something went wrong in placing the order.");
+          setLoading(false);
+          return "error";
         }
       }else{
         console.error("error: ", result);
+        setOrderError("Opps! Something went wrong in placing the order.");
+        setLoading(false);
+        return "error";
       }
       
     } catch (error) {
