@@ -44,15 +44,15 @@ const ProductGallery = ({ products }) => {
   };
 
   return (
-    <section className='pl-2 lg:pl-5 mb-36 relative'>
+    <section className='pl-3 lg:pl-5 mb-16 lg:mb-36 relative'>
       {maxScroll > 0 && ( // Only render buttons if there's overflow
-        <div className="absolute right-14 top-[-32px] z-10">        
+        <div className="absolute right-2 lg:right-14 top-[-32px] z-10">        
           <div className="flex items-center gap-3">
             <button onClick={scrollToLeft} disabled={scrollPosition === 0}>
-              <BsChevronLeft className={`text-[20px] ${scrollPosition === 0 ? 'text-black/40' : 'text-black'} outline-none border-none`} />
+              <BsChevronLeft className={`lg:text-[20px] text-[16px] ${scrollPosition === 0 ? 'text-black/40' : 'text-black'} outline-none border-none`} />
             </button>
             <button onClick={scrollToRight} disabled={scrollPosition >= maxScroll}>
-              <BsChevronRight className={`text-[20px] ${scrollPosition >= maxScroll ? 'text-black/40' : 'text-black'} outline-none border-none`} />
+              <BsChevronRight className={`lg:text-[20px] text-[16px] ${scrollPosition >= maxScroll ? 'text-black/40' : 'text-black'} outline-none border-none`} />
             </button>
           </div>
         </div>
@@ -63,7 +63,7 @@ const ProductGallery = ({ products }) => {
             <Link href="#">
               <div className='flex-shrink-0'>
                 <article>
-                  <div className='h-[339px] w-[254px] flex flex-col justify-center items-center'>
+                  <div className='h-auto lg:h-[339px] w-[202px] lg:w-[254px] flex flex-col justify-center items-center'>
                     <Image className='h-auto w-full' src={item.image} height={339} width={254} alt={item.name} />
                   </div>
                   <section className='flex flex-col pb-7'>

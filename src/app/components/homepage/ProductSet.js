@@ -13,7 +13,7 @@ export default function ProductSet({setId}) {
       {filterProductSet.map((item, index) =>{
         return (
           <div key={index}>
-            <section className='px-2 lg:px-5 mb-28'>
+            <section className='px-3 lg:px-5 mb-12 lg:mb-28'>
               <Link href={item.firstLinkHref}>
                 <Image className="w-full h-auto" src={item.thumbnailUrl} width={700} height={540} alt={item.title} />
               </Link>
@@ -22,11 +22,11 @@ export default function ProductSet({setId}) {
               </div>
               <Link className='product__set__link text-xs uppercase mt-[13px] ml-[2px] pb-[2px] border-b border-black' href={item.firstLinkHref}>{item.firstLinkText}</Link>
             </section>
-            <section className='px-2 lg:px-5 mb-3'>
-              <div className="flex items-end gap-5">
+            <section className='px-3 lg:px-5 mb-3'>
+              <div className="flex items-end gap-5" style={{maxWidth: "calc(100vw - 90px)"}}>
                   <span className='text-[14px] font-me  font-ibmPlexMedium uppercase'>{item.secondTitle}</span>
                   <div className="flex items-center gap-2">
-                    <Link className='underline text-xs' href={item.secondLinkHref}>{item.secondLinkText}</Link>
+                    <Link className='underline text-xs whitespace-nowrap' href={item.secondLinkHref}>{item.secondLinkText}</Link>
                     <Link className='text-[12px]' href={item.secondLinkHref}><FiArrowRight /></Link>
                   </div>
                 </div>

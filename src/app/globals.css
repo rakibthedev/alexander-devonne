@@ -241,6 +241,7 @@ select.form__input,
   border-top: none;
 }
 
+
 .product__grid .product__wrapper:first-child {
   border-left: 1px solid #e8e8e8; /* Remove left border from the first child */
 }

@@ -19,6 +19,14 @@ const ibmPlexMedium = localFont({
   src: "./fonts/IBMPlexMono-Medium.ttf",
   variable: "--ibm-plex-medium"
 });
+const ibmPlexSemiBold = localFont({
+  src: "./fonts/IBMPlexMono-SemiBold.ttf",
+  variable: "--ibm-plex-semi-bold"
+});
+const ibmPlexBold = localFont({
+  src: "./fonts/IBMPlexMono-Bold.ttf",
+  variable: "--ibm-plex-bold"
+});
 const bookish = localFont({
   src: "./fonts/Bookish-Book.ttf",
   variable: "--bookish",
@@ -45,7 +53,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body
-        className={`${geistMono.variable} ${geistSans.variable} ${ibmPlexMedium.variable} ${ibmPlexRegular.variable} ${bookish.variable}`}
+        className={`${geistMono.variable} ${geistSans.variable} ${ibmPlexMedium.variable} ${ibmPlexRegular.variable} ${ibmPlexSemiBold.variable} ${ibmPlexBold.variable} ${bookish.variable}`}
       >
         {/* <NextTopLoader /> */}
         {/* <LoadingIndicator /> */}

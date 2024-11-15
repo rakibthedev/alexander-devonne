@@ -1,7 +1,6 @@
 "use client";
 import Link from 'next/link';
 import { React, useContext, useState } from 'react';
-import Image from 'next/image';
 import { IoSearchOutline } from "react-icons/io5";
 import { IoIosHeartEmpty } from "react-icons/io";
 import { BsBag } from "react-icons/bs";
@@ -40,10 +39,10 @@ export default function HeaderMain() {
 
   return (
     <div className='header__main bg-white sticky z-[100] w-full top-[-1px]'>
-      <div className='px-2 py-2 lg:px-5 flex justify-between lg:pt-3 items-center'>
+      <div className='px-3 py-2 lg:px-5 flex justify-between lg:pt-3 items-center'>
         <div className='flex-[25%] lg:hidden'>
           <button 
-          className='border-none p-0 outline-none text-[24px]'
+          className='border-none p-0 outline-none text-[24px] cursor-pointer'
           onClick={toggleMobileMenu}
           >
             {isShowMobileMenu ? <IoCloseOutline /> : <HiOutlineMenuAlt4 />}
@@ -83,7 +82,7 @@ export default function HeaderMain() {
       {/* Mobile Menu */}
       {isShowMobileMenu && 
       <div 
-        className="absolute bg-white lg:hidden w-full top-12 left-0 z-20 py-4 overflow-y-auto" 
+        className="absolute bg-white lg:hidden w-full top-12 left-0 z-20 py-1 overflow-y-auto" 
         style={{height: "calc(100vh - 48px)"}}
         >
           <div>
@@ -92,7 +91,7 @@ export default function HeaderMain() {
                 {currentSubCat === null && megaMenuItems.map((item, index) => {
                     return (
                         <div key={index}>
-                            <div className="py-4 px-4 text-[14px] uppercase">
+                            <div className="py-4 px-4 text-[14px] uppercase cursor-pointer">
                                 <div className="flex justify-between" onClick={()=>setCurrentSubCat(index)}>
                                     <span>{item.category}</span>
                                     <span className="text-[22px]">
@@ -106,7 +105,7 @@ export default function HeaderMain() {
                 
                 {currentSubCat !== null && 
                 <div>
-                    <div className="py-4 px-4 mb-2 text-[14px] uppercase border-b border-[#e8e8e8] flex items-center gap-2"
+                    <div className="py-4 px-4 mb-2 text-[14px] uppercase border-b border-[#e8e8e8] flex items-center gap-2 cursor-pointer"
                     onClick={()=>setCurrentSubCat(null)}
                     >
                         <span className="text-[22px]">
@@ -127,18 +126,20 @@ export default function HeaderMain() {
                             <div key={index}>                        
                                 <div className="py-4 px-4 pl-8 text-[14px] font-ibmPlexMedium uppercase">
                                     <div 
-                                    className="flex justify-between items-center"
+                                    className="flex justify-between items-center cursor-pointer"
                                     onClick={()=>{
-                                        if(currentMenuItem === index){
-                                            if(currentMenuItem === null){
-                                                setCurrentMenuItem(index);
+                                      if(currentMenuItem === index){
+                                        if(currentMenuItem === null){
+                                              setCurrentMenuItem(index);
+                                              setSelectedCat(item.title);
                                             }else{
                                                 setCurrentMenuItem(null);
+                                                setSelectedCat(null);
                                             }
                                         }else{
                                             setCurrentMenuItem(index);
+                                            setSelectedCat(item.title);
                                         }
-                                        setSelectedCat(item.title);
                                     }}
                                     >
                                         <span>{item.title}</span>
@@ -149,7 +150,7 @@ export default function HeaderMain() {
                                     {currentMenuItem === index && item.items.map((menuItem, miIndex) => {
                                         return (
                                             <div key={miIndex} className="mt-5">
-                                                <div className="text-[13px] capitalize font-ibmPlexRegular" onClick={()=>SetIsShowMobileMenu(false)}>
+                                                <div className="text-[13px] capitalize font-ibmPlexRegular cursor-pointer" onClick={()=>SetIsShowMobileMenu(false)}>
                                                     <Link href={menuItem.href}>{menuItem.item}</Link>    
                                                 </div>
                                             </div>

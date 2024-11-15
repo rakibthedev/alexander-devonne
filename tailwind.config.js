@@ -14,6 +14,8 @@ module.exports = {
       fontFamily: {
         ibmPlexRegular: ["var(--ibm-plex-regular)"],
         ibmPlexMedium: ["var(--ibm-plex-medium)"],
+        ibmPlexBold: ["var(--ibm-plex-bold)"],
+        ibmPlexSemiBold: ["var(--ibm-plex-semi-bold)"],
         bookish: ["var(--bookish)"],
       },
       fontSize: {
