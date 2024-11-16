@@ -95,6 +95,7 @@ const scrollToLeft = () => scrollByViewportWidth('left');
         loop={false} // Disable infinite loop
         centeredSlides={false} // Disable centering of slides
         freeMode={true} // Enable free mode for dynamic sliding
+        speed={500}
         touchEventsTarget="container"
         className="product__gallery"
         breakpoints={{
