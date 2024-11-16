@@ -5,7 +5,7 @@ import { BsChevronRight, BsChevronLeft } from "react-icons/bs";
 import Image from 'next/image';
 import Link from 'next/link';
 
-const ProductGallery = ({ products }) => {
+const ProductGalleryMobile = ({ products }) => {
   const galleryRef = useRef(null);
   const [scrollPosition, setScrollPosition] = useState(0);
   const [maxScroll, setMaxScroll] = useState(0);
@@ -47,7 +47,7 @@ const ProductGallery = ({ products }) => {
     <section className='pl-3 lg:pl-5 mb-16 lg:mb-36 relative'>
       {maxScroll > 0 && ( // Only render buttons if there's overflow
         <div className="absolute right-2 lg:right-14 top-[-32px] z-10">        
-          <div className="flex items-center gap-3">
+          <div className="hidden lg:flex items-center gap-3">
             <button onClick={scrollToLeft} disabled={scrollPosition === 0}>
               <BsChevronLeft className={`lg:text-[20px] text-[16px] ${scrollPosition === 0 ? 'text-black/40' : 'text-black'} outline-none border-none`} />
             </button>
@@ -57,7 +57,7 @@ const ProductGallery = ({ products }) => {
           </div>
         </div>
       )}
-      <div className="product__gallery flex overflow-x-hidden" ref={galleryRef}>
+      <div className="product__gallery flex overflow-x-auto w-full" ref={galleryRef}>
         {products.map((item, index) => (
           <div className='product__wrapper'  key={index}>
             <Link href="#">
@@ -83,4 +83,4 @@ const ProductGallery = ({ products }) => {
   
 };
 
-export default ProductGallery;
+export default ProductGalleryMobile;

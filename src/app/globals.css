@@ -234,6 +234,15 @@ select.form__input,
 .product__gallery .product__wrapper:first-child{
   border: 1px solid #e8e8e8;
 }
+.product__gallery::-webkit-scrollbar {
+  display: none;
+}
+.product__gallery{
+  -webkit-overflow-scrolling: touch; /* Smooth scrolling on mobile */
+}
+
+
+
 /* Products grid styling  */
 .product__grid .product__wrapper {
   border: 1px solid #e8e8e8;
