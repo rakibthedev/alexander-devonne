@@ -63,10 +63,10 @@ const ProductGalleryMobile = ({ products }) => {
             <Link href="#">
               <div className='flex-shrink-0'>
                 <article>
-                  <div className='h-auto lg:h-[339px] w-[202px] lg:w-[254px] flex flex-col justify-center items-center'>
+                  <div className='h-auto lg:h-[339px] w-[144px] min-h-[192px] md:w-[254px] lg:w-[254px] flex flex-col justify-center items-center'>
                     <Image className='h-auto w-full' src={item.image} height={339} width={254} alt={item.name} />
                   </div>
-                  <section className='flex flex-col pb-7'>
+                  <section className='flex flex-col pb-4'>
                     <p className='m-[13px] mb-0 text-[12px] capitalize leading-5'>{item.name}</p>
                     <div>
                       <span className='m-[13px] mb-0 mt-[2px] text-[12px] capitalize leading-5'>{item.price}</span>
