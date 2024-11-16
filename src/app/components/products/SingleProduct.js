@@ -233,7 +233,7 @@ const closeModal = () => {
                         <div 
                         id={`image-${index}`} 
                         key={index} 
-                        className={`${isZoom ? 'border-b border-[#e8e8e8]' : 'product__image__wrapper'}`}                        
+                        className={`${isZoom ? 'border-b border-[#e8e8e8] bg-white min-h-screen' : 'product__image__wrapper'}`}                        
                         >
                             <div className={`relative flex justify-center items-center`}>
                                 <img onClick={()=>handleZoomImage(index, item.src)} className={`w-full h-auto`} src={item.src} height={339} width={254} alt={product.name} />
