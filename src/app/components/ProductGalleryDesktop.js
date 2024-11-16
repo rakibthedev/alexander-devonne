@@ -2,16 +2,18 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { BsChevronRight, BsChevronLeft } from "react-icons/bs";
 import Image from 'next/image';
-import Link from 'next/link';
 import { Swiper, SwiperSlide } from 'swiper/react';
 
 // Import Swiper styles
 import 'swiper/css'; // Basic Swiper styles
+import { useRouter } from 'next/navigation';
 
 const ProductGalleryDesktop = ({ products }) => {
   const swiperRef = useRef(null);
   const [scrollPosition, setScrollPosition] = useState(0);
   const [maxScroll, setMaxScroll] = useState(0);
+
+  const router = useRouter();
 
   // Function to update the scroll position
   const updateScrollPosition = () => {
@@ -67,6 +69,7 @@ const scrollToRight = () => scrollByViewportWidth('right');
 const scrollToLeft = () => scrollByViewportWidth('left');
 
 
+
   return (
     <section className="pl-3 lg:pl-5 mb-16 lg:mb-36 relative">
       {maxScroll > 0 && ( // Only render buttons if there's overflow
@@ -92,6 +95,7 @@ const scrollToLeft = () => scrollByViewportWidth('left');
         loop={false} // Disable infinite loop
         centeredSlides={false} // Disable centering of slides
         freeMode={true} // Enable free mode for dynamic sliding
+        touchEventsTarget="container"
         className="product__gallery"
         breakpoints={{
           1500: {
@@ -118,10 +122,9 @@ const scrollToLeft = () => scrollByViewportWidth('left');
       >
         {products.map((item, index) => (
           <SwiperSlide key={index} className="product__wrapper">
-            <Link href="#">
-              <div className="flex flex-col h-full">
+              <div className="flex flex-col h-full" onClick={()=>router.push('/#')}>
                 <article className="flex flex-col justify-between h-full">
-                  <div className="h-full flex flex-col items-center justify-center">
+                  <div className="h-full min-h-[370px] flex flex-col items-center justify-center">
                     <Image className="h-auto w-full" src={item.image} height={339} width={254} alt={item.name} />
                   </div>
                   <section className="flex flex-col pb-7">
@@ -132,7 +135,6 @@ const scrollToLeft = () => scrollByViewportWidth('left');
                   </section>
                 </article>
               </div>
-            </Link>
           </SwiperSlide>
         ))}
       </Swiper>

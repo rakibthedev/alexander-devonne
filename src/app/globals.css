@@ -229,7 +229,6 @@ select.form__input,
 .product__gallery .product__wrapper{
   border: 1px solid #e8e8e8;
   border-left: 0;
-  cursor: pointer;
 }
 .product__gallery .product__wrapper:first-child{
   border: 1px solid #e8e8e8;
