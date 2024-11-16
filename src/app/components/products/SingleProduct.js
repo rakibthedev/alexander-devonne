@@ -233,7 +233,7 @@ const closeModal = () => {
                         <div 
                         id={`image-${index}`} 
                         key={index} 
-                        className={`${isZoom ? 'border-b border-[#e8e8e8] bg-white h-screen' : 'product__image__wrapper'}`}                        
+                        className={`${isZoom ? 'border-b border-[#e8e8e8] bg-white h-screen flex justify-center items-center' : 'product__image__wrapper'}`}                        
                         >
                             <div className={`relative flex justify-center items-center`}>
                                 <img onClick={()=>handleZoomImage(index, item.src)} className={`w-full h-auto`} src={item.src} height={339} width={254} alt={product.name} />
@@ -383,7 +383,7 @@ const closeModal = () => {
             onClick={closeModal}      
             ref={modalRef}                             
             >
-                <div className="relative w-full h-screen flex flex-col justify-center items-center border-b border-[#e8e8e8]">
+                <div className="bg-white relative w-full h-screen flex flex-col justify-center items-center border-b border-[#e8e8e8]">
                     <div className="absolute top-3 left-3 text-xs">{`[${imageNumber}/${product.images.length}]`}</div>
                     <img                        
                         className="w-full h-auto"
