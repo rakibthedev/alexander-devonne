@@ -56,11 +56,11 @@ export default function WishPopup({wishProduct}) {
   return (
     <div>
         <div 
-        className={`wish__poupup__item bg-[#e1e1e180] rounded overflow-hidden ${isAnimating ? 'wish__poupup__item exit' : 'wish__poupup__item'} ${lastWishItem.length > 0 ? 'w-[375px] block opacity-100' : 'w-0 hidden opacity-0'}`} 
+        className={`wish__poupup__item bg-[#e1e1e180] rounded overflow-hidden ${isAnimating ? 'wish__poupup__item exit' : 'wish__poupup__item'} ${lastWishItem.length > 0 ? 'w-[340px] md:w-[375px] block opacity-100' : 'w-0 hidden opacity-0'}`} 
         style={{backdropFilter: 'blur(30px)'}}
         >
             {wishProduct ? (
-            <div className={`p-4 w-[375px]`}>
+            <div className={`p-4 w-[340px] md:w-[375px]`}>
                 <div className="flex justify-between">
                     <p className="text-xs leading-3 mb-3">Your wishlist</p>
                     <button

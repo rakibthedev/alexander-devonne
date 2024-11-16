@@ -56,12 +56,12 @@ export default function BagPopup() {
 
     return (
         <div
-            className={`bag__popup__box fixed top-0 right-0 min-h-screen overflow-hidden bg-[#e1e1e1] z-[9999999] ${popupShow ? 'w-[375px]' : 'w-0'}`}
+            className={`bag__popup__box fixed top-0 right-0 min-h-screen overflow-hidden bg-[#e1e1e1] z-[9999999] ${popupShow ? 'w-full md:w-[375px]' : 'w-0'}`}
             onMouseEnter={showBagPopup}
             onMouseLeave={hideBagPopup}
             style={{ transition: "width 0.2s ease", boxSizing: "border-box" }}
         >
-            <div className={`p-5 w-[375px] min-h-screen ${cartEmpty ? "flex flex-col justify-between" : "hidden"}`}>
+            <div className={`p-5 w-full md:w-[375px] min-h-screen ${cartEmpty ? "flex flex-col justify-between" : "hidden"}`}>
                 <div>
                     <div className="flex justify-between mb-3">
                         <p className="text-[18px] font-bookish">Your shopping bag</p>
@@ -77,7 +77,7 @@ export default function BagPopup() {
                     </div>
                 </div>
                 <div className='py-y pt-10 text-[14px] text-center underline uppercase'>
-                    <Link href="/bag">Go Shopping Bag</Link>
+                    <Link href="/bag" onClick={()=>setPopupShow(false)}>Go Shopping Bag</Link>
                 </div>
             </div>
 
@@ -165,11 +165,11 @@ export default function BagPopup() {
                         </span>
                     </div>
                     <div className='pt-6'>
-                        <Link href="/checkout" className='bg-[#000000cc] text-white text-[14px] uppercase rounded block w-full p-[6px] font-ibmPlexMedium hover:bg-[#897f7b] text-center'>Checkout Securely</Link>
+                        <Link href="/checkout" onClick={()=>setPopupShow(false)} className='bg-[#000000cc] text-white text-[14px] uppercase rounded block w-full p-[6px] font-ibmPlexMedium hover:bg-[#897f7b] text-center'>Checkout Securely</Link>
                     </div>
                 </div>
                 <div className='py-5 text-[14px] text-center underline uppercase'>
-                    <Link href="/bag">View Shopping Bag</Link>
+                    <Link href="/bag" onClick={()=>setPopupShow(false)}>View Shopping Bag</Link>
                 </div>
             </div>
         </div>

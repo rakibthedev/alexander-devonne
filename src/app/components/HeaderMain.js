@@ -150,8 +150,10 @@ export default function HeaderMain() {
                                     {currentMenuItem === index && item.items.map((menuItem, miIndex) => {
                                         return (
                                             <div key={miIndex} className="mt-5">
-                                                <div className="text-[13px] capitalize font-ibmPlexRegular cursor-pointer" onClick={()=>SetIsShowMobileMenu(false)}>
-                                                    <Link href={menuItem.href}>{menuItem.item}</Link>    
+                                                <div className="text-[13px] capitalize font-ibmPlexRegular cursor-pointer">
+                                                    <Link href={menuItem.href} onClick={()=>SetIsShowMobileMenu(false)}>
+                                                      {menuItem.item}
+                                                    </Link>    
                                                 </div>
                                             </div>
                                         )

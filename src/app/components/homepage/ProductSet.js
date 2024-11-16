@@ -23,7 +23,7 @@ export default function ProductSet({setId}) {
               <Link className='product__set__link text-xs uppercase mt-[13px] ml-[2px] pb-[2px] border-b border-black' href={item.firstLinkHref}>{item.firstLinkText}</Link>
             </section>
             <section className='px-3 lg:px-5 mb-3'>
-              <div className="flex items-end gap-5" style={{maxWidth: "calc(100vw - 90px)"}}>
+              <div className="flex items-end gap-5" >
                   <span className='text-[14px] font-me  font-ibmPlexMedium uppercase'>{item.secondTitle}</span>
                   <div className="flex items-center gap-2">
                     <Link className='underline text-xs whitespace-nowrap' href={item.secondLinkHref}>{item.secondLinkText}</Link>

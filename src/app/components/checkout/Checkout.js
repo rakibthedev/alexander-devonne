@@ -199,6 +199,7 @@ export default function Checkout() {
         setLoadingStep(false);
       }, 2000);      
     } else {
+      setLoadingStep(false);
       setErrors(validationErrors);
     }
   };
@@ -365,7 +366,7 @@ export default function Checkout() {
             Guest Checkout
           </p>
           {/* Input row */}
-          <div className={`flex items-stretch gap-4 w-full`}>
+          <div className={`flex flex-col lg:flex-row items-stretch gap-4 w-full`}>
               {/* Form Input  */}
               <div
                 className={`input__group relative w-full ${
@@ -434,7 +435,7 @@ export default function Checkout() {
       <div>
         {cartItem.length > 0 ? (
           <form className="checkout__form" onSubmit={handleSubmitForm}>
-            <div className="flex flex-col lg:flex-row gap-20">
+            <div className="flex flex-col lg:flex-row gap-7 lg:gap-20">
               <div className="customer__info flex-[100%] lg:flex-[70%]">
                 {/* Form step  */}
                 <div>
@@ -454,7 +455,13 @@ export default function Checkout() {
                   <div className="flex justify-between mb-5 mt-6">
                     <p className="text-xs uppercase">1. Shipping Information</p>
                     {step >= 2 && (
-                      <button onClick={()=>setStep(1)} className="underline text-xs">
+                      <button 
+                      onClick={()=>{
+                        setStep(1); 
+                        setErrors({}); 
+                        setLoadingStep(false);
+                      }} 
+                      className="underline text-xs">
                         Edit
                       </button>
                     )}
@@ -463,7 +470,7 @@ export default function Checkout() {
                     <div className={`form__step flex flex-col gap-4`}>
                       <p className="text-xs uppercase mb-5">Shipping Address</p>
                       {/* Input row */}
-                      <div className={`flex items-stretch gap-4 w-full`}>
+                      <div className={`flex flex-col lg:flex-row items-stretch gap-4 w-full`}>
                         {/* Form Input  */}
                         <div
                           className={`input__group relative w-full ${
@@ -528,7 +535,7 @@ export default function Checkout() {
                         </div>
                       </div>
                       {/* Input row */}
-                      <div className="flex items-streatch gap-4 w-full">
+                      <div className="flex flex-col lg:flex-row items-stretch gap-4 w-full">
                         {/* Form Input  */}
                         <div
                           className={`input__group relative w-full ${
@@ -566,7 +573,7 @@ export default function Checkout() {
                             id="country"
                             name="country"
                             value={formData.shipping.country || 'US'}
-                            className={`absolute top-1 left-0 form__input active w-full h-12 outline-none text-xs leading-5`}
+                            className={`bg-white absolute top-1 left-0 form__input active w-full h-12 outline-none text-xs leading-5`}
                             onChange={handleInputChange}
                           >
                             <option value="AF">Afghanistan</option>
@@ -776,7 +783,7 @@ export default function Checkout() {
                         </div>
                       </div>
                       {/* Input row */}
-                      <div className={`flex items-stretch gap-4 `}>
+                      <div className={`flex flex-col lg:flex-row items-stretch gap-4 `}>
                         {/* Form Input  */}
                         <div
                           className={`input__group relative w-full ${
@@ -810,7 +817,7 @@ export default function Checkout() {
                         </div>
                       </div>
                       {/* Input row */}
-                      <div className={`flex items-stretch gap-4 `}>
+                      <div className={`flex flex-col lg:flex-row items-stretch gap-4 `}>
                         {/* Form Input  */}
                         <div className="input__group relative h-12 w-full">
                           <input
@@ -835,7 +842,7 @@ export default function Checkout() {
                         </div>
                       </div>
                       {/* Input row */}
-                      <div className={`flex items-stretch gap-4 `}>
+                      <div className={`flex flex-col lg:flex-row items-stretch gap-4 `}>
                         {/* Form Input  */}
                         <div
                           className={`input__group relative w-full ${
@@ -900,7 +907,7 @@ export default function Checkout() {
                         </div>
                       </div>
                       {/* Input row */}
-                      <div className="flex items-streatch gap-4">
+                      <div className="flex flex-col lg:flex-row items-stretch gap-4">
                         {/* Form Input  */}
                         <div
                           className={`input__group relative w-full ${
@@ -933,10 +940,10 @@ export default function Checkout() {
                           )}
                         </div>
                         {/* Form Input  */}
-                        <div className="input__group relative h-12 w-full"></div>
+                        <div className="hidden lg:block input__group relative h-12 w-full"></div>
                       </div>
                       {/* Next step button  */}
-                      <div className="pb-5">
+                      <div className="pb-2 lg:pb-5">
                         <button
                           className="min-w-[198px] text-center px-4 py-[6px] inline-block bg-black rounded text-xs text-white uppercase hover:bg-[#897f7b] disabled:hover:bg-black"
                           onClick={nextStep}
@@ -974,7 +981,14 @@ export default function Checkout() {
                   <div className="flex justify-between mb-2 mt-10">
                     <p className="text-xs uppercase mb-5">2. Payment and Billing</p>
                     {step >= 3 && (
-                      <button onClick={()=>setStep(2)} className="underline text-xs">
+                      <button 
+                      onClick={()=>{
+                        setStep(2);
+                        setErrors({}); 
+                        setLoadingStep(false);
+                      }} 
+                      className="underline text-xs"
+                      >
                         Edit
                       </button>
                     )}
@@ -1041,7 +1055,7 @@ export default function Checkout() {
                           <div className="flex flex-col gap-4 mt-8">
                               <p className="text-xs uppercase mb-5">Billing Address</p>
                                 {/* Input row */}
-                                <div className={`flex items-stretch gap-4 w-full`}>
+                                <div className={`flex flex-col lg:flex-row items-stretch gap-4 w-full`}>
                                     {/* Form Input  */}
                                     <div
                                     className={`input__group relative w-full ${
@@ -1106,7 +1120,7 @@ export default function Checkout() {
                                     </div>
                                 </div>
                                 {/* Input row */}
-                                <div className="flex items-streatch gap-4 w-full">
+                                <div className="flex flex-col lg:flex-row items-stretch gap-4 w-full">
                                     {/* Form Input  */}
                                     <div
                                     className={`input__group relative w-full ${
@@ -1144,7 +1158,7 @@ export default function Checkout() {
                                         id="country"
                                         name="country"
                                         value={formData.billing.country || 'US'}
-                                        className={`absolute top-1 left-0 form__input active w-full h-12 outline-none text-xs leading-5`}
+                                        className={`bg-white absolute top-1 left-0 form__input active w-full h-12 outline-none text-xs leading-5`}
                                         onChange={handleInputChange}
                                     >
                                         <option value="AF">Afghanistan</option>
@@ -1356,7 +1370,7 @@ export default function Checkout() {
                                     </div>
                                 </div>
                                 {/* Input row */}
-                                <div className={`flex items-stretch gap-4 `}>
+                                <div className={`flex flex-col lg:flex-row items-stretch gap-4 `}>
                                     {/* Form Input  */}
                                     <div
                                     className={`input__group relative w-full ${
@@ -1390,7 +1404,7 @@ export default function Checkout() {
                                     </div>
                                 </div>
                                 {/* Input row */}
-                                <div className={`flex items-stretch gap-4 `}>
+                                <div className={`flex flex-col lg:flex-row items-stretch gap-4 `}>
                                     {/* Form Input  */}
                                     <div className="input__group relative h-12 w-full">
                                     <input
@@ -1415,7 +1429,7 @@ export default function Checkout() {
                                     </div>
                                 </div>
                                 {/* Input row */}
-                                <div className={`flex items-stretch gap-4 `}>
+                                <div className={`flex flex-col lg:flex-row items-stretch gap-4 `}>
                                     {/* Form Input  */}
                                     <div
                                     className={`input__group relative w-full ${
@@ -1480,7 +1494,7 @@ export default function Checkout() {
                                     </div>
                                 </div>
                                 {/* Input row */}
-                                <div className="flex items-streatch gap-4">
+                                <div className="flex flex-col lg:flex-row items-stretch gap-4">
                                     {/* Form Input  */}
                                     <div
                                     className={`input__group relative w-full ${
@@ -1513,7 +1527,7 @@ export default function Checkout() {
                                     )}
                                     </div>
                                     {/* Form Input  */}
-                                    <div className="input__group relative h-12 w-full"></div>
+                                    <div className="hidden lg:block input__group relative h-12 w-full"></div>
                                 </div>                        
                             </div>
                         )}
@@ -1603,7 +1617,7 @@ export default function Checkout() {
     
                       {/* Next step button  */}
                       {step === 2 && (
-                        <div className="pb-5 flex items-center gap-2">
+                        <div className="pb-2 lg:pb-5 flex items-center gap-2">
                           <button
                           className="min-w-[192px] text-center px-4 py-[6px] inline-block bg-black rounded text-xs text-white uppercase hover:bg-[#897f7b] disabled:hover:bg-black"
                           onClick={(e) => {

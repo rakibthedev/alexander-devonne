@@ -26,7 +26,7 @@ export default function SubscribeForm() {
               <label className={`form__label w-full left-0 text-xs absolute uppercase`} htmlFor="subscribe_email">EMAIL ADDRESS</label>
             </div>
             <div className="input__group relative h-12">
-            <select id='subscribe_country' defaultValue="US" className={`absolute top-1 left-0 form__input active w-full pb-2 outline-none border-b border-black text-xs leading-5`}>
+            <select id='subscribe_country' defaultValue="US" className={`bg-transparent absolute top-1 left-0 form__input active w-full pb-2 outline-none border-b border-black text-xs leading-5`}>
                 <option value='AF'>Afghanistan</option>
                 <option value='AL'>Albania</option>
                 <option value='DZ'>Algeria</option>
@@ -247,7 +247,7 @@ export default function SubscribeForm() {
             Experience fashion as a platform for experimentation. 
             <br />
             <br />
-            I have read the <Link className="underline" href="#">Privacy Policy</Link> and I consent the processing of my personal data for marketing purposes.
+            I have read the <Link className="underline" href="/policy/privacy-policy">Privacy Policy</Link> and I consent the processing of my personal data for marketing purposes.
             </p>
             <div className="mt-4 pb-8 lg:pb-0">
               <button className='bg-[#000000cc] rounded text-[12px] leading-6 font-ibmPlexMedium font-medium text-white py-1 px-[14px] uppercase outline-none border-none hover:bg-[#897f7b]' type='submit'>Subscribe</button>
