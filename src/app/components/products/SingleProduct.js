@@ -228,12 +228,12 @@ const closeModal = () => {
         </div>
         <div className="block lg:flex px-2 lg:px-5 gap-5 slide__up">
             <div className="lg:flex-[70%] flex-[100%]">
-                <div ref={imgContainerRef} className={`bg-white outline-none ${isZoom ? 'fixed top-0 left-0 w-full min-h-screen overflow-y-auto z-[9999] image__modal image__popup zoom__in' : 'grid grid-cols-2 mb-16'}`}>
+                <div ref={imgContainerRef} className={`bg-white outline-none ${isZoom ? 'fixed top-0 left-0 w-full h-screen overflow-y-auto z-[9999] image__modal image__popup zoom__in' : 'grid grid-cols-2 mb-16'}`}>
                     {product.images.map((item, index) => (
                         <div 
                         id={`image-${index}`} 
                         key={index} 
-                        className={`${isZoom ? 'border-b border-[#e8e8e8] bg-white min-h-screen' : 'product__image__wrapper'}`}                        
+                        className={`${isZoom ? 'border-b border-[#e8e8e8] bg-white h-screen' : 'product__image__wrapper'}`}                        
                         >
                             <div className={`relative flex justify-center items-center`}>
                                 <img onClick={()=>handleZoomImage(index, item.src)} className={`w-full h-auto`} src={item.src} height={339} width={254} alt={product.name} />
@@ -379,11 +379,11 @@ const closeModal = () => {
             {/* Product image popup modal  */}
             {isModalOpen && (
             <div 
-            className={`w-full ${isPopupClose ? 'zoom__out' : ''} outline-none zoom__in image__popup image__modal fixed inset-0 bg-white/40 min-h-screen z-[99999] overflow-y-hidden`} 
+            className={`w-full ${isPopupClose ? 'zoom__out' : ''} outline-none zoom__in image__popup image__modal fixed inset-0 bg-white/40 h-screen z-[99999] overflow-y-hidden`} 
             onClick={closeModal}      
             ref={modalRef}                             
             >
-                <div className="relative w-full h-auto flex flex-col justify-center items-center border-b border-[#e8e8e8]">
+                <div className="relative w-full h-screen flex flex-col justify-center items-center border-b border-[#e8e8e8]">
                     <div className="absolute top-3 left-3 text-xs">{`[${imageNumber}/${product.images.length}]`}</div>
                     <img                        
                         className="w-full h-auto"
