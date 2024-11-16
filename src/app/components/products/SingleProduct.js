@@ -228,7 +228,7 @@ const closeModal = () => {
         </div>
         <div className="block lg:flex px-2 lg:px-5 gap-5 slide__up">
             <div className="lg:flex-[70%] flex-[100%]">
-                <div ref={imgContainerRef} className={`bg-white outline-none ${isZoom ? 'fixed top-0 left-0 w-full h-screen overflow-y-auto z-[9999] image__modal image__popup zoom__in' : 'grid grid-cols-2 mb-16'}`}>
+                <div ref={imgContainerRef} className={`bg-white outline-none ${isZoom ? 'fixed top-0 left-0 w-full min-h-screen overflow-y-auto z-[9999] image__modal image__popup zoom__in' : 'grid grid-cols-2 mb-16'}`}>
                     {product.images.map((item, index) => (
                         <div 
                         id={`image-${index}`} 
@@ -379,7 +379,7 @@ const closeModal = () => {
             {/* Product image popup modal  */}
             {isModalOpen && (
             <div 
-            className={`w-full ${isPopupClose ? 'zoom__out' : ''} outline-none zoom__in image__popup image__modal fixed inset-0 bg-white/40 h-screen z-[99999] overflow-y-hidden`} 
+            className={`w-full ${isPopupClose ? 'zoom__out' : ''} outline-none zoom__in image__popup image__modal fixed inset-0 bg-white/40 min-h-screen z-[99999] overflow-y-hidden`} 
             onClick={closeModal}      
             ref={modalRef}                             
             >
