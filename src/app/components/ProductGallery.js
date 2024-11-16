@@ -71,7 +71,7 @@ const scrollToLeft = () => scrollByViewportWidth('left');
     <section className="pl-3 lg:pl-5 mb-16 lg:mb-36 relative">
       {maxScroll > 0 && ( // Only render buttons if there's overflow
         <div className="absolute right-14 top-[-32px] z-10">
-          <div className="lg:flex items-center gap-3 hidden">
+          <div className="flex items-center gap-3">
             <button onClick={scrollToLeft} disabled={scrollPosition === 0}>
               <BsChevronLeft className={`text-[20px] ${scrollPosition === 0 ? 'text-black/40' : 'text-black'} outline-none border-none`} />
             </button>
