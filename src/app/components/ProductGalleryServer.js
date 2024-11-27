@@ -1,34 +1,26 @@
 // app/ProductGalleryServer.js
 import ProductGallery from './ProductGallery'; // Import the client component
 
-export async function getServerSideProps(context) {
-  const apiUrl = context.query.apiUrl; // Use a dynamic API URL
+
+// Export a component that uses getServerSideProps
+const ProductGalleryServer = async ({ apiUrl }) => {
   const res = await fetch(apiUrl);
   const data = await res.json();
 
   const products = data.products.length > 8 
   ? data.products.slice(0, 8).map(item => ({
-      name: item.title,
-      price: `$${item.price.toFixed(2)}`,
-      image: item.thumbnail,
+      name: item.name,
+      price: `$${Intl.NumberFormat('en-US').format(item.price)}`,
+      image: item.images[0].src,
+      slug: item.slug,
     }))
   : data.products.map(item => ({
-      name: item.title,
-      price: `$${item.price.toFixed(2)}`,
-      image: item.thumbnail,
+    name: item.name,
+    price: `$${Intl.NumberFormat('en-US').format(item.price)}`,
+    image: item.images[0].src,
+    slug: item.slug,
     }));
-
-  return {
-    props: {
-      products,
-    },
-  };
-}
-
-// Export a component that uses getServerSideProps
-const ProductGalleryServer = async ({ apiUrl }) => {
-  const props = await getServerSideProps({ query: { apiUrl } });
-  return <ProductGallery products={props.props.products} />;
+  return <ProductGallery products={products} />;
 };
 
 export default ProductGalleryServer;

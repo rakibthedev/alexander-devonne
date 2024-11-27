@@ -1,6 +1,6 @@
 "use client";
 import Link from 'next/link';
-import { React, useContext, useState } from 'react';
+import { React, useContext, useState, useEffect } from 'react';
 import { IoSearchOutline } from "react-icons/io5";
 import { IoIosHeartEmpty } from "react-icons/io";
 import { BsBag } from "react-icons/bs";
@@ -11,6 +11,8 @@ import { IoCloseOutline } from "react-icons/io5";
 import { HiOutlineMenuAlt4 } from "react-icons/hi";
 import { megaMenuItems } from "@/app/constants/megaMenu";
 import { GoChevronLeft, GoChevronRight, GoChevronUp, GoChevronDown } from "react-icons/go";
+import { LoginContext } from '../context/loginContext';
+import Search from './search/Search';
 
 
 export default function HeaderMain() {
@@ -18,6 +20,10 @@ export default function HeaderMain() {
   const [currentSubCat, setCurrentSubCat] = useState(null);
   const [currentMenuItem, setCurrentMenuItem] = useState(null);
   const [selectedCat, setSelectedCat] = useState(null);
+  const [menuData, setMenuData] = useState(megaMenuItems);
+  const [isSearching, setIsSearching] = useState(false);
+  // Login Context 
+  const {loggedUserData, setLoggedUserData} = useContext(LoginContext);
 
   const { cartItem = [], setPopupShow } = useContext(CartContext) || {}; // Default to empty array
   const cartItemCount = cartItem.length;
@@ -37,12 +43,43 @@ export default function HeaderMain() {
     setSelectedCat(null);
   }
 
+  // Fetch Menu Data
+  useEffect(()=>{
+    async function getMenuData() {
+      const apiUrl =  `${process.env.NEXT_PUBLIC_DOMAIN_ADDRESS}/api/menu/header-menu`;
+      const res = await fetch(apiUrl);
+      const data = await res.json();
+      
+      if(res.ok){
+        setMenuData(data);
+      }
+    }
+    getMenuData();
+
+  },[])
+
+  useEffect(() => {
+    if (isSearching) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "auto";
+    }
+  }, [isSearching]);
+
+  // Close Search 
+  const handleSearch = () => {
+    setIsSearching(false);
+  }
+
   return (
     <div className='header__main bg-white sticky z-[100] w-full top-[-1px]'>
+      {/* Search Component start  */}
+      {isSearching && <Search handleSearch={handleSearch} />}
+      {/* Search Component end */}
       <div className='px-3 py-2 lg:px-5 flex justify-between lg:pt-3 items-center'>
         <div className='flex-[25%] lg:hidden'>
           <button 
-          className='border-none p-0 outline-none text-[24px] cursor-pointer'
+          className='inline-block mt-1 border-none p-0 outline-none text-[24px] cursor-pointer'
           onClick={toggleMobileMenu}
           >
             {isShowMobileMenu ? <IoCloseOutline /> : <HiOutlineMenuAlt4 />}
@@ -56,20 +93,35 @@ export default function HeaderMain() {
           </div>
           <Link href="#" className='border-none p-0 outline-none text-xs font-normal hover:underline'>Contact us</Link>
         </div>
-        <div className='flex-[50%] flex justify-center'>
+        <div className='flex-[50%] flex justify-center select-none'>
           <Link href="/"><img className='h-auto lg:w-[200px] lg:h-auto' src='/images/logo.png' width={150} height={50} alt="Alexander Devonne" /></Link>
         </div>
         <div className='flex-[25%] flex justify-end gap-[30px] items-center'>
           <div className='flex justify-between gap-[25px] items-center'>
-            <Link href="#" className='hidden lg:block border-none p-0 outline-none text-xs font-normal hover:underline'>Login</Link>
-            <button className='border-none p-0 outline-none text-[18px] font-normal hover:underline'><IoSearchOutline /></button>
+            {loggedUserData ? 
+              <Link href="/dashboard/profile" className='hidden lg:block border-none p-0 outline-none text-xs font-normal hover:underline'>My Account</Link>
+              :
+              <Link href="/account/login" className='hidden lg:block border-none p-0 outline-none text-xs font-normal hover:underline'>Login</Link>
+            }
+            {/* Search button  */}
+            <button 
+            className='border-none p-0 outline-none text-[18px] font-normal hover:underline'
+            onClick={()=>setIsSearching(true)}
+            >
+              <IoSearchOutline />
+            </button>
+
+            {/* Wishlist */}
             <Link href="/wishlist" className='hidden lg:block text-[18px]'>
               <div className="relative">
                 <IoIosHeartEmpty />
                 <span className='absolute top-[-4px] left-[18px] text-[8px]'>{wishItemCount > 0 ? wishItemCount : ''}</span>
               </div>
             </Link>
-            <button className='text-[18px]' onMouseEnter={showBagPopup}>
+            <button className='text-[18px]' 
+              onClick={showBagPopup}
+              onMouseEnter={showBagPopup}
+            >
               <div className="relative">
                 <BsBag />
                 <span className='absolute top-[-4px] left-[18px] text-[8px]'>{cartItemCount > 0 ? cartItemCount : ''}</span>
@@ -88,12 +140,12 @@ export default function HeaderMain() {
           <div>
             {isShowMobileMenu &&
             <div>
-                {currentSubCat === null && megaMenuItems.map((item, index) => {
+                {currentSubCat === null && menuData.map((item, index) => {
                     return (
                         <div key={index}>
                             <div className="py-4 px-4 text-[14px] uppercase cursor-pointer">
                                 <div className="flex justify-between" onClick={()=>setCurrentSubCat(index)}>
-                                    <span>{item.category}</span>
+                                    <span>{item.menu.menu_title}</span>
                                     <span className="text-[22px]">
                                         <GoChevronRight />
                                     </span>
@@ -112,7 +164,7 @@ export default function HeaderMain() {
                             <GoChevronLeft/>
                         </span>
                         <span>
-                            {megaMenuItems[currentSubCat].category}
+                            {menuData[currentSubCat].menu.menu_title}
                         </span>
                         {selectedCat !== null &&
                         <div className="flex items-center gap-2">
@@ -121,9 +173,12 @@ export default function HeaderMain() {
                         </div>
                         }
                     </div>
-                    {megaMenuItems[currentSubCat].menu.map((item, index) => {
+                      <div className='py-4 px-4 pl-8 text-[14px] font-ibmPlexMedium uppercase'>
+                        <Link onClick={()=>SetIsShowMobileMenu(false)} href={menuData[currentSubCat].menu.menu_link}>All {menuData[currentSubCat].menu.menu_title}</Link>
+                      </div>
+                      {menuData[currentSubCat].menu.sub_menu.map((item, index) => {
                         return (
-                            <div key={index}>                        
+                            <div key={index}>
                                 <div className="py-4 px-4 pl-8 text-[14px] font-ibmPlexMedium uppercase">
                                     <div 
                                     className="flex justify-between items-center cursor-pointer"
@@ -131,28 +186,34 @@ export default function HeaderMain() {
                                       if(currentMenuItem === index){
                                         if(currentMenuItem === null){
                                               setCurrentMenuItem(index);
-                                              setSelectedCat(item.title);
+                                              setSelectedCat(item.sub_menu_title);
                                             }else{
                                                 setCurrentMenuItem(null);
                                                 setSelectedCat(null);
                                             }
                                         }else{
                                             setCurrentMenuItem(index);
-                                            setSelectedCat(item.title);
+                                            setSelectedCat(item.sub_menu_title);
                                         }
                                     }}
                                     >
-                                        <span>{item.title}</span>
+                                        <span>{item.sub_menu_title}</span>
                                         <span className="text-[22px]">
                                             {currentMenuItem === index ? <GoChevronUp/> : <GoChevronDown />}
                                         </span>
                                     </div>
-                                    {currentMenuItem === index && item.items.map((menuItem, miIndex) => {
+
+                                    {currentMenuItem === index && <div className="mt-5 text-[13px] capitalize font-ibmPlexRegular cursor-pointer">
+                                        <Link href={item.sub_menu_link} onClick={()=>SetIsShowMobileMenu(false)}>
+                                          All {item.sub_menu_title}
+                                        </Link>    
+                                    </div>}
+                                    {currentMenuItem === index && item.sub_menu_items.map((menuItem, miIndex) => {
                                         return (
                                             <div key={miIndex} className="mt-5">
                                                 <div className="text-[13px] capitalize font-ibmPlexRegular cursor-pointer">
-                                                    <Link href={menuItem.href} onClick={()=>SetIsShowMobileMenu(false)}>
-                                                      {menuItem.item}
+                                                    <Link href={menuItem.item_link} onClick={()=>SetIsShowMobileMenu(false)}>
+                                                      {menuItem.item_title}
                                                     </Link>    
                                                 </div>
                                             </div>
@@ -161,7 +222,7 @@ export default function HeaderMain() {
                                 </div>
                             </div>
                         )
-                    })}
+                      })}
                 </div>}
             </div>
             }

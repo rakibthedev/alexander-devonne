@@ -18,7 +18,7 @@ export default async function handler(req, res) {
           const response = await WooCommerce.put(
             `orders/${orderResult.orderId}`,
             {
-              status: 'completed', // Change order status to 'completed'
+              status: 'processing',
               payment_method: "stripe",
               payment_method_title: "Stripe Card",
               transaction_id: orderResult.paymentData.id,

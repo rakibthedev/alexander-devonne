@@ -97,7 +97,7 @@ const scrollToLeft = () => scrollByViewportWidth('left');
         freeMode={true} // Enable free mode for dynamic sliding
         speed={500}
         touchEventsTarget="container"
-        className="product__gallery"
+        className="product__gallery select-none"
         breakpoints={{
           1500: {
             slidesPerView: 6,
@@ -123,7 +123,7 @@ const scrollToLeft = () => scrollByViewportWidth('left');
       >
         {products.map((item, index) => (
           <SwiperSlide key={index} className="product__wrapper">
-              <div className="flex flex-col h-full" onClick={()=>router.push('/#')}>
+              <div className="flex flex-col h-full" onClick={()=>router.push(`/shopping/${item.slug}`)}>
                 <article className="flex flex-col justify-between h-full">
                   <div className="h-full min-h-[370px] flex flex-col items-center justify-center">
                     <Image className="h-auto w-full" src={item.image} height={339} width={254} alt={item.name} />

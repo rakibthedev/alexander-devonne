@@ -92,7 +92,7 @@ export default function Footer() {
           <ul className="flex flex-col gap-[6px]">
             <li className="text-[12px] uppercase font-medium font-ibmPlexMedium">Follow Us</li>          
             <li className="text-[12px] uppercase">
-              <Link className="text-xs uppercase hover:underline" href="https://instagram.com">Instagram</Link>
+              <Link className="text-xs uppercase hover:underline" target='_blank' href="https://instagram.com">Instagram</Link>
             </li>   
           </ul>
         </div>

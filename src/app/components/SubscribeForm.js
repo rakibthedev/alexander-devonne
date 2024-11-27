@@ -250,7 +250,7 @@ export default function SubscribeForm() {
             I have read the <Link className="underline" href="/policy/privacy-policy">Privacy Policy</Link> and I consent the processing of my personal data for marketing purposes.
             </p>
             <div className="mt-4 pb-8 lg:pb-0">
-              <button className='bg-[#000000cc] rounded text-[12px] leading-6 font-ibmPlexMedium font-medium text-white py-1 px-[14px] uppercase outline-none border-none hover:bg-[#897f7b]' type='submit'>Subscribe</button>
+              <button className='bg-[#000000cc] select-none rounded text-[12px] leading-6 font-ibmPlexMedium font-medium text-white py-1 px-[14px] uppercase outline-none border-none hover:bg-[#897f7b]' type='submit'>Subscribe</button>
             </div>
           </div>
         </form>

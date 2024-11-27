@@ -60,7 +60,7 @@ const ProductGalleryMobile = ({ products }) => {
       <div className="product__gallery flex overflow-x-auto w-full" ref={galleryRef}>
         {products.map((item, index) => (
           <div className='product__wrapper'  key={index}>
-            <Link href="#">
+            <Link href={`/shopping/${item.slug}`}>
               <div className='flex-shrink-0'>
                 <article>
                   <div className='h-auto lg:h-[339px] w-[144px] min-h-[192px] md:w-[254px] lg:w-[254px] flex flex-col justify-center items-center'>

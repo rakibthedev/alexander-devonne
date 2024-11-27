@@ -162,7 +162,7 @@ const updateOrder = async (orderId, paymentData) => {
     const response = await WooCommerce.put(
       `orders/${orderId}`,
       {
-        status: 'completed', // Change order status to 'completed'
+        status: 'processing',
         payment_method: "stripe",
         payment_method_title: "Stripe Card",
         transaction_id: paymentData.id,

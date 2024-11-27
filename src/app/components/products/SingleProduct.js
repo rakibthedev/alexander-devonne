@@ -213,6 +213,36 @@ const closeModal = () => {
         }
     };
   
+
+    // Track image container scroll
+    const [scrollPercentage, setScrollPercentage] = useState(0);
+
+    const handleScroll = () => {
+        if (imgContainerRef.current) {
+        const { scrollLeft, scrollWidth, clientWidth } = imgContainerRef.current;
+        const percent = (scrollLeft / (scrollWidth - clientWidth)) * 100;
+        setScrollPercentage(percent);
+        }
+    };
+
+    
+    const scrollRef = useRef();
+
+     useEffect(() => {
+    if (scrollRef.current) {
+      // ScrollBar and scrollRef dimensions
+      const scrollBarWidth = 160; // width of the scroll__bar
+      const scrollRefWidth = 26; // width of the scrollRef span
+      const maxTranslate = scrollBarWidth - scrollRefWidth;
+
+      // Calculate translateX value based on scroll percentage
+      const translateX = (scrollPercentage / 100) * maxTranslate;
+
+      // Update scrollRef's position
+      scrollRef.current.style.transform = `translateX(${translateX}px)`;
+    }
+  }, [scrollPercentage]);
+
   return (
     <div>
         <div className='fixed top-[100px] right-4 z-[9999]'>
@@ -226,58 +256,42 @@ const closeModal = () => {
           )
         }
         </div>
-        <div className="block lg:flex px-2 lg:px-5 gap-5 slide__up">
+        {/* Main content */}
+        <div className="block lg:flex lg:px-5 gap-5 slide__up">
             <div className="lg:flex-[70%] flex-[100%]">
-                <div ref={imgContainerRef} className={`bg-white outline-none ${isZoom ? 'fixed top-0 left-0 w-full h-screen overflow-y-auto z-[9999] image__modal image__popup zoom__in' : 'grid grid-cols-2 mb-16'}`}>
-                    {product.images.map((item, index) => (
-                        <div 
-                        id={`image-${index}`} 
-                        key={index} 
-                        className={`${isZoom ? 'relative border-b border-[#e8e8e8] bg-white min-h-screen flex justify-center items-center' : 'product__image__wrapper'}`}                        
-                        >
-                            <div className={`${isZoom ? 'static' : 'relative' } flex justify-center items-center`}>
-                                <img onClick={()=>handleZoomImage(index, item.src)} className={`w-full h-auto`} src={item.src} height={339} width={254} alt={product.name} />
-                                <div className='absolute top-0 left-0 py-2 px-3'>
-                                    <span className='text-xs'>{`[${index + 1}/${product.images.length}]`}</span>
+                <div className="relative">
+                    <div ref={imgContainerRef} 
+                    className={`bg-white outline-none ${isZoom ? 'fixed top-0 left-0 w-full h-screen overflow-y-auto z-[9999] image__modal image__popup zoom__in' : 'product__img__container flex items-stretch flex-nowrap lg:grid lg:grid-cols-2 overflow-x-auto lg:overflow-x-hidden'}`}
+                    onScroll={handleScroll}
+                    >
+                        
+                        {product.images.map((item, index) => (
+                            <div 
+                            id={`image-${index}`} 
+                            key={index} 
+                            className={`${isZoom ? 'relative border-b border-[#e8e8e8] bg-white min-h-screen w-full flex justify-center items-center' : 'product__image__wrapper'}`}                        
+                            >
+                                <div className={`${isZoom ? 'static' : 'relative' } flex justify-center lg:w-full w-screen min-h-screen items-center`}>
+                                    <img onClick={()=>handleZoomImage(index, item.src)} className={`w-full h-auto`} src={item.src} height={339} width={254} alt={product.name} />
+                                    <div className='absolute top-0 left-0 py-2 px-3 hidden lg:block'>
+                                        <span className='text-xs'>{`[${index + 1}/${product.images.length}]`}</span>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    ))}
-                </div>
-
-                <div className='mb-16' ref={detailsRef}>
-                    <div className='flex items-start gap-5'>
-                        <button 
-                            className={`uppercase text-[14px] font-ibmPlexMedium ${activeTab === 'materials' ? 'border-b border-black pb-1' : ''}`}
-                            onClick={() => handleToggle('materials')}
-                        >
-                            Materials
-                        </button>
-                        <button 
-                            className={`uppercase text-[14px] font-ibmPlexMedium ${activeTab === 'fitting' ? 'border-b border-black pb-1' : ''}`}
-                            onClick={() => handleToggle('fitting')}
-                        >
-                            Fitting
-                        </button>
+                        ))}
                     </div>
-
-                    {activeTab === 'materials' && (
-                        <div className='py-2 pt-4 text-xs'
-                            dangerouslySetInnerHTML={{ __html: formatStringWithLineBreaks(materials) }} />
-                    )}
-                    {activeTab === 'fitting' && (
-                        <div className='py-2 pt-4 text-xs'
-                            dangerouslySetInnerHTML={{ __html: formatStringWithLineBreaks(fitting) }} />
-                    )}
-                </div>
+                    <div className="scroll__bar lg:hidden block absolute bottom-7 left-1/2 -translate-x-1/2 z-[8] w-[160px] bg-[#e1e1e180] h-[2px]">
+                        <span ref={scrollRef} className="h-[2px] w-[26px] bg-[#000000cc] absolute"></span>
+                    </div>
+                </div>                
             </div>
-
-            <div className="lg:flex-[30%] flex-[100%] mb-20 lg:mb-0">
+            {/* Right product info  */}
+            <div className="lg:flex-[30%] flex-[100%] px-3 lg:px-5 mb-20 mt-8 lg:mt-0 lg:mb-0">
                 <h1 className="text-[22px] leading-[150%] font-ibmPlexRegular capitalize">
                     {product.name}
                 </h1>
                 <p className="text-[22px] leading-[140%] font-ibmPlexRegular capitalize">
-                    {`$${product.price}`}
+                    {`$${Intl.NumberFormat('en-US').format(product.price, 0)}`}
                 </p>
                 <p className="text-xs leading-[150%] mt-2">
                     {isExpanded ? descriptionText : truncatedDescription}
@@ -328,7 +342,7 @@ const closeModal = () => {
                                 .flatMap(item => item.options)
                                 .map((option, index) => (
                                     <button 
-                                        className={`text-xs hover:text-white ${selectedSize === option ? 'bg-[#333] text-white hover:bg-[#333]' : 'bg-[#cecece80] text-black hover:bg-[#897f7b]'} py-3 px-2 rounded outline-none ${loading ? 'disabled:cursor-not-allowed' : 'cursor-pointer'}`} 
+                                        className={`min-w-8 min-h-[41px] flex items-center justify-center text-xs hover:text-white ${selectedSize === option ? 'bg-[#333] text-white hover:bg-[#333]' : 'bg-[#cecece80] text-black hover:bg-[#897f7b]'} rounded outline-none ${loading ? 'disabled:cursor-not-allowed' : 'cursor-pointer'}`} 
                                         key={index}
                                         onClick={() => handleSizeClick(option)}     
                                         disabled={loading}                               
@@ -376,6 +390,35 @@ const closeModal = () => {
 
                 </div>             
             </div>
+            </div>
+            {/* Bottom poduct additional details  */}
+            <div className='mt-16 mb-10 px-3 lg:px-5 ' ref={detailsRef}>
+                <div className='flex items-start gap-5'>
+                    <button 
+                        className={`uppercase text-[14px] font-ibmPlexMedium ${activeTab === 'materials' ? 'border-b border-black pb-1' : ''}`}
+                        onClick={() => handleToggle('materials')}
+                    >
+                        Materials
+                    </button>
+                    <button 
+                        className={`uppercase text-[14px] font-ibmPlexMedium ${activeTab === 'fitting' ? 'border-b border-black pb-1' : ''}`}
+                        onClick={() => handleToggle('fitting')}
+                    >
+                        Fitting
+                    </button>
+                </div>
+
+                {activeTab === 'materials' && (
+                    <div className='py-2 pt-4 text-xs'
+                        dangerouslySetInnerHTML={{ __html: formatStringWithLineBreaks(materials) }} />
+                )}
+                {activeTab === 'fitting' && (
+                    <div className='py-2 pt-4 text-xs'
+                        dangerouslySetInnerHTML={{ __html: formatStringWithLineBreaks(fitting) }} />
+                )}
+            </div>
+
+
             {/* Product image popup modal  */}
             {isModalOpen && (
             <div 
@@ -400,7 +443,6 @@ const closeModal = () => {
                 </div>
             </div>
         )}
-        </div>
     </div>
   );
 }

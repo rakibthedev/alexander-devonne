@@ -161,7 +161,7 @@ export default function Bag() {
                 <h1 className="text-[26px] font-bookish">Your Shopping Bag</h1>
                 <p className="my-8 text-xs">Your shopping bag is currently empty.</p>
                 <div className='pt-2'>
-                  <Link href="/" className='bg-[#000000cc] text-center text-white text-[14px] uppercase rounded py-2 px-[55px] font-ibmPlexMedium hover:bg-[#897f7b]'>Continue Shopping</Link>
+                  <Link href="/" className='bg-[#000000cc] text-center select-none text-white text-[14px] uppercase rounded py-2 px-[55px] font-ibmPlexMedium hover:bg-[#897f7b]'>Continue Shopping</Link>
                 </div>
               </div>
             ) : (

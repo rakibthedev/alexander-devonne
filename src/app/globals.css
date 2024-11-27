@@ -315,6 +315,17 @@ select.form__input,
 
 
  /* Swipper slider */
+.swiper-pagination-bullet{
+  width: 15px !important;
+  border-radius: 0px !important;
+  height: 1px !important;
+  background-color: #d8d8d8 !important;
+  margin: 0 !important;
+}
+.swiper-pagination-bullet-active{
+  background: #7e7e7e !important;
+}
+
 /* Custom Navigation Arrow Styles */
 .product__wrapper {
   position: relative;
@@ -468,7 +479,7 @@ select.form__input,
 }
 
 /* Checkout Style  */
-.checkout__form .form__label {
+.custom__form .form__label {
   color: #000000a6;
   top: -6px;
   z-index: 9;
@@ -476,8 +487,10 @@ select.form__input,
   padding-left: 14px;
   padding-right: 14px;
   cursor: text;
+  pointer-events: none;
 }
-.checkout__form .form__input{
+
+.custom__form .form__input{
   z-index: 8;
   width: 100%;
   border-radius: 4px;
@@ -486,22 +499,23 @@ select.form__input,
   padding-left: 14px;
   padding-right: 14px;
 }
-.checkout__form select.form__input,
-.checkout__form .form__checkbox{
+.custom__form select.form__input,
+.custom__form .form__checkbox{
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
   outline: none;
   cursor: pointer;
 }
-.checkout__form .form__input.active + .form__label{
+.custom__form .form__input.active + .form__label{
   font-size: 9px; 
   top: -19px;
 }
-.checkout__form .form__checkbox + label{
+.custom__form .form__checkbox + label{
   cursor: pointer;
 }
-.checkout__form .form__checkbox::before{
+
+.custom__form .form__checkbox::before{
   content: "";
   position: absolute;
   width: 16px;
@@ -512,7 +526,7 @@ select.form__input,
   left: 0;
   cursor: pointer;
 }
-.checkout__form .form__checkbox:checked + label::before{
+.custom__form .form__checkbox:checked + label::before{
   content: "";
   position: absolute;
   width: 10px;
@@ -523,6 +537,16 @@ select.form__input,
   background: #000000;
 }
 
+/* .pwd__visibility{
+  display: none;
+}
+.pwd__container:focus-within .pwd__visibility{
+  display: inline-block;
+} */
+
+form svg{
+  pointer-events: none;
+}
 /* Auto fill bg color transparent */
 /* input:-webkit-autofill,
 input:-webkit-autofill:hover,
@@ -577,6 +601,9 @@ select:-webkit-autofill:active {
   top: 8px;
   left: 3px;
 }
+.search__bar{
+  width: calc(50% - 20px);
+}
 
 /* Adjust arrow size and styling for mobile */
 @media (max-width: 768px) {
@@ -587,7 +614,9 @@ select:-webkit-autofill:active {
 }
 
 
-
+.product__img__container::-webkit-scrollbar {
+  display: none;
+}
 @media screen and (max-width: 1023px){
   .product__grid .product__wrapper:nth-child(2n + 1) {
     border-left: 1px solid #e8e8e8;
@@ -597,6 +626,13 @@ select:-webkit-autofill:active {
   }
   .product__grid .product__wrapper:nth-child(4) {
     border-top: none;
+  }
+  .product__image__wrapper{
+    border: none !important;
+    border-bottom: 1px solid #e8e8e8 !important; 
+  }
+  .search__bar{
+    width: calc(100% - 20px);
   }
   
 }

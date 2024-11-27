@@ -11,22 +11,21 @@ import VariationColor from './VariationColor';
 import { WishContext } from '@/app/context/wishContext';
 import { IoMdClose } from "react-icons/io";
 import { CartContext } from '../context/cartContext';
-
+import { useRouter } from 'next/navigation';
+// import Swiper core and required modules
+import { Pagination } from 'swiper/modules';
 // Import Swiper styles
 import "swiper/css";
 import "swiper/css/navigation";
+import 'swiper/css/pagination';
+
 import WishPopup from './wishlist-popup/WishlistPopup';
 import ImageSlider from './quick-shop/ImageSlider';
-
-function slugToWords(slug) {
-  return decodeURIComponent(slug)
-    .replace(/_/g, "-")
-    .split("-")
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
-    .join(" ");
-}
+import { slugToWords } from './methods/SlugToWords';
 
 const ProductGridItems = ({ products, productCategory }) => {
+  const route = useRouter();
+  
   const [currentImages, setCurrentImages] = useState({}); // State to manage current images for each product
   const swiperRefs = useRef({}); // To store Swiper instances
   const [showArrows, setShowArrows] = useState({}); // To manage arrow visibility for each product
@@ -34,8 +33,24 @@ const ProductGridItems = ({ products, productCategory }) => {
   const [quickShop, setQuickShop] = useState([]);
   const [selectedSize, setSelectedSize] = useState(null); // State for selected size
   const [loading, setLoading] = useState(false);
+  const [sortby, setSortby] = useState('recommended');
+
   const selectSizeError = useRef(null);
 
+  // Detect Mobile 
+  function useIsMobile() {
+    const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  
+    useEffect(() => {
+      const handleResize = () => setIsMobile(window.innerWidth < 768);
+      window.addEventListener("resize", handleResize);
+      return () => window.removeEventListener("resize", handleResize);
+    }, []);
+  
+    return isMobile;
+  }
+
+  const isMobile = useIsMobile();
 
   const handleMouseEnter = (id, images) => {
     const timeoutId = setTimeout(() => {
@@ -264,7 +279,7 @@ const ProductGridItems = ({ products, productCategory }) => {
         }
         </div>
         {/* QuickShop UI  */}
-        <div>
+        <div className='hidden lg:block'>
         {quickShop.length > 0 && (
             quickShop.map((qs_item, index) =>{
                 return (
@@ -289,8 +304,8 @@ const ProductGridItems = ({ products, productCategory }) => {
                       <p className="text-[22px] leading-6 font-bookish capitalize">
                         {qs_item.name}
                       </p>
-                      <p className="text-[22px] leading-6 font-bookish capitalize">
-                        ${qs_item.price}
+                      <p className="text-[22px] leading-6 font-bookish capitalize">                        
+                        {`$${Intl.NumberFormat('en-US').format(qs_item.price, 0)}`}
                       </p>
                       <div className='overflow-y-auto pb-3' style={{height: "calc(100vh - 252px)"}}>
                         <p className="mt-2 text-xs">
@@ -356,29 +371,81 @@ const ProductGridItems = ({ products, productCategory }) => {
         )}
       </div>
       {/* Main Content Start  */}
-      <section className="px-2 lg:px-5 mb-36 relative slide__up">
-        <h1 className="capitalize font-bookish text-2xl pb-10 pt-5">{slugToWords(productCategory)}</h1>
-        <div className="flex justify-between mb-8">
-          <div className="flex items-center gap-[6px]">
-            <div className="flex items-center px-4 py-1 hover:bg-[#897f7b] cursor-pointer bg-[#e1e1e180] rounded">
+      <section className="px-3 lg:px-5 mb-36 relative slide__up">
+        <h1 className="capitalize font-bookish  text-[20px] lg:text-2xl pb-5 lg:pb-7 pt-2">{slugToWords(productCategory)}</h1>
+        <div className="flex justify-between items-start mb-2 sticky top-[54px] lg:top-[112px] left-0 py-4 z-[99] bg-white">
+          <div className="flex gap-[6px]">
+            {/* <div className="flex items-center px-4 py-1 hover:bg-[#897f7b] cursor-pointer bg-[#e1e1e180] rounded">
               <span className="text-xs uppercase">Filter</span>
-            </div>
-            <div className="flex items-center gap-[5px] px-4 py-1 cursor-pointer bg-[#e1e1e180] rounded group">
-              <span className="text-xs uppercase">Sort By:</span>
-              <button className="text-xs uppercase hover:underline">Recommended</button>
-              <span className="text-xs group-hover:hidden">
-                <IoChevronDownSharp />
-              </span>
-              <span className="text-xs hidden group-hover:block">
-                <IoChevronUpSharp />
-              </span>
+            </div> */}
+            <div className='relative'>
+              <div className="absolute min-w-[174px] top-0 left-0 hover:min-w-[200px] px-3 py-1 cursor-pointer bg-[#e1e1e1] rounded group">
+                <div className='flex items-center gap-[6px]  whitespace-nowrap'>
+                  <span className="text-xs uppercase w-[55px] whitespace-nowrap">Sort By:</span>
+                  <button className="text-xs uppercase hover:underline">{sortby}</button>
+                  <div>
+                    <span className="text-xs group-hover:hidden">
+                      <IoChevronDownSharp />
+                    </span>
+                    <span className="text-xs hidden group-hover:block">
+                      <IoChevronUpSharp />
+                    </span>
+                  </div>
+                </div>
+                <div className="gap-[6px] hidden group-hover:flex">
+                  <div className="w-[55px]"></div>
+                  <div className="flex flex-col items-start">                
+                    {sortby !== 'recommended' && <button
+                     className="text-xs uppercase hover:underline"
+                     onClick={()=>{
+                       setSortby('recommended');
+                       route.push(`/products/${productCategory}?orderby=popularity&order=desc`);
+                     }
+                    }
+                     >
+                      Recommended
+                      </button>}
+                    
+                    {sortby !== 'newest' && <button
+                     className="text-xs uppercase hover:underline"
+                     onClick={()=>{
+                      setSortby('newest');
+                      route.push(`/products/${productCategory}?orderby=date&order=desc`);
+                    }}
+                     >
+                      Newest
+                      </button>}
+                    
+                    {sortby !== 'Price High to low' && <button
+                     className="text-xs uppercase hover:underline"
+                     onClick={()=>{
+                      setSortby('Price High to low')
+                      route.push(`/products/${productCategory}?orderby=price&order=desc`);
+                    }}
+                     >
+                      Price High to low
+                      </button>}
+                    
+                    {sortby !== 'Price low to high' && <button
+                     className="text-xs uppercase hover:underline"
+                     onClick={()=>{
+                      setSortby('Price low to high')
+                      route.push(`/products/${productCategory}?orderby=price&order=asc`);
+                    }}
+                     >
+                      Price low to high
+                      </button>}
+                  </div>
+                </div>
+                
+              </div>
             </div>
           </div>
           <div className="flex items-center justify-end">
             <span className="text-xs">{`[${products.length}]`}</span>
           </div>
-        </div>
-        <div className={`product__grid grid grid-cols-2 lg:grid-cols-4 ${Object.values(showArrows).some((value) => value) ? 'items-start' : 'items-stretch'}`}>
+        </div>        
+        <div className={`pt-10 product__grid grid grid-cols-2 lg:grid-cols-4 items-stretch ${Object.values(showArrows).some((value) => value) ? 'lg:items-start' : 'lg:items-stretch'}`}>
           {products
             .filter((item) => item.status === "publish")
             .map((item) => {
@@ -393,13 +460,21 @@ const ProductGridItems = ({ products, productCategory }) => {
                 >
                     <article>
                       <Link href={`/shopping/${item.slug}`}>
-                      <div className="w-full min-h-[435px] flex flex-col justify-center items-center group">
+                      <div className="w-full h-[220px] lg:min-h-[435px] flex flex-col justify-center items-center select-none group">
                         <Swiper
-                          modules={[Navigation]}
+                          modules={[Navigation, Pagination]}
                           navigation={{
                             nextEl: `.custom-next-${item.id}`,
                             prevEl: `.custom-prev-${item.id}`,
                           }}
+                          pagination={
+                            isMobile
+                              ? {
+                                  nextEl: `.custom-next-${item.id}`,
+                                  prevEl: `.custom-prev-${item.id}`,
+                                }
+                              : false
+                          }
                           loop={true} // Keep the loop enabled here
                           spaceBetween={10}
                           slidesPerView={1}
@@ -409,7 +484,7 @@ const ProductGridItems = ({ products, productCategory }) => {
                           }}
                         >
                           <SwiperSlide>
-                            <Image
+                            <img
                               className="h-auto w-full"
                               src={currentImage} // Use the current image from state
                               height={339}
@@ -432,32 +507,36 @@ const ProductGridItems = ({ products, productCategory }) => {
 
                         {/* Custom Navigation Arrows */}
                         {showArrows[item.id] && (
-                          <>
+                          <div className='hidden lg:block'>
                             <div
-                              className={`custom-prev-${item.id} absolute top-1/2 left-4 transform -translate-y-1/2 z-10`}
+                              className={`custom-prev-${item.id} absolute  left-4 transform z-10`}
+                              style={{top: 'calc(50% - 100px)'}}
                               onClick={(e) => handleArrowClick(e, item.id, "prev")}
                             >
                               <GoChevronLeft className="text-[28px] text-black" />
                             </div>
                             <div
-                              className={`custom-next-${item.id} absolute top-1/2 right-4 transform -translate-y-1/2 z-10`}
+                              className={`custom-next-${item.id} absolute top-1/2 right-4 transform z-10`}
+                              style={{top: 'calc(50% - 100px)'}}
                               onClick={(e) => handleArrowClick(e, item.id, "next")}
                             >
                               <GoChevronRight className="text-[28px] text-black" />
                             </div>
-                          </>
+                          </div>
                         )}
                       </div>
                     </Link>
                     
-                      <section className={`flex flex-col pb-5 ${showArrows[item.id] ? 'border-[#e8e8e8] border-t border-l' : ''}`}>
-                        <p className="m-[13px] mb-0 text-[12px] capitalize leading-5">{item.name}</p>
+                      <section className={`flex flex-col pb-3 lg:pb-5 border-t border-[#e8e8e8] ${showArrows[item.id] ? 'lg:border-[#e8e8e8] lg:border-t lg:border-l' : 'lg:border-none'}`}>
+                        <p className="m-[13px] mb-0 text-[11px] capitalize leading-4">{item.name}</p>
                         <div>
-                          <span className="m-[13px] mb-0 mt-[2px] text-[12px] capitalize leading-5">{`$${item.price}`}</span>
+                          <span className="m-[13px] mb-0 mt-[2px] text-[12px] capitalize leading-5">                            
+                            {`$${Intl.NumberFormat('en-US').format(item.price, 0)}`}
+                            </span>
                         </div>
                         {/* Conditionally render .card__bottom */}
                         <div
-                          className={`card__bottom ${showArrows[item.id] ? 'block' : 'hidden'} mt-3`}
+                          className={`card__bottom hidden ${showArrows[item.id] ? 'lg:block' : 'hidden'} mt-3`}
                         >
                           <div className="px-3 mt-3 flex gap-1">
                             {
@@ -472,7 +551,7 @@ const ProductGridItems = ({ products, productCategory }) => {
                             }
                           </div>
                           <div className="mt-3 px-3">
-                            <button onClick={()=>handleQuickAddClick(item)} className="block w-full bg-[#cecece80] text-xs uppercase p-1 rounded text-center hover:bg-[#939393] hover:text-white">
+                            <button onClick={()=>handleQuickAddClick(item)} className="block w-full select-none bg-[#cecece80] text-xs uppercase p-1 rounded text-center hover:bg-[#939393] hover:text-white">
                               Quick Shop                              
                             </button>
                           </div>

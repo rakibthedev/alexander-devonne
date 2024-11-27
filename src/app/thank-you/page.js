@@ -63,7 +63,7 @@ const Page = () => {
 
     return (
         <div className="px-2 lg:px-5 py-20 min-h-[500px] bg-[#E2DBC8]">
-            {orderData.status === "completed" ? (
+            {orderData.status === "processing" ? (
                 <div>
                     <div className="flex-col gap-10 lg:flex lg:flex-row lg:gap-20 w-full">
                         <div className="lg:flex-[70%] flex-[100%]">

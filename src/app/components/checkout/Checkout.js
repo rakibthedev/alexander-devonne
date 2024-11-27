@@ -85,7 +85,7 @@ export default function Checkout() {
         total: "8.00"
       }
     ],
-    email: '',
+    email: ''
   });
 
   // Method for every Input change 
@@ -279,7 +279,16 @@ export default function Checkout() {
     cartItem.map(item => {
       formData.line_items.push({
         product_id: item.id,
-        quantity: item.quantity
+        quantity: item.quantity,
+        meta_data: [
+          {
+            key: 'additional_info',
+            value: {
+              color: item.color,
+              size: item.size
+            }
+          }
+        ]
       })
     })
   }
@@ -360,7 +369,7 @@ export default function Checkout() {
         <p className="text-xs uppercase mb-3">
           Guest Checkout
         </p>
-        <div className="checkout__form flex gap-[120px]">
+        <div className="custom__form flex gap-[120px]">
           <div className="w-[350px]">
           <p className="text-xs uppercase">
             Guest Checkout
@@ -404,7 +413,7 @@ export default function Checkout() {
             </div>
             <div>
               <p className="text-xs">
-                We will process your data to manage your purchase. Please see the <Link href="#" className="underline">Privacy policy</Link>.
+                We will process your data to manage your purchase. Please see the <Link href="/policy/privacy-policy" className="underline">Privacy policy</Link>.
               </p>
             </div>
             {/* Login button  */}
@@ -434,7 +443,7 @@ export default function Checkout() {
       ):(
       <div>
         {cartItem.length > 0 ? (
-          <form className="checkout__form" onSubmit={handleSubmitForm}>
+          <form className="custom__form" onSubmit={handleSubmitForm}>
             <div className="flex flex-col lg:flex-row gap-7 lg:gap-20">
               <div className="customer__info flex-[100%] lg:flex-[70%]">
                 {/* Form step  */}

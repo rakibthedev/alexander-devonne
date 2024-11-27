@@ -10,7 +10,9 @@ import { WishProvider } from "./context/wishContext";
 import NextTopLoader from "nextjs-toploader";
 import LoadingIndicator from "./components/LoadingIndicator";
 import WishlistPopup from './components/wishlist-popup/WishlistPopup';
-
+import { LoginProvider } from "./context/loginContext";
+import { NotificationProvider } from "./context/notificationContext";
+import NotificationPopup from "@/app/components/custom-notification/NotificationPopup"
 const ibmPlexRegular = localFont({
   src: "./fonts/IBMPlexMono-Regular.ttf",
   variable: "--ibm-plex-regular"
@@ -58,15 +60,20 @@ export default function RootLayout({ children }) {
         {/* <NextTopLoader /> */}
         {/* <LoadingIndicator /> */}
         <CartProvider>
-        <WishProvider>
-            <BagPopup />
-            <WishlistPopup />
-            <HeaderTop />
-            <HeaderMain />
-            {children}
-            <Footer />
-            <FooterBottom />
-        </WishProvider>
+          <WishProvider>
+            <LoginProvider>
+              <NotificationProvider>
+                  <NotificationPopup />
+                  <BagPopup />
+                  <WishlistPopup />
+                  <HeaderTop />
+                  <HeaderMain />
+                  {children}
+                  <Footer />
+                  <FooterBottom />
+              </NotificationProvider>
+            </LoginProvider>
+          </WishProvider>
         </CartProvider>
 
       </body>

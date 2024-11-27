@@ -57,7 +57,7 @@ export default function BagPopup() {
     return (
         <div
             className={`bag__popup__box fixed top-0 right-0 min-h-screen overflow-hidden bg-[#e1e1e1] z-[9999999] ${popupShow ? 'w-full md:w-[375px]' : 'w-0'}`}
-            onMouseEnter={showBagPopup}
+            // onMouseEnter={showBagPopup}
             onMouseLeave={hideBagPopup}
             style={{ transition: "width 0.2s ease", boxSizing: "border-box" }}
         >
