@@ -3,10 +3,13 @@ import Link from 'next/link'
 import React, { useContext, useEffect, useState } from 'react'
 import { formatDate } from '../../methods/formate-date';
 import OrderSum from '@/app/components/account/dashboard/OrderSum'
+import { usePathname } from 'next/navigation';
 
 export default function Orders() {
     const [orders, setOrders] = useState([]);
     const [loaded, setLoaded] = useState(false);
+     // Path name 
+    const currentPath = usePathname();
     // Login context 
     const {loggedUserData} = useContext(LoginContext);
     useEffect(()=>{
@@ -31,6 +34,7 @@ export default function Orders() {
 
   return (
     <div>
+        {currentPath === '/dashboard/orders' && <div>
         {loaded ? (
             <div>
             {orders.length > 0 ? (
@@ -99,6 +103,8 @@ export default function Orders() {
                 <div className="loading text-xs">/</div>
             </div>
         )}
+    
+        </div>}
         
     </div>
   )

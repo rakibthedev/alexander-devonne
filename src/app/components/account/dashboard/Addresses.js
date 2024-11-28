@@ -1,5 +1,6 @@
 import { LoginContext } from '@/app/context/loginContext';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { useContext, useState } from 'react';
 
 
@@ -7,10 +8,12 @@ export default function Addresses() {
     const [loaded, setLoaded] = useState(true);
     // Login context 
     const {loggedUserData} = useContext(LoginContext);
-   
+    // Path name 
+    const currentPath = usePathname();
 
   return (
     <div>
+        {currentPath === '/dashboard/addresses' && <div>
         {loaded ? (
             <div>
                 <h1 className="text-xs uppercase mb-8">Your Address Book</h1>
@@ -33,6 +36,8 @@ export default function Addresses() {
                 <div className="loading text-xs">/</div>
             </div>
         )}
+        
+        </div> }
         
     </div>
   )

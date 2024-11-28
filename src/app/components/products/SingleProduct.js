@@ -8,6 +8,8 @@ import { WishContext } from '@/app/context/wishContext';
 import { useRouter } from 'next/navigation';
 import { IoMdHeartEmpty, IoIosHeart } from "react-icons/io";
 import WishPopup from '../wishlist-popup/WishlistPopup';
+import { HiOutlinePlus } from "react-icons/hi2";
+import { CgClose } from "react-icons/cg";
 
 function removeHtmlTags(str) {
     return str.replace(/<[^>]*>/g, ''); // Removes everything between < and >
@@ -243,6 +245,40 @@ const closeModal = () => {
     }
   }, [scrollPercentage]);
 
+//   scroll to add to bag 
+const addBagContainerRef = useRef(null);
+const scrollToAddBagContainer = () => {
+    if (addBagContainerRef.current) {
+        const y = addBagContainerRef.current.getBoundingClientRect().bottom + window.pageYOffset - window.innerHeight + 90;
+        window.scrollTo({ top: y, behavior: 'smooth' });
+    }
+};
+
+
+//   Show hide add bag bottom bar
+  const [isShowAddBagBar, setIsShowBagBar] = useState(true);
+
+  useEffect(() => {
+      const handleScroll = () => {
+          // Get the height of the entire body
+          const bodyHeight = document.body.scrollHeight;
+
+          // Check if the scroll position is greater than or equal to 90% of the body height
+          if (window.scrollY >= bodyHeight * 0.9 - window.innerHeight) {
+              setIsShowBagBar(false);
+          } else {
+              setIsShowBagBar(true);
+          }
+      };
+
+      // Add scroll event listener
+      window.addEventListener('scroll', handleScroll);
+
+      // Cleanup the event listener on component unmount
+      return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+
   return (
     <div>
         <div className='fixed top-[100px] right-4 z-[9999]'>
@@ -259,28 +295,49 @@ const closeModal = () => {
         {/* Main content */}
         <div className="block lg:flex lg:px-5 gap-5 slide__up">
             <div className="lg:flex-[70%] flex-[100%]">
-                <div className="relative">
+                <div className={`${isZoom ? 'fixed top-0 left-0 w-full z-[9999]' : 'relative'}`}>
+                    
                     <div ref={imgContainerRef} 
-                    className={`bg-white outline-none ${isZoom ? 'fixed top-0 left-0 w-full h-screen overflow-y-auto z-[9999] image__modal image__popup zoom__in' : 'product__img__container flex items-stretch flex-nowrap lg:grid lg:grid-cols-2 overflow-x-auto lg:overflow-x-hidden'}`}
+                    className={`relative single__product__image_container`}
                     onScroll={handleScroll}
                     >
-                        
-                        {product.images.map((item, index) => (
-                            <div 
-                            id={`image-${index}`} 
-                            key={index} 
-                            className={`${isZoom ? 'relative border-b border-[#e8e8e8] bg-white min-h-screen w-full flex justify-center items-center' : 'product__image__wrapper'}`}                        
-                            >
-                                <div className={`${isZoom ? 'static' : 'relative' } flex justify-center lg:w-full w-screen min-h-screen items-center`}>
-                                    <img onClick={()=>handleZoomImage(index, item.src)} className={`w-full h-auto`} src={item.src} height={339} width={254} alt={product.name} />
-                                    <div className='absolute top-0 left-0 py-2 px-3 hidden lg:block'>
-                                        <span className='text-xs'>{`[${index + 1}/${product.images.length}]`}</span>
+                        {/* Zoom Button  */}
+                        <div className="lg:hidden">
+                            {!isZoom ? 
+                            <div className={`absolute z-[10] right-2 top-2 lg:hidden pointer-events-none`}>
+                                <HiOutlinePlus className='text-[20px]' />
+                            </div>
+                            :
+                            <div className={`fixed z-[9999] right-2 top-5 lg:hidden pointer-events-none`}>
+                                <CgClose className='text-[20px]' />
+                            </div>}
+                        </div>
+
+                        {/* Image Wraper  */}
+                        <div className={`bg-white outline-none ${isZoom ? 'w-full lg:h-screen lg:overflow-y-auto product__img__container lg:block flex items-stretch flex-nowrap overflow-x-auto image__modal image__popup zoom__in' : 'product__img__container flex items-stretch flex-nowrap lg:grid lg:grid-cols-2 overflow-x-auto lg:overflow-x-hidden'}`}>
+                            {product.images.map((item, index) => (
+                                <div 
+                                id={`image-${index}`} 
+                                key={index} 
+                                className={`${isZoom ? 'image__zoom__out relative border-b border-[#e8e8e8] bg-white min-h-screen w-full flex justify-center items-center' : 'image__zoom__in single__product__image__wrapper'}`}                        
+                                >
+                                    <div className={`${isZoom ? 'static w-full' : 'relative' } flex justify-center lg:w-full w-screen min-h-screen items-center`}>
+                                        <img onClick={()=>handleZoomImage(index, item.src)} className={`w-full h-auto`} src={item.src} height={339} width={254} alt={product.name} />
+                                        
+                                        {/* Image Number count  */}
+                                        <div className={`${isZoom ? 'hidden justify-end top-8' : 'hidden'} w-full absolute lg:top-0 left-0 py-2 px-3  lg:flex lg:justify-start`}>
+                                            <span className='text-xs'>{`[${index + 1}/${product.images.length}]`}</span>
+                                        </div>                                    
                                     </div>
                                 </div>
-                            </div>
-                        ))}
+                            ))}
+                        </div>
+        
                     </div>
-                    <div className="scroll__bar lg:hidden block absolute bottom-7 left-1/2 -translate-x-1/2 z-[8] w-[160px] bg-[#e1e1e180] h-[2px]">
+                    {/* Scroll track  */}
+                    <div 
+                    className={`${isZoom ? 'z-[99999] fixed' : 'z-[8] absolute'} scroll__bar lg:hidden block bottom-7 left-1/2 -translate-x-1/2 w-[160px] bg-[#e1e1e180] h-[2px]`}
+                    >
                         <span ref={scrollRef} className="h-[2px] w-[26px] bg-[#000000cc] absolute"></span>
                     </div>
                 </div>                
@@ -342,7 +399,7 @@ const closeModal = () => {
                                 .flatMap(item => item.options)
                                 .map((option, index) => (
                                     <button 
-                                        className={`min-w-8 min-h-[41px] flex items-center justify-center text-xs hover:text-white ${selectedSize === option ? 'bg-[#333] text-white hover:bg-[#333]' : 'bg-[#cecece80] text-black hover:bg-[#897f7b]'} rounded outline-none ${loading ? 'disabled:cursor-not-allowed' : 'cursor-pointer'}`} 
+                                        className={`min-w-8 min-h-[41px] px-2 flex items-center justify-center text-xs hover:text-white ${selectedSize === option ? 'bg-[#333] text-white hover:bg-[#333]' : 'bg-[#cecece80] text-black hover:bg-[#897f7b]'} rounded outline-none ${loading ? 'disabled:cursor-not-allowed' : 'cursor-pointer'}`} 
                                         key={index}
                                         onClick={() => handleSizeClick(option)}     
                                         disabled={loading}                               
@@ -354,7 +411,7 @@ const closeModal = () => {
                         </div>
                     </div>
                 </div>
-                <div className="mt-5 flex items-center gap-2">
+                <div className="mt-5 flex items-center gap-2" ref={addBagContainerRef}>
                     {/* Add to cart button  */}
                     <button className={`bg-black rounded text-xs text-white py-1 uppercase h-[30px] w-[195px] ${loading ? 'disabled:cursor-not-allowed' : 'cursor-pointer'}`} 
                     onClick={handleAddToCart} ref={addBagRef} 
@@ -395,13 +452,13 @@ const closeModal = () => {
             <div className='mt-16 mb-10 px-3 lg:px-5 ' ref={detailsRef}>
                 <div className='flex items-start gap-5'>
                     <button 
-                        className={`uppercase text-[14px] font-ibmPlexMedium ${activeTab === 'materials' ? 'border-b border-black pb-1' : ''}`}
+                        className={`uppercase text-[12px] lg:text-[14px] font-ibmPlexMedium ${activeTab === 'materials' ? 'border-b border-black pb-1' : ''}`}
                         onClick={() => handleToggle('materials')}
                     >
                         Materials
                     </button>
                     <button 
-                        className={`uppercase text-[14px] font-ibmPlexMedium ${activeTab === 'fitting' ? 'border-b border-black pb-1' : ''}`}
+                        className={`uppercase text-[12px] lg:text-[14px] font-ibmPlexMedium ${activeTab === 'fitting' ? 'border-b border-black pb-1' : ''}`}
                         onClick={() => handleToggle('fitting')}
                     >
                         Fitting
@@ -417,12 +474,26 @@ const closeModal = () => {
                         dangerouslySetInnerHTML={{ __html: formatStringWithLineBreaks(fitting) }} />
                 )}
             </div>
-
+            
+            {/* Mobile bottom quick bag  */}
+            {isShowAddBagBar &&
+            <div 
+            className="lg:hidden fixed z-[999] bottom-0 left-0 w-full px-4 py-5 bg-[#e1e1e180] flex justify-between items-center"
+            style={{backdropFilter: 'blur(3rem)'}}
+            >
+                <span className="text-[14px]">{`$${Intl.NumberFormat('en-US').format(product.price, 0)}`}</span>
+                {/* Add to cart button  */}
+                <button className={`bg-black rounded text-xs text-white uppercase px-8 py-[7px] ${loading ? 'disabled:cursor-not-allowed' : 'cursor-pointer'}`} 
+                onClick={scrollToAddBagContainer} 
+                disabled={loading}>
+                    Add to bag                
+                </button>
+            </div>}
 
             {/* Product image popup modal  */}
             {isModalOpen && (
             <div 
-            className={`w-full ${isPopupClose ? 'zoom__out' : ''} outline-none zoom__in image__popup image__modal fixed inset-0 bg-white/40 h-screen z-[99999] overflow-y-hidden`} 
+            className={`image__zoom__out hidden lg:block w-full ${isPopupClose ? 'zoom__out' : ''} outline-none zoom__in image__popup image__modal fixed inset-0 bg-white/40 h-screen z-[99999] overflow-y-hidden`} 
             onClick={closeModal}      
             ref={modalRef}                             
             >

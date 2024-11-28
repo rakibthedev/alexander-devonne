@@ -12,9 +12,20 @@ export default function DashboardMenu() {
     // Login Context 
     const {setLoggedUserData} = useContext(LoginContext);
 
-    const handleLogout = () => {
+    const handleLogout = async () => {
       setLoggedUserData(null);
-      router.push('/account/login')
+
+      try {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_DOMAIN_ADDRESS}/api/logout/logout`, { method: 'POST' });
+        if (res.ok) {
+            // Redirect to login page after successful logout
+            router.push('/account/login');
+        } else {
+            console.error('Failed to log out');
+        }
+    } catch (error) {
+        console.error('Logout error:', error);
+    }
     }
 
     return (

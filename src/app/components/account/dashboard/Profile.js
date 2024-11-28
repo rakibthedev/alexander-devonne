@@ -3,11 +3,13 @@ import { useContext, useState } from "react"
 import CountryName from "../../methods/CountryName"
 import EditProfile from "../EditProfile"
 import ChangePassword from './../ChangePassword';
+import { usePathname } from "next/navigation";
 
 export default function Profile() {
   const {loggedUserData} = useContext(LoginContext)
   const [currentView, setCurrentView] = useState({name: 'main'})
-
+  // Path name 
+  const currentPath = usePathname();
   // Edit data code 
   const handleEdit = () => {
     setCurrentView({
@@ -33,6 +35,7 @@ export default function Profile() {
   }
   return (
     <div>
+      {currentPath === '/dashboard/profile' && <div>
         <h1 className="text-xs uppercase mb-8">Your Personal Dashboard</h1>
         {loggedUserData && 
           <div>
@@ -137,6 +140,7 @@ export default function Profile() {
               
         </div>
         }
+      </div>}
     </div>
   )
 }
