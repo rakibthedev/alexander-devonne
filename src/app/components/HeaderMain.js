@@ -43,20 +43,20 @@ export default function HeaderMain() {
     setSelectedCat(null);
   }
 
-  // // Fetch Menu Data
-  // useEffect(()=>{
-  //   async function getMenuData() {
-  //     const apiUrl =  `${process.env.NEXT_PUBLIC_DOMAIN_ADDRESS}/api/menu/header-menu`;
-  //     const res = await fetch(apiUrl);
-  //     const data = await res.json();
+  // Fetch Menu Data
+  useEffect(()=>{
+    async function getMenuData() {
+      const apiUrl =  `${process.env.NEXT_PUBLIC_DOMAIN_ADDRESS}/api/menu/header-menu`;
+      const res = await fetch(apiUrl);
+      const data = await res.json();
       
-  //     if(res.ok){
-  //       setMenuData(data);
-  //     }
-  //   }
-  //   getMenuData();
+      if(res.ok){
+        setMenuData(data);
+      }
+    }
+    getMenuData();
 
-  // },[])
+  },[])
 
   useEffect(() => {
     if (isSearching) {
