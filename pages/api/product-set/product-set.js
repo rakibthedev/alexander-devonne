@@ -16,7 +16,7 @@ export default async function handler(req, res) {
     };
 
     // Fetch product-set data
-    const response = await fetch(`https://sumanpatwary.com/alexander_wp/wp-json/wp/v2/product-set/`);
+    const response = await fetch(`${process.env.WORDPRESS_SITE_URL}/wp-json/wp/v2/product-set`);
 
     // Check if product-set API call was successful
     if (!response.ok) {
@@ -55,7 +55,7 @@ export default async function handler(req, res) {
     );
 
     // Return processed data
-    res.status(200).json(productSetData);
+    res.status(200).json(data);
   } catch (error) {
     console.error("Error fetching product set data:", error.message);
     res.status(500).json({ error: "Internal Server Error" });
