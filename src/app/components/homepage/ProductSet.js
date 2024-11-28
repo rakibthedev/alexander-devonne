@@ -4,12 +4,12 @@ import ProductGalleryServer from '../ProductGalleryServer';
 
 export default async function ProductSet() {
 
-    const response = await fetch(`${process.env.NEXT_PUBLIC_DOMAIN_ADDRESS}/api/product-set/product-set`)
-    const data = await response.json();
+    // const response = await fetch(`${process.env.NEXT_PUBLIC_DOMAIN_ADDRESS}/api/product-set/product-set`);
+    const data = []//await response.json();
 
   return (
     <div>
-      {data.map((item, index) => (
+      {data.length > 0 && data.map((item, index) => (
         <div key={index}>
             {item.just_gallery == "no" && 
             <section className="px-3 lg:px-5 mb-12 lg:mb-28">
