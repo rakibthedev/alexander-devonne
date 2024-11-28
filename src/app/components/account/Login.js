@@ -82,59 +82,59 @@ export default function Login() {
     };
 
     // Handle form submit
-    const handleLoginFormSubmit = async (e) => {
-        e.preventDefault();
-        setIsInitialRender(false); // Set to false after the initial render
+    // const handleLoginFormSubmit = async (e) => {
+    //     e.preventDefault();
+    //     setIsInitialRender(false); // Set to false after the initial render
 
-        validateErrors();
+    //     validateErrors();
 
-        // If there are no errors, proceed with form submission (e.g., API call)
-        if (Object.keys(checkErrors()).length === 0) {
-            setLoading(true);
-            try{
+    //     // If there are no errors, proceed with form submission (e.g., API call)
+    //     if (Object.keys(checkErrors()).length === 0) {
+    //         setLoading(true);
+    //         try{
 
-                const res = await fetch(`${process.env.NEXT_PUBLIC_WORDPRESS_SITE_URL}/wp-json/jwt-auth/v1/token`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        "username": loginData.login_email,
-                        "password": loginData.login_password,                        
-                    })
-                });
+    //             const res = await fetch(`${process.env.NEXT_PUBLIC_WORDPRESS_SITE_URL}/wp-json/jwt-auth/v1/token`, {
+    //                 method: 'POST',
+    //                 headers: {
+    //                     'Content-Type': 'application/json'
+    //                 },
+    //                 body: JSON.stringify({
+    //                     "username": loginData.login_email,
+    //                     "password": loginData.login_password,                        
+    //                 })
+    //             });
                 
-                const data = await res.json();
+    //             const data = await res.json();
                 
-                if (res.ok) {
+    //             if (res.ok) {
 
-                    setLoading(false);
+    //                 setLoading(false);
 
-                    setToken(data.token);
+    //                 setToken(data.token);
 
-                    getLoggedUserData(data.token);
+    //                 getLoggedUserData(data.token);
 
-                } else {
+    //             } else {
 
-                    setNotification({message: "Incorrect email or password!"});
+    //                 setNotification({message: "Incorrect email or password!"});
 
-                    setLoading(false);
+    //                 setLoading(false);
 
-                    notificationGone();
+    //                 notificationGone();
 
-                    clearLoginData();
-                }            
-            }catch(error){
-                setNotification({message: "Login failed. Try again."});
-                setLoading(false);
+    //                 clearLoginData();
+    //             }            
+    //         }catch(error){
+    //             setNotification({message: "Login failed. Try again."});
+    //             setLoading(false);
 
-                notificationGone();
+    //             notificationGone();
 
-                clearLoginData();
+    //             clearLoginData();
                 
-            }
-        }
-    };
+    //         }
+    //     }
+    // };
 
 
     // GetLoggedUserData 
