@@ -1,6 +1,8 @@
 import Link from 'next/link';
 import { FiArrowRight } from 'react-icons/fi';
 import ProductGalleryServer from '../ProductGalleryServer';
+import ProductSetImage from './ProductSetImage';
+import ProductSetImageMobile from './ProductSetImageMobile';
 
 export default async function ProductSet() {
 
@@ -23,6 +25,8 @@ export default async function ProductSet() {
     return <div>Something went wrong. Please try again later.</div>;
   }
 
+  
+
   return (
     <div>
       {data.map((item, index) => (
@@ -31,27 +35,9 @@ export default async function ProductSet() {
             <section className="px-3 lg:px-5 mb-12 lg:mb-28">
               <div>
                 <Link href={item.acf.category_url}>
-                  {/* <div 
-                  className="hidden md:block lg:min-h-[650px] md:min-h-[650px] w-full"
-                  style={{
-                    backgroundImage: `url(${item.feature_image})`,
-                    backgroundRepeat: 'no-repeat',
-                    backgroundPosition: 'center top',
-                    backgroundSize: 'auto 100%',
-                  }}
-                  >
-                  </div>
-                  <div 
-                  className="block min-h-[450px] md:hidden w-full"
-                  style={{
-                    backgroundImage: `url(${item.feature_image_mobile})`,
-                    backgroundRepeat: 'no-repeat',
-                    backgroundPosition: 'left top',
-                    backgroundSize: 'cover',
-                  }}
-                  >
-                  </div> */}
-
+                 
+                 <ProductSetImage imageId={item.featured_media}/>
+                 <ProductSetImageMobile imageId={item.acf.feature_image_mobile}/>
 
                   {/* <img
                     className="w-full h-auto"
