@@ -254,7 +254,6 @@ const scrollToAddBagContainer = () => {
     }
 };
 
-
 //   Show hide add bag bottom bar
   const [isShowAddBagBar, setIsShowBagBar] = useState(true);
 
