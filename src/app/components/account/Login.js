@@ -178,8 +178,8 @@ export default function Login() {
                 // setLoginData to login context
                 setLoggedUserData(structuredUserData);    
                 
-                // Set cookie for middleware
-                document.cookie = `authToken=${data.token}; path=/`;
+                // // Set cookie for middleware
+                // document.cookie = `authToken=${data.token}; path=/`;
 
                 router.push('/dashboard/profile');
             } else {
