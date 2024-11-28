@@ -6,10 +6,8 @@ import Profile from '@/app/components/account/dashboard/Profile'
 import Orders from '@/app/components/account/dashboard/Orders'
 import Addresses from '@/app/components/account/dashboard/Addresses'
 import PaymentMethods from './../../components/account/dashboard/PaymentMethods';
-import { usePathname } from 'next/navigation';
 
 export default function page() {
-  const currentPath = usePathname();
   
   return (
     <div className='pt-5 pb-32 px-3 lg:px-5 bg-[#ddd7d6] min-h-[500px]'>
