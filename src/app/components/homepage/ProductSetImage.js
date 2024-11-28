@@ -14,6 +14,7 @@ export default async function ProductSetImage({ imageId }) {
           const data = await response.json();
           // Assuming `guid.rendered` contains the image URL
          imgSrc = await data.data.guid?.rendered || '';
+         console.log(imgSrc)
 
         } else {
           console.error('Error fetching image:', response.statusText);
