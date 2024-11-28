@@ -8,9 +8,7 @@ export default async function ProductSet() {
 
   try {
     // Ensure an absolute URL for server-side fetching
-    const response = await fetch(`${process.env.NEXT_PUBLIC_DOMAIN_ADDRESS}/api/product-set/product-set`, {
-      next: { revalidate: 60 }, // Add caching/revalidation if needed
-    });
+    const response = await fetch(`${process.env.NEXT_PUBLIC_DOMAIN_ADDRESS}/api/product-set/product-set`);
 
     // Check if response is successful
     if (!response.ok) {
@@ -29,11 +27,11 @@ export default async function ProductSet() {
     <div>
       {data.map((item, index) => (
         <div key={index}>
-            {item.just_gallery == "no" && 
+            {item.acf.just_gallery == "no" && 
             <section className="px-3 lg:px-5 mb-12 lg:mb-28">
               <div>
-                <Link href={item.category_url}>
-                  <div 
+                <Link href={item.acf.category_url}>
+                  {/* <div 
                   className="hidden md:block lg:min-h-[650px] md:min-h-[650px] w-full"
                   style={{
                     backgroundImage: `url(${item.feature_image})`,
@@ -52,7 +50,7 @@ export default async function ProductSet() {
                     backgroundSize: 'cover',
                   }}
                   >
-                  </div>
+                  </div> */}
 
 
                   {/* <img
@@ -60,19 +58,19 @@ export default async function ProductSet() {
                     src={item.feature_image}
                     width={700}
                     height={540}
-                    alt={item.title}
+                    alt={item.acf.gallery_title}
                   /> */}
                 </Link>
                 <div className="flex pt-[14px]">
-                  <Link className="text-2xl" href={item.category_url}>
-                    <span className="font-bookish" dangerouslySetInnerHTML={{__html: `<div>${item.title}</div>`}} />
+                  <Link className="text-2xl" href={item.acf.category_url}>
+                    <span className="font-bookish" dangerouslySetInnerHTML={{__html: `<div>${item.title.rendered}</div>`}} />
                   </Link>
                 </div>
                 <Link
                   className="product__set__link text-xs uppercase mt-[13px] ml-[2px] pb-[2px] border-b border-black"
-                  href={item.category_url}
+                  href={item.acf.category_url}
                 >
-                  {item.link_1_text}
+                  {item.acf.link_1_text}
                 </Link>
               </div>
             </section>
@@ -81,19 +79,19 @@ export default async function ProductSet() {
           <section className="px-3 lg:px-5 mb-3">
             <div className="flex items-end gap-5">
               <span className="text-[14px] font-me font-ibmPlexMedium uppercase" 
-              dangerouslySetInnerHTML={{__html: `<div>${item.gallery_title}</div>`}}
+              dangerouslySetInnerHTML={{__html: `<div>${item.acf.gallery_title}</div>`}}
               />
-              {item.just_gallery == "no" && <div className="flex items-center gap-2">
-                <Link className="underline text-xs whitespace-nowrap" href={item.category_url}>
-                  {item.link_2_text}
+              {item.acf.just_gallery == "no" && <div className="flex items-center gap-2">
+                <Link className="underline text-xs whitespace-nowrap" href={item.acf.category_url}>
+                  {item.acf.link_2_text}
                 </Link>
-                <Link className="text-[12px]" href={item.category_url}>
+                <Link className="text-[12px]" href={item.acf.category_url}>
                   <FiArrowRight />
                 </Link>
               </div> }
             </div>
           </section>
-          <ProductGalleryServer apiUrl={`${process.env.NEXT_PUBLIC_DOMAIN_ADDRESS}/api/product/category-products?category=${item.product_category}`}/>
+          <ProductGalleryServer apiUrl={`${process.env.NEXT_PUBLIC_DOMAIN_ADDRESS}/api/product/category-products?category=${item.acf.product_category}`}/>
         </div>
       ))}
     </div>
