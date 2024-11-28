@@ -37,7 +37,7 @@ export default async function ProductSet() {
                 <Link href={item.acf.category_url}>
                  
                  <ProductSetImage imageId={item.featured_media}/>
-                 <ProductSetImageMobile imageId={item.acf.feature_image_mobile}/>
+                 {/* <ProductSetImageMobile imageId={item.acf.feature_image_mobile}/> */}
 
                   {/* <img
                     className="w-full h-auto"
