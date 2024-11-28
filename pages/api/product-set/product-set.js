@@ -26,33 +26,33 @@ export default async function handler(req, res) {
 
     const data = await response.json();
 
-    // Process each product-set item
-    const productSetData = await Promise.all(
-      data.map(async (item) => {
-        // Fetch featured media image
-        const imgData = item.featured_media
-          ? await fetchWithErrorHandling(`${process.env.WORDPRESS_SITE_URL}/wp-json/wp/v2/media/${item.featured_media}`)
-          : null;
+    // // Process each product-set item
+    // const productSetData = await Promise.all(
+    //   data.map(async (item) => {
+    //     // Fetch featured media image
+    //     const imgData = item.featured_media
+    //       ? await fetchWithErrorHandling(`${process.env.WORDPRESS_SITE_URL}/wp-json/wp/v2/media/${item.featured_media}`)
+    //       : null;
 
-        // Fetch mobile featured media image
-        const imgData2 = item.acf?.feature_image_mobile
-          ? await fetchWithErrorHandling(`${process.env.WORDPRESS_SITE_URL}/wp-json/wp/v2/media/${item.acf.feature_image_mobile}`)
-          : null;
+    //     // Fetch mobile featured media image
+    //     const imgData2 = item.acf?.feature_image_mobile
+    //       ? await fetchWithErrorHandling(`${process.env.WORDPRESS_SITE_URL}/wp-json/wp/v2/media/${item.acf.feature_image_mobile}`)
+    //       : null;
 
-        // Return processed item
-        return {
-          feature_image: imgData?.guid?.rendered || null,
-          feature_image_mobile: imgData2?.guid?.rendered || null,
-          title: item.title?.rendered || null,
-          product_category: item.acf?.product_category || null,
-          category_url: item.acf?.category_url || null,
-          gallery_title: item.acf?.gallery_title || null,
-          link_1_text: item.acf?.link_1_text || null,
-          link_2_text: item.acf?.link_2_text || null,
-          just_gallery: item.acf?.just_gallery || null,
-        };
-      })
-    );
+    //     // Return processed item
+    //     return {
+    //       feature_image: imgData?.guid?.rendered || null,
+    //       feature_image_mobile: imgData2?.guid?.rendered || null,
+    //       title: item.title?.rendered || null,
+    //       product_category: item.acf?.product_category || null,
+    //       category_url: item.acf?.category_url || null,
+    //       gallery_title: item.acf?.gallery_title || null,
+    //       link_1_text: item.acf?.link_1_text || null,
+    //       link_2_text: item.acf?.link_2_text || null,
+    //       just_gallery: item.acf?.just_gallery || null,
+    //     };
+    //   })
+    // );
 
     // Return processed data
     res.status(200).json(data);
