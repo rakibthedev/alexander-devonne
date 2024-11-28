@@ -179,7 +179,7 @@ export default function Login() {
                 setLoggedUserData(structuredUserData);    
                 
                 // // Set cookie for middleware
-                // document.cookie = `authToken=${data.token}; path=/`;
+                document.cookie = `authToken=${data.token}; path=/`;
 
                 router.push('/dashboard/profile');
             } else {

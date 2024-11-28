@@ -15,17 +15,17 @@ export default function DashboardMenu() {
     const handleLogout = async () => {
       setLoggedUserData(null);
 
-    //   try {
-    //     const res = await fetch(`${process.env.NEXT_PUBLIC_DOMAIN_ADDRESS}/api/logout/logout`, { method: 'POST' });
-    //     if (res.ok) {
-    //         // Redirect to login page after successful logout
-    //         router.push('/account/login');
-    //     } else {
-    //         console.error('Failed to log out');
-    //     }
-    // } catch (error) {
-    //     console.error('Logout error:', error);
-    // }
+      try {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_DOMAIN_ADDRESS}/api/logout/logout`, { method: 'POST' });
+        if (res.ok) {
+            // Redirect to login page after successful logout
+            router.push('/account/login');
+        } else {
+            console.error('Failed to log out');
+        }
+    } catch (error) {
+        console.error('Logout error:', error);
+    }
     }
 
     return (
