@@ -1,19 +1,19 @@
 export default async function handler(req, res) {
   try {
     // Helper function to fetch with error handling
-    const fetchWithErrorHandling = async (url) => {
-      try {
-        const response = await fetch(url);
-        if (!response.ok) {
-          console.error(`Error fetching ${url}: ${response.status} ${response.statusText}`);
-          return null;
-        }
-        return await response.json();
-      } catch (error) {
-        console.error(`Error fetching ${url}:`, error.message);
-        return null;
-      }
-    };
+    // const fetchWithErrorHandling = async (url) => {
+    //   try {
+    //     const response = await fetch(url);
+    //     if (!response.ok) {
+    //       console.error(`Error fetching ${url}: ${response.status} ${response.statusText}`);
+    //       return null;
+    //     }
+    //     return await response.json();
+    //   } catch (error) {
+    //     console.error(`Error fetching ${url}:`, error.message);
+    //     return null;
+    //   }
+    // };
 
     // Fetch product-set data
     const response = await fetch(`${process.env.WORDPRESS_SITE_URL}/wp-json/wp/v2/product-set`);
