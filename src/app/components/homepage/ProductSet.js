@@ -65,7 +65,7 @@ export default async function ProductSet() {
                 </Link>
                 <div className="flex pt-[14px]">
                   <Link className="text-2xl" href={item.category_url}>
-                    <span className="font-bookish" dangerouslySetInnerHTML={{__html: item.title}} />
+                    <span className="font-bookish" dangerouslySetInnerHTML={{__html: `<div>${item.title}</div>`}} />
                   </Link>
                 </div>
                 <Link
@@ -81,7 +81,7 @@ export default async function ProductSet() {
           <section className="px-3 lg:px-5 mb-3">
             <div className="flex items-end gap-5">
               <span className="text-[14px] font-me font-ibmPlexMedium uppercase" 
-              dangerouslySetInnerHTML={{__html: item.gallery_title}}
+              dangerouslySetInnerHTML={{__html: `<div>${item.gallery_title}</div>`}}
               />
               {item.just_gallery == "no" && <div className="flex items-center gap-2">
                 <Link className="underline text-xs whitespace-nowrap" href={item.category_url}>
