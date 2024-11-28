@@ -27,7 +27,7 @@ export default async function ProductSet() {
 
   return (
     <div>
-      {data.length > 0 && data.map((item, index) => (
+      {data.map((item, index) => (
         <div key={index}>
             {item.just_gallery == "no" && 
             <section className="px-3 lg:px-5 mb-12 lg:mb-28">
