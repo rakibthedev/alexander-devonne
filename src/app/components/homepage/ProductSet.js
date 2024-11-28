@@ -8,7 +8,7 @@ export default async function ProductSet() {
 
   try {
     // Ensure an absolute URL for server-side fetching
-    const response = await fetch(`${process.env.NEXT_PUBLIC_DOMAIN_ADDRESS}/api/product-set/product-set`, {
+    const response = await fetch(`https://alexander-devonne.vercel.app/api/product-set/product-set`, {
       next: { revalidate: 60 }, // Add caching/revalidation if needed
     });
 

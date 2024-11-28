@@ -16,10 +16,7 @@ export default async function handler(req, res) {
     };
 
     // Fetch product-set data
-    const response = await fetch(`${process.env.WORDPRESS_SITE_URL}/wp-json/wp/v2/product-set`, {
-      method: "GET",
-      headers: { "Content-Type": "application/json" },
-    });
+    const response = await fetch(`https://sumanpatwary.com/alexander_wp/wp-json/wp/v2/product-set/`);
 
     // Check if product-set API call was successful
     if (!response.ok) {
