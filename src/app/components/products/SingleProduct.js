@@ -218,15 +218,16 @@ const closeModal = () => {
 
     // Track image container scroll
     const [scrollPercentage, setScrollPercentage] = useState(0);
-
+    const imageBoxRef = useRef(null);
     const handleScroll = () => {
-        if (imgContainerRef.current) {
-        const { scrollLeft, scrollWidth, clientWidth } = imgContainerRef.current;
+        if (imageBoxRef.current) {
+        const { scrollLeft, scrollWidth, clientWidth } = imageBoxRef.current;
         const percent = (scrollLeft / (scrollWidth - clientWidth)) * 100;
         setScrollPercentage(percent);
+        console.log(scrollPercentage)
         }
     };
-
+    
     
     const scrollRef = useRef();
 
@@ -297,8 +298,7 @@ const scrollToAddBagContainer = () => {
                 <div className={`${isZoom ? 'fixed top-0 left-0 w-full z-[9999]' : 'relative'}`}>
                     
                     <div ref={imgContainerRef} 
-                    className={`relative single__product__image_container`}
-                    onScroll={handleScroll}
+                    className={`relative single__product__image_container`}                    
                     >
                         {/* Zoom Button  */}
                         <div className="lg:hidden">
@@ -313,7 +313,11 @@ const scrollToAddBagContainer = () => {
                         </div>
 
                         {/* Image Wraper  */}
-                        <div className={`bg-white outline-none ${isZoom ? 'w-full lg:h-screen lg:overflow-y-auto product__img__container lg:block flex items-stretch flex-nowrap overflow-x-auto image__modal image__popup zoom__in' : 'product__img__container flex items-stretch flex-nowrap lg:grid lg:grid-cols-2 overflow-x-auto lg:overflow-x-hidden'}`}>
+                        <div 
+                        className={`bg-white outline-none ${isZoom ? 'w-full lg:h-screen lg:overflow-y-auto product__img__container lg:block flex items-stretch flex-nowrap overflow-x-auto image__modal image__popup zoom__in' : 'product__img__container flex items-stretch flex-nowrap lg:grid lg:grid-cols-2 overflow-x-auto lg:overflow-x-hidden'}`}
+                        onScroll={handleScroll}
+                        ref={imageBoxRef}
+                        >
                             {product.images.map((item, index) => (
                                 <div 
                                 id={`image-${index}`} 
