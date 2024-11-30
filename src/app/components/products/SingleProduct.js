@@ -323,8 +323,11 @@ const scrollToAddBagContainer = () => {
                                 key={index} 
                                 className={`${isZoom ? 'image__zoom__out relative border-b border-[#e8e8e8] bg-white min-h-screen w-full flex justify-center items-center' : 'image__zoom__in single__product__image__wrapper'}`}                        
                                 >
-                                    <div className={`${isZoom ? 'static w-full' : 'relative' } flex justify-center lg:w-full w-screen min-h-screen items-center`}>
-                                        <img onClick={()=>handleZoomImage(index, item.src)} className={`w-full h-auto`} src={item.src} height={339} width={254} alt={product.name} />
+                                    <div                                     
+                                    className={`${isZoom ? 'static w-full' : 'relative' } flex justify-center lg:w-full w-screen min-h-screen items-center`}
+                                    onClick={()=>handleZoomImage(index, item.src)}
+                                    >
+                                        <img className={`w-full h-auto`} src={item.src} height={339} width={254} alt={product.name} />
                                         
                                         {/* Image Number count  */}
                                         <div className={`${isZoom ? 'hidden justify-end top-8' : 'hidden'} w-full absolute lg:top-0 left-0 py-2 px-3  lg:flex lg:justify-start`}>
