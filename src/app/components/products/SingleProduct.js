@@ -224,7 +224,6 @@ const closeModal = () => {
         const { scrollLeft, scrollWidth, clientWidth } = imageBoxRef.current;
         const percent = (scrollLeft / (scrollWidth - clientWidth)) * 100;
         setScrollPercentage(percent);
-        console.log(scrollPercentage)
         }
     };
     
@@ -308,7 +307,7 @@ const scrollToAddBagContainer = () => {
                             </div>
                             :
                             <div className={`fixed z-[9999] right-2 top-5 lg:hidden pointer-events-none`}>
-                                <CgClose className='text-[20px]' />
+                                <CgClose className='text-[20px] delay__show' />
                             </div>}
                         </div>
 
