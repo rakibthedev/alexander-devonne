@@ -67,7 +67,7 @@ useEffect(()=>{
         setTimeout(()=>{
             setIsModalOpen(false);
             imgContainerRef.current.focus();   
-        },1500);
+        },2000);
     }
 },[isModalOpen]);
    
@@ -214,40 +214,35 @@ const closeModal = () => {
         }
     };
 
-
-//   scroll to add to bag 
-const addBagContainerRef = useRef(null);
-const scrollToAddBagContainer = () => {
-    if (addBagContainerRef.current) {
-        const y = addBagContainerRef.current.getBoundingClientRect().bottom + window.pageYOffset - window.innerHeight + 90;
-        window.scrollTo({ top: y, behavior: 'smooth' });
-    }
-};
-
-//   Show hide add bag bottom bar
-  const [isShowAddBagBar, setIsShowBagBar] = useState(true);
-
-  useEffect(() => {
+    const [isShowBottomBar, setIsShowBottomBar] = useState(false); // Initially fixed
+    const productInfoRef = useRef(null);
+  
+    useEffect(() => {
       const handleScroll = () => {
-          // Get the height of the entire body
-          const bodyHeight = document.body.scrollHeight;
-
-          // Check if the scroll position is greater than or equal to 90% of the body height
-          if (window.scrollY >= bodyHeight * 0.9 - window.innerHeight) {
-              setIsShowBagBar(false);
+        if (productInfoRef.current) {
+          // Get the bottom of the productInfoRef element
+          const productInfoBottom = productInfoRef.current.getBoundingClientRect().bottom;
+          
+          // If the bottom of the productInfoRef element (plus 100px) is out of the viewport, set bottom bar to fixed
+          if (productInfoBottom <= window.innerHeight - 100) {
+            setIsShowBottomBar(false); // Fixed when the bottom of productInfoRef (plus 100px) is out of view
           } else {
-              setIsShowBagBar(true);
+            setIsShowBottomBar(false); // Static when the bottom part of productInfoRef is still in view
           }
+        }
       };
-
+  
       // Add scroll event listener
-      window.addEventListener('scroll', handleScroll);
-
-      // Cleanup the event listener on component unmount
-      return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-
+      window.addEventListener("scroll", handleScroll);
+  
+      // Run once on mount to set the initial state
+      handleScroll();
+  
+      // Clean up event listener on component unmount
+      return () => {
+        window.removeEventListener("scroll", handleScroll);
+      };
+    }, []);
   return (
     <div>
         <div className='fixed top-[100px] right-4 z-[9999]'>
@@ -262,17 +257,18 @@ const scrollToAddBagContainer = () => {
         }
         </div>
         {/* Main content */}
-        <div className="block lg:flex px-3 lg:px-5 gap-5 slide__up">
-        <div className="lg:flex-[70%] flex-[100%]">
-                <div ref={imgContainerRef} className={`bg-white outline-none ${isZoom ? 'fixed top-0 left-0 w-full h-screen overflow-y-auto z-[9999] image__modal image__popup zoom__in' : 'grid grid-cols-2 mb-16'}`}>
+        <div className="block lg:flex gap-5 slide__up">
+            <div className="px-3 lg:px-5 lg:flex-[70%] flex-[100%]">
+                <div ref={imgContainerRef} className={`bg-white outline-none ${isZoom ? 'fixed top-0 left-0 w-full h-screen overflow-y-auto z-[9999] image__modal image__popup zoom__in image__zoom__out' : 'grid grid-cols-2 mb-8 lg:mb-16 image__zoom__in'}`}>
                     {product.images.map((item, index) => (
                         <div 
                         id={`image-${index}`} 
                         key={index} 
                         className={`${isZoom ? 'relative border-b border-[#e8e8e8] bg-white min-h-screen flex justify-center items-center' : 'product__image__wrapper'}`}                        
+                        onClick={()=>handleZoomImage(index, item.src)}
                         >
                             <div className={`${isZoom ? 'static' : 'relative' } flex justify-center items-center`}>
-                                <img onClick={()=>handleZoomImage(index, item.src)} className={`w-full h-auto`} src={item.src} height={339} width={254} alt={product.name} />
+                                <img className={`w-full h-auto`} src={item.src} height={339} width={254} alt={product.name} />
                                 <div className='absolute top-0 left-0 py-2 px-3'>
                                     <span className='text-xs'>{`[${index + 1}/${product.images.length}]`}</span>
                                 </div>
@@ -282,7 +278,7 @@ const scrollToAddBagContainer = () => {
                 </div>
             </div>
             {/* Right product info  */}
-            <div className="lg:flex-[30%] flex-[100%] px-3 lg:px-5 mb-20 mt-8 lg:mt-0 lg:mb-0">
+            <div className="lg:flex-[30%] flex-[100%] px-3 lg:px-5 mb-20 mt-8 lg:mt-0 lg:mb-0" ref={productInfoRef}>
                 <h1 className="text-[22px] leading-[150%] font-ibmPlexRegular capitalize">
                     {product.name}
                 </h1>
@@ -328,62 +324,68 @@ const scrollToAddBagContainer = () => {
                         </div>
                     </div>
                 </div>
-                <div className="py-4">
-                    <p className='text-xs uppercase' ref={isSizeSelectRef}>Sizes (US):</p>
-                    <div className="py-1">
-                        <div className="flex items-center gap-[6px] flex-wrap">
-                            {
-                                product.attributes
-                                .filter(item => item.slug === 'size')
-                                .flatMap(item => item.options)
-                                .map((option, index) => (
-                                    <button 
-                                        className={`min-w-8 min-h-[41px] px-2 flex items-center justify-center text-xs hover:text-white ${selectedSize === option ? 'bg-[#333] text-white hover:bg-[#333]' : 'bg-[#cecece80] text-black hover:bg-[#897f7b]'} rounded outline-none ${loading ? 'disabled:cursor-not-allowed' : 'cursor-pointer'}`} 
-                                        key={index}
-                                        onClick={() => handleSizeClick(option)}     
-                                        disabled={loading}                               
-                                    >
-                                        {option}
-                                    </button>
-                                ))                   
-                            }
+                
+                <div 
+                className={`${isShowBottomBar ? 'fixed bg-[#e1e1e180] w-full bottom-0 left-0 z-[999] lg:static lg:bg-transparent p-4 lg:p-0' : 'static'}`}
+                style={{backdropFilter: ` ${isShowBottomBar ? 'blur(3rem)' : ''}`}}
+                >
+                    <div className="py-4">
+                        <p className='text-xs uppercase' ref={isSizeSelectRef}>Sizes (US):</p>
+                        <div className="py-1">
+                            <div className="flex items-center gap-[6px] flex-wrap">
+                                {
+                                    product.attributes
+                                    .filter(item => item.slug === 'size')
+                                    .flatMap(item => item.options)
+                                    .map((option, index) => (
+                                        <button 
+                                            className={`min-w-8 min-h-[41px] px-2 flex items-center justify-center text-xs hover:text-white ${selectedSize === option ? 'bg-[#333] text-white hover:bg-[#333]' : 'bg-[#cecece80] text-black hover:bg-[#897f7b]'} rounded outline-none ${loading ? 'disabled:cursor-not-allowed' : 'cursor-pointer'}`} 
+                                            key={index}
+                                            onClick={() => handleSizeClick(option)}     
+                                            disabled={loading}                               
+                                        >
+                                            {option}
+                                        </button>
+                                    ))                   
+                                }
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div className="mt-5 flex items-center gap-2" ref={addBagContainerRef}>
-                    {/* Add to cart button  */}
-                    <button className={`bg-black rounded text-xs text-white py-1 uppercase h-[30px] w-[195px] ${loading ? 'disabled:cursor-not-allowed' : 'cursor-pointer'}`} 
-                    onClick={handleAddToCart} ref={addBagRef} 
-                    disabled={loading}>
-                    {itemInCart ? 'In Your Bag' : 'Add to bag'}
-                    </button>
-                    <button 
-                    className={`bg-[#cecece80] rounded text-black h-[30px] flex items-center justify-start px-2 gap-2 group w-[36px] overflow-hidden ${loadingWishlist ? 'hover:w-auto' : 'hover:w-[160px]'} hover:min-w-[36px]`} 
-                    style={{ transition: '0.3s ease' }}
-                    onClick={handleAddWishList}
-                    disabled={loadingWishlist}
-                    >
-                    {loadingWishlist ? (    
-                    <span className='loading__wishlist text-center w-full cursor-pointer text-xs'>/</span>
-                    ) : (
-                        itemInWishlist ? (
-                            <div className="flex gap-2 items-center w-[141px] text-nowrap">
-                                <span className='w-5 h-5'>
-                                    <IoIosHeart className={`text-[20px]`} />
-                                </span>
-                                <span className='text-xs uppercase'>Saved to wishlist</span>
-                            </div>
+                    <div className="mt-5 flex items-center gap-2">
+                        {/* Add to cart button  */}
+                        <button className={`bg-black rounded text-xs text-white py-1 uppercase h-[30px] w-[195px] ${loading ? 'disabled:cursor-not-allowed' : 'cursor-pointer'}`} 
+                        onClick={handleAddToCart} ref={addBagRef} 
+                        disabled={loading}>
+                        {itemInCart ? 'In Your Bag' : 'Add to bag'}
+                        </button>
+                        <button 
+                        className={`bg-[#cecece80] rounded text-black h-[30px] flex items-center justify-start px-2 gap-2 group w-[36px] overflow-hidden ${loadingWishlist ? 'hover:w-auto' : 'hover:w-[160px]'} hover:min-w-[36px]`} 
+                        style={{ transition: '0.3s ease' }}
+                        onClick={handleAddWishList}
+                        disabled={loadingWishlist}
+                        >
+                        {loadingWishlist ? (    
+                        <span className='loading__wishlist text-center w-full cursor-pointer text-xs'>/</span>
                         ) : (
-                            <div className="flex gap-2 items-center w-[141px] text-nowrap">
-                                <span className='w-5 h-5'>
-                                    <IoMdHeartEmpty className={`text-[20px]`} />
-                                </span>
-                                <span className='text-xs uppercase'>Add to wishlist</span>
-                            </div>
-                        )
-                    )}
-                </button>
+                            itemInWishlist ? (
+                                <div className="flex gap-2 items-center w-[141px] text-nowrap">
+                                    <span className='w-5 h-5'>
+                                        <IoIosHeart className={`text-[20px]`} />
+                                    </span>
+                                    <span className='text-xs uppercase'>Saved to wishlist</span>
+                                </div>
+                            ) : (
+                                <div className="flex gap-2 items-center w-[141px] text-nowrap">
+                                    <span className='w-5 h-5'>
+                                        <IoMdHeartEmpty className={`text-[20px]`} />
+                                    </span>
+                                    <span className='text-xs uppercase'>Add to wishlist</span>
+                                </div>
+                            )
+                        )}
+                    </button>
 
+                    </div>
                 </div>             
             </div>
             </div>
@@ -412,27 +414,12 @@ const scrollToAddBagContainer = () => {
                     <div className='py-2 pt-4 text-xs'
                         dangerouslySetInnerHTML={{ __html: formatStringWithLineBreaks(fitting) }} />
                 )}
-            </div>
-            
-            {/* Mobile bottom quick bag  */}
-            {isShowAddBagBar &&
-            <div 
-            className="lg:hidden fixed z-[999] bottom-0 left-0 w-full px-4 py-5 bg-[#e1e1e180] flex justify-between items-center"
-            style={{backdropFilter: 'blur(3rem)'}}
-            >
-                <span className="text-[14px]">{`$${Intl.NumberFormat('en-US').format(product.price, 0)}`}</span>
-                {/* Add to cart button  */}
-                <button className={`bg-black rounded text-xs text-white uppercase px-8 py-[7px] ${loading ? 'disabled:cursor-not-allowed' : 'cursor-pointer'}`} 
-                onClick={scrollToAddBagContainer} 
-                disabled={loading}>
-                    Add to bag                
-                </button>
-            </div>}
+            </div>           
 
         {/* Product image popup modal  */}
         {isModalOpen && (
             <div 
-            className={`w-full ${isPopupClose ? 'zoom__out' : ''} outline-none zoom__in image__popup image__modal fixed inset-0 bg-white/40 h-screen z-[99999] overflow-y-hidden`} 
+            className={`w-full ${isPopupClose ? 'zoom__out' : ''} outline-none zoom__in image__popup image__modal fixed inset-0 bg-white/40 h-screen z-[99999] overflow-y-hidden image__zoom__out`} 
             onClick={closeModal}      
             ref={modalRef}                             
             >
@@ -447,7 +434,7 @@ const scrollToAddBagContainer = () => {
                 </div>  
                 <div className="absolute min-h-screen w-full top-0 left-0 z-[999999]  flex flex-col items-center justify-center">
                     <div className="text-center p-2 px-2 rounded-md" style={{backdropFilter: "blur(3rem)", background: "#e1e1e180"}}>
-                        <div className="text-xs leading-3">loading...</div> 
+                        <div className="text-xs leading-3 capitalize">loading...</div> 
                         <span className='loading text-xs leading-4 text-black'>/</span>
                     </div>
                 </div>
