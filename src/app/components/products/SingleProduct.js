@@ -1,6 +1,5 @@
 "use client";
 import React, {useContext, useState, useRef, useEffect } from 'react';
-import Image from 'next/image';
 import { IoArrowDownSharp } from "react-icons/io5";
 import VariationColor from '../VariationColor';
 import { CartContext } from '@/app/context/cartContext';
@@ -292,60 +291,26 @@ const scrollToAddBagContainer = () => {
         }
         </div>
         {/* Main content */}
-        <div className="block lg:flex lg:px-5 gap-5 slide__up">
+        <div className="block lg:flex px-3 lg:px-5 gap-5 slide__up">
             <div className="lg:flex-[70%] flex-[100%]">
-                <div className={`${isZoom ? 'fixed top-0 left-0 w-full z-[9999]' : 'relative'}`}>
-                    
-                    <div ref={imgContainerRef} 
-                    className={`relative single__product__image_container`}                    
-                    >
-                        {/* Zoom Button  */}
-                        <div className="lg:hidden">
-                            {!isZoom ? 
-                            <div className={`absolute z-[10] right-2 top-2 lg:hidden pointer-events-none`}>
-                                <HiOutlinePlus className='text-[20px]' />
-                            </div>
-                            :
-                            <div className={`fixed z-[9999] right-2 top-5 lg:hidden pointer-events-none`}>
-                                <CgClose className='text-[20px] delay__show' />
-                            </div>}
-                        </div>
-
-                        {/* Image Wraper  */}
+                <div ref={imgContainerRef} className={`bg-white outline-none ${isZoom ? 'fixed top-0 left-0 w-full h-screen overflow-y-auto z-[9999] image__modal image__popup zoom__in' : 'grid grid-cols-2 mb-16'}`}>
+                    {product.images.map((item, index) => (
                         <div 
-                        className={`bg-white outline-none ${isZoom ? 'w-full lg:h-screen lg:overflow-y-auto product__img__container lg:block flex items-stretch flex-nowrap overflow-x-auto image__modal image__popup zoom__in' : 'product__img__container flex items-stretch flex-nowrap lg:grid lg:grid-cols-2 overflow-x-auto lg:overflow-x-hidden'}`}
-                        onScroll={handleScroll}
-                        ref={imageBoxRef}
+                        id={`image-${index}`} 
+                        key={index} 
+                        className={`${isZoom ? 'border-b border-[#e8e8e8] min-h-screen w-full flex justify-center items-center' : 'product__image__wrapper'}`}                        
+                        onClick={()=>handleZoomImage(index, item.src)}
                         >
-                            {product.images.map((item, index) => (
-                                <div 
-                                id={`image-${index}`} 
-                                key={index} 
-                                className={`${isZoom ? 'image__zoom__out relative border-b border-[#e8e8e8] bg-white min-h-screen w-full flex justify-center items-center' : 'image__zoom__in single__product__image__wrapper'}`}                        
-                                >
-                                    <div                                     
-                                    className={`${isZoom ? 'static w-full' : 'relative' } flex justify-center lg:w-full w-screen min-h-screen items-center`}
-                                    onClick={()=>handleZoomImage(index, item.src)}
-                                    >
-                                        <img className={`w-full h-auto`} src={item.src} height={339} width={254} alt={product.name} />
-                                        
-                                        {/* Image Number count  */}
-                                        <div className={`${isZoom ? 'hidden justify-end top-8' : 'hidden'} w-full absolute lg:top-0 left-0 py-2 px-3  lg:flex lg:justify-start`}>
-                                            <span className='text-xs'>{`[${index + 1}/${product.images.length}]`}</span>
-                                        </div>                                    
-                                    </div>
+                            <div className={`relative flex justify-center items-center  ${isZoom && 'w-full'}`}>
+                                <img className={`w-full h-auto`} src={item.src} height={339} width={254} alt={product.name} />
+                                <div className='absolute top-0 left-0 py-2 px-3'>
+                                    <span className='text-xs'>{`[${index + 1}/${product.images.length}]`}</span>
                                 </div>
-                            ))}
+                            </div>
                         </div>
-        
-                    </div>
-                    {/* Scroll track  */}
-                    <div 
-                    className={`${isZoom ? 'z-[99999] fixed' : 'z-[8] absolute'} scroll__bar lg:hidden block bottom-7 left-1/2 -translate-x-1/2 w-[160px] bg-[#e1e1e180] h-[2px]`}
-                    >
-                        <span ref={scrollRef} className="h-[2px] w-[26px] bg-[#000000cc] absolute"></span>
-                    </div>
-                </div>                
+                    ))}
+                </div>
+
             </div>
             {/* Right product info  */}
             <div className="lg:flex-[30%] flex-[100%] px-3 lg:px-5 mb-20 mt-8 lg:mt-0 lg:mb-0">
@@ -498,7 +463,7 @@ const scrollToAddBagContainer = () => {
             {/* Product image popup modal  */}
             {isModalOpen && (
             <div 
-            className={`image__zoom__out hidden lg:block w-full ${isPopupClose ? 'zoom__out' : ''} outline-none zoom__in image__popup image__modal fixed inset-0 bg-white/40 h-screen z-[99999] overflow-y-hidden`} 
+            className={`image__zoom__out w-full ${isPopupClose ? 'zoom__out' : ''} outline-none zoom__in image__popup image__modal fixed inset-0 bg-white/40 flex justify-center items-center min-h-screen z-[99999] overflow-y-hidden`} 
             onClick={closeModal}      
             ref={modalRef}                             
             >
