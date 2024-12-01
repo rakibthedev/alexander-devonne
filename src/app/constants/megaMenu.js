@@ -31,7 +31,7 @@ export const megaMenuItems = [
           },
           {
             "sub_menu_title": "Shoes",
-            "sub_menu_link": "/products/shoes",
+            "sub_menu_link": "/products/shoe",
             "sub_menu_items": [
               {
                 "item_title": "Sneaker",
