@@ -60,14 +60,14 @@ export default function SingleProduct({ product }) {
         }, 600)
     }
   }
-     
+// Image zoom popup hide     
 useEffect(()=>{
     if(isModalOpen){
-        modalRef.current.focus();
+        // modalRef.current.focus();
         setTimeout(()=>{
             setIsModalOpen(false);
             imgContainerRef.current.focus();   
-        },2000);
+        },1500);
     }
 },[isModalOpen]);
    
@@ -213,36 +213,7 @@ const closeModal = () => {
             router.push('/wishlist');
         }
     };
-  
 
-    // Track image container scroll
-    const [scrollPercentage, setScrollPercentage] = useState(0);
-    const imageBoxRef = useRef(null);
-    const handleScroll = () => {
-        if (imageBoxRef.current) {
-        const { scrollLeft, scrollWidth, clientWidth } = imageBoxRef.current;
-        const percent = (scrollLeft / (scrollWidth - clientWidth)) * 100;
-        setScrollPercentage(percent);
-        }
-    };
-    
-    
-    const scrollRef = useRef();
-
-     useEffect(() => {
-    if (scrollRef.current) {
-      // ScrollBar and scrollRef dimensions
-      const scrollBarWidth = 160; // width of the scroll__bar
-      const scrollRefWidth = 26; // width of the scrollRef span
-      const maxTranslate = scrollBarWidth - scrollRefWidth;
-
-      // Calculate translateX value based on scroll percentage
-      const translateX = (scrollPercentage / 100) * maxTranslate;
-
-      // Update scrollRef's position
-      scrollRef.current.style.transform = `translateX(${translateX}px)`;
-    }
-  }, [scrollPercentage]);
 
 //   scroll to add to bag 
 const addBagContainerRef = useRef(null);
@@ -292,17 +263,16 @@ const scrollToAddBagContainer = () => {
         </div>
         {/* Main content */}
         <div className="block lg:flex px-3 lg:px-5 gap-5 slide__up">
-            <div className="lg:flex-[70%] flex-[100%]">
+        <div className="lg:flex-[70%] flex-[100%]">
                 <div ref={imgContainerRef} className={`bg-white outline-none ${isZoom ? 'fixed top-0 left-0 w-full h-screen overflow-y-auto z-[9999] image__modal image__popup zoom__in' : 'grid grid-cols-2 mb-16'}`}>
                     {product.images.map((item, index) => (
                         <div 
                         id={`image-${index}`} 
                         key={index} 
-                        className={`${isZoom ? 'border-b border-[#e8e8e8] min-h-screen w-full flex justify-center items-center' : 'product__image__wrapper'}`}                        
-                        onClick={()=>handleZoomImage(index, item.src)}
+                        className={`${isZoom ? 'relative border-b border-[#e8e8e8] bg-white min-h-screen flex justify-center items-center' : 'product__image__wrapper'}`}                        
                         >
-                            <div className={`relative flex justify-center items-center  ${isZoom && 'w-full'}`}>
-                                <img className={`w-full h-auto`} src={item.src} height={339} width={254} alt={product.name} />
+                            <div className={`${isZoom ? 'static' : 'relative' } flex justify-center items-center`}>
+                                <img onClick={()=>handleZoomImage(index, item.src)} className={`w-full h-auto`} src={item.src} height={339} width={254} alt={product.name} />
                                 <div className='absolute top-0 left-0 py-2 px-3'>
                                     <span className='text-xs'>{`[${index + 1}/${product.images.length}]`}</span>
                                 </div>
@@ -310,7 +280,6 @@ const scrollToAddBagContainer = () => {
                         </div>
                     ))}
                 </div>
-
             </div>
             {/* Right product info  */}
             <div className="lg:flex-[30%] flex-[100%] px-3 lg:px-5 mb-20 mt-8 lg:mt-0 lg:mb-0">
@@ -460,10 +429,10 @@ const scrollToAddBagContainer = () => {
                 </button>
             </div>}
 
-            {/* Product image popup modal  */}
-            {isModalOpen && (
+        {/* Product image popup modal  */}
+        {isModalOpen && (
             <div 
-            className={`image__zoom__out w-full ${isPopupClose ? 'zoom__out' : ''} outline-none zoom__in image__popup image__modal fixed inset-0 bg-white/40 flex justify-center items-center min-h-screen z-[99999] overflow-y-hidden`} 
+            className={`w-full ${isPopupClose ? 'zoom__out' : ''} outline-none zoom__in image__popup image__modal fixed inset-0 bg-white/40 h-screen z-[99999] overflow-y-hidden`} 
             onClick={closeModal}      
             ref={modalRef}                             
             >
