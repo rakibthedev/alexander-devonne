@@ -26,7 +26,7 @@ export default async function handler(req, res) {
     // Fetch products by category (slug or ID)
     const { data } = await api.get("products", {
       category: category,  // Pass category slug or ID as a query parameter
-      orderby: 'popularity',
+      orderby: 'date',
       order: 'desc',
       per_page: 100,  // Adjust per_page as needed (max is 100 per request)
     });
