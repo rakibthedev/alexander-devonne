@@ -13,7 +13,7 @@ export default function Page({ searchParams }) {
 
 
   return (
-    <div>
+    <div className='min-h-screen'>
       
     </div>
   );

@@ -456,7 +456,7 @@ const ProductGridItems = ({ products, productCategory }) => {
             <span className="text-xs">{`[${products.length}]`}</span>
           </div>
         </div>        
-        <div className={`pt-10 product__grid grid grid-cols-2 lg:grid-cols-4 items-stretch ${Object.values(showArrows).some((value) => value) ? 'lg:items-start' : 'lg:items-stretch'}`}>
+        <div className={`pt-10 product__grid grid grid-cols-2 lg:grid-cols-4 items-stretch ${Object.values(showArrows).some((value) => value) ? 'lg:items-stretch' : 'lg:items-stretch'}`}>
           {products
             .filter((item) => item.status === "publish")
             .map((item) => {
@@ -538,7 +538,7 @@ const ProductGridItems = ({ products, productCategory }) => {
                       </div>
                     </Link>
                     
-                      <section className={`flex flex-col pb-3 lg:pb-5 border-t border-[#e8e8e8] ${showArrows[item.id] ? 'lg:border-[#e8e8e8] lg:border-t lg:border-l' : 'lg:border-none'}`}>
+                      <section className={`flex flex-col pb-3 lg:pb-5 border-t border-[#e8e8e8] ${showArrows[item.id] ? 'lg:border-[#e8e8e8] lg:border-t' : 'lg:border-none'}`}>
                         <p className="m-[13px] mb-0 text-[11px] capitalize leading-4">{item.name}</p>
                         <div>
                           <span className="m-[13px] mb-0 mt-[2px] text-[12px] capitalize leading-5">                            
