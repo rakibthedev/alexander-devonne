@@ -548,7 +548,7 @@ const ProductGridItems = ({ products, productCategory }) => {
                         {/* Conditionally render .card__bottom */}
                         <div className="relative">
                           <div
-                            className={`absolute top-0 left-0 w-full z-[999] bg-white card__bottom hidden ${showArrows[item.id] ? 'lg:block border-b border-[#e8e8e8] pb-3' : 'hidden'} mt-3`}
+                            className={`absolute top-0 left-0 w-full z-[999] bg-white card__bottom hidden ${showArrows[item.id] ? 'lg:block border-b border-l border-r border-[#e8e8e8] pb-3' : 'hidden'} mt-3`}
                           >
                             <div className="px-3 mt-3 flex gap-1">
                               {
