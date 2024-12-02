@@ -239,8 +239,8 @@ export default function SubscribeForm() {
                 <label className='text-xs capitalize mt-[-2px] ml-4' htmlFor="kids_category">Kids</label>
               </div>
               <div className="relative flex items-center justify-center gap-2">
-                <input className='form__checkbox' type="checkbox" name="product_category" id="homedecor_category" />
-                <label className='text-xs capitalize mt-[-2px] ml-4' htmlFor="homedecor_category">Home Decor</label>
+                <input className='form__checkbox' type="checkbox" name="product_category" id="gift_items_category" />
+                <label className='text-xs capitalize mt-[-2px] ml-4' htmlFor="gift_items_category">Gift Items</label>
               </div>
             </div>
             <p className="text-[10px] leading-4 mt-2">
