@@ -2,8 +2,8 @@ import SingleProduct from "@/app/components/products/SingleProduct";
 import { unstable_noStore as noStore } from 'next/cache';
 
 const Page = async ({ params }) => {
-  noStore();
-  
+  // noStore();
+
   const responsData = {
     success: false,
     product: null,
