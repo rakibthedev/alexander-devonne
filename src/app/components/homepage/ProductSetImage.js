@@ -11,7 +11,7 @@ export default async function ProductSetImage({ imageId }) {
         });
         
         if (response.ok) {
-          const data = await response.json();
+          const data = await response.json() || [];
           // Assuming `guid.rendered` contains the image URL
          imgSrc = await data.data.guid?.rendered || '';
         } else {
