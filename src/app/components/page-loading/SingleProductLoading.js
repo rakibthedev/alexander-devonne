@@ -16,7 +16,7 @@ export default function SingleProductLoading({productsLength = 8 }) {
                     >
                         <div className="flex flex-col gap-4 animate-pulse">
                             <div className="p-3">
-                                <div className="h-[230px] lg:h-[500px] w-full bg-gray-800/20"></div>
+                                <div className="h-[200px] lg:h-[500px] w-full bg-gray-800/20"></div>
                             </div>                            
                         </div>
 
