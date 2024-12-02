@@ -260,9 +260,7 @@ const ProductGridItems = ({ products, productCategory }) => {
   const order = searchParams.get('order');
 
   useEffect(() => {
-    console.log("orderby:", orderby);  // Check the values of orderby
-    console.log("order:", order);      // Check the values of order
-    
+        
     // Setting recommended sort
     if (orderby === 'popularity' && order === 'desc') {
       setSortby('recommended');
