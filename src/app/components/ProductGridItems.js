@@ -456,7 +456,7 @@ const ProductGridItems = ({ products, productCategory }) => {
             <span className="text-xs">{`[${products.length}]`}</span>
           </div>
         </div>        
-        <div className={`pt-10 product__grid grid grid-cols-2 lg:grid-cols-4 items-stretch ${Object.values(showArrows).some((value) => value) ? 'lg:items-stretch' : 'lg:items-stretch'}`}>
+        <div className={`pt-10 product__grid grid grid-cols-2 lg:grid-cols-4 items-stretch ${Object.values(showArrows).some((value) => value) ? 'lg:items-start' : 'lg:items-stretch'}`}>
           {products
             .filter((item) => item.status === "publish")
             .map((item) => {
