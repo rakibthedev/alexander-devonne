@@ -538,7 +538,7 @@ const ProductGridItems = ({ products, productCategory }) => {
                       </div>
                     </Link>
                     
-                      <section className={`flex flex-col pb-3 lg:pb-5 border-t border-[#e8e8e8] ${showArrows[item.id] ? 'lg:border-[#e8e8e8] lg:border-t' : 'lg:border-none'}`}>
+                      <section className={`flex flex-col pb-3 lg:pb-5 border-t border-[#e8e8e8] ${showArrows[item.id] ? 'lg:border-[#e8e8e8] lg:border-solid ' : 'lg:border-none'}`}>
                         <p className="m-[13px] mb-0 text-[11px] capitalize leading-4">{item.name}</p>
                         <div>
                           <span className="m-[13px] mb-0 mt-[2px] text-[12px] capitalize leading-5">                            
@@ -546,25 +546,27 @@ const ProductGridItems = ({ products, productCategory }) => {
                             </span>
                         </div>
                         {/* Conditionally render .card__bottom */}
-                        <div
-                          className={`card__bottom hidden ${showArrows[item.id] ? 'lg:block' : 'hidden'} mt-3`}
-                        >
-                          <div className="px-3 mt-3 flex gap-1">
-                            {
-                              item.attributes
-                                .filter(item => item.slug === 'color')
-                                .flatMap(item => item.options)
-                                .map((option, index) => (
-                                  <button key={index} className={`color__variation__btn ${index === 0 ? 'active' : ''}`}  onClick={handleColorVariationClick} >
-                                    <VariationColor variationColor={option} />
-                                  </button>
-                                ))
-                            }
-                          </div>
-                          <div className="mt-3 px-3">
-                            <button onClick={()=>handleQuickAddClick(item)} className="block w-full select-none bg-[#cecece80] text-xs uppercase p-1 rounded text-center hover:bg-[#939393] hover:text-white">
-                              Quick Shop                              
-                            </button>
+                        <div className="relative">
+                          <div
+                            className={`absolute top-0 left-0 w-full z-[999] bg-white card__bottom hidden ${showArrows[item.id] ? 'lg:block border-b border-[#e8e8e8] pb-3' : 'hidden'} mt-3`}
+                          >
+                            <div className="px-3 mt-3 flex gap-1">
+                              {
+                                item.attributes
+                                  .filter(item => item.slug === 'color')
+                                  .flatMap(item => item.options)
+                                  .map((option, index) => (
+                                    <button key={index} className={`color__variation__btn ${index === 0 ? 'active' : ''}`}  onClick={handleColorVariationClick} >
+                                      <VariationColor variationColor={option} />
+                                    </button>
+                                  ))
+                              }
+                            </div>
+                            <div className="mt-3 px-3">
+                              <button onClick={()=>handleQuickAddClick(item)} className="block w-full select-none bg-[#cecece80] text-xs uppercase p-1 rounded text-center hover:bg-[#939393] hover:text-white">
+                                Quick Shop                              
+                              </button>
+                            </div>
                           </div>
                         </div>
                       </section>
