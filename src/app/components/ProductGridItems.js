@@ -538,7 +538,7 @@ const ProductGridItems = ({ products, productCategory }) => {
                       </div>
                     </Link>
                     
-                      <section className={`flex flex-col pb-3 lg:pb-5 border-t border-[#e8e8e8] ${showArrows[item.id] ? 'lg:border-[#e8e8e8] lg:border-solid ' : 'lg:border-none'}`}>
+                      <section className={`flex flex-col pb-3 lg:pb-5 border-t border-[#e8e8e8] ${showArrows[item.id] ? 'lg:border-[#e8e8e8] lg:border-t ' : 'lg:border-none'}`}>
                         <p className="m-[13px] mb-0 text-[11px] capitalize leading-4">{item.name}</p>
                         <div>
                           <span className="m-[13px] mb-0 mt-[2px] text-[12px] capitalize leading-5">                            
