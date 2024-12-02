@@ -49,6 +49,7 @@ export default function Search({handleSearch}) {
                     setSearchedProducts(result.data);
                 }else{
                     setSearchResultLength(null);
+                    setSearchedProducts([]);
                 }
             }else(
                 console.error(result.error)
