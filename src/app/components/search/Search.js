@@ -91,7 +91,9 @@ export default function Search({handleSearch}) {
                             {value &&
                             <button 
                             className='absolute z-[99999] top-1/2 -translate-y-1/2 right-5 outline-none select-none text-[#000000a6] text-xs uppercase z-5'
-                            onClick={()=>{
+                            type='button'
+                            onClick={(e)=>{
+                                e.preventDefault();
                                 setValue('');
                                 setSearchedProducts([]);
                                 setIsInputting(false);

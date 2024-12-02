@@ -9,23 +9,43 @@ const api = new WooCommerceRestApi({
 });
 
 export default async function handler(req, res) {
+  try {
+    const { search } = req.query;
 
-    try{ 
-       const {search} = req.query;
+    // First, search by product title and description (default search)
+    const productData = await api.get('products', { search });
 
-        const data = await api.get('products', {
-            search: search,
-        })
+    // Search categories for the given term
+    const categoryData = await api.get('products/categories', { search });
 
-        res.status(200).json({
-            success: true,
-            data: data.data
-        });
+    // Collect all the matching category IDs
+    const categoryIds = categoryData.data.map(category => category.id);
 
-    } catch (error) {
-        res.status(500).json({
-            success: false,
-            error: error.message
-        });
-    } 
+    // Fetch products for the found categories
+    const filteredProducts = await api.get('products', {
+      category: categoryIds.join(','),  // Filter by category IDs
+    });
+
+    // Combine products from title/description search with category-filtered products
+    // Remove duplicates using product IDs
+    const allProducts = [
+      ...productData.data,
+      ...filteredProducts.data.filter(product => 
+        !productData.data.some(existingProduct => existingProduct.id === product.id)
+      )
+    ];
+
+    // Return combined results: products and categories
+    res.status(200).json({
+      success: true,
+      total_found: allProducts.length,
+      data: allProducts,
+      categories: categoryData.data,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error.message,
+    });
+  }
 }

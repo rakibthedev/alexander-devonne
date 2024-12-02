@@ -12,6 +12,7 @@ import { WishContext } from '@/app/context/wishContext';
 import { IoMdClose } from "react-icons/io";
 import { CartContext } from '../context/cartContext';
 import { useRouter } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 // import Swiper core and required modules
 import { Pagination } from 'swiper/modules';
 // Import Swiper styles
@@ -22,9 +23,10 @@ import 'swiper/css/pagination';
 import WishPopup from './wishlist-popup/WishlistPopup';
 import ImageSlider from './quick-shop/ImageSlider';
 import { slugToWords } from './methods/SlugToWords';
+import useIsMobile from '../constants/detectMobile';
 
 const ProductGridItems = ({ products, productCategory }) => {
-  const route = useRouter();
+  const router = useRouter();
   
   const [currentImages, setCurrentImages] = useState({}); // State to manage current images for each product
   const swiperRefs = useRef({}); // To store Swiper instances
@@ -37,21 +39,7 @@ const ProductGridItems = ({ products, productCategory }) => {
 
   const selectSizeError = useRef(null);
 
-  // Detect Mobile 
-  function useIsMobile() {
-    const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
-  
-    useEffect(() => {
-      const handleResize = () => setIsMobile(window.innerWidth < 768);
-      window.addEventListener("resize", handleResize);
-      return () => window.removeEventListener("resize", handleResize);
-    }, []);
-  
-    return isMobile;
-  }
-
   const isMobile = useIsMobile();
-
   const handleMouseEnter = (id, images) => {
     const timeoutId = setTimeout(() => {
       // Show the second image after 400ms
@@ -265,6 +253,35 @@ const ProductGridItems = ({ products, productCategory }) => {
           y: e.clientY - position.top,
       });
   };
+  
+  const searchParams = useSearchParams();
+
+  const orderby = searchParams.get('orderby');
+  const order = searchParams.get('order');
+
+  useEffect(() => {
+    console.log("orderby:", orderby);  // Check the values of orderby
+    console.log("order:", order);      // Check the values of order
+    
+    // Setting recommended sort
+    if (orderby === 'popularity' && order === 'desc') {
+      setSortby('recommended');
+    }
+    // Setting newest sort
+    if (orderby === 'date' && order === 'desc') {
+      setSortby('newest');
+    }
+    // Setting Price High to low sort
+    if (orderby === 'price' && order === 'desc') {
+      setSortby('Price High to low');
+    }
+    // Setting Price low to high sort
+    if (orderby === 'price' && order === 'asc') {
+      setSortby('Price low to high');
+    }
+  }, [orderby, order]);  // Trigger the effect whenever orderby or order changes
+
+
   return (
     <div>
       <div className='fixed top-[100px] right-4 z-[9999] flex flex-col gap-5'>
@@ -398,8 +415,7 @@ const ProductGridItems = ({ products, productCategory }) => {
                     {sortby !== 'recommended' && <button
                      className="text-xs uppercase hover:underline"
                      onClick={()=>{
-                       setSortby('recommended');
-                       route.push(`/products/${productCategory}?orderby=popularity&order=desc`);
+                       router.push(`/products/sort?productCategory=${productCategory}&orderby=popularity&order=desc`);
                      }
                     }
                      >
@@ -409,8 +425,7 @@ const ProductGridItems = ({ products, productCategory }) => {
                     {sortby !== 'newest' && <button
                      className="text-xs uppercase hover:underline"
                      onClick={()=>{
-                      setSortby('newest');
-                      route.push(`/products/${productCategory}?orderby=date&order=desc`);
+                      router.push(`/products/sort?productCategory=${productCategory}&orderby=date&order=desc`);
                     }}
                      >
                       Newest
@@ -419,8 +434,7 @@ const ProductGridItems = ({ products, productCategory }) => {
                     {sortby !== 'Price High to low' && <button
                      className="text-xs uppercase hover:underline"
                      onClick={()=>{
-                      setSortby('Price High to low')
-                      route.push(`/products/${productCategory}?orderby=price&order=desc`);
+                      router.push(`/products/sort?productCategory=${productCategory}&orderby=price&order=desc`);
                     }}
                      >
                       Price High to low
@@ -429,8 +443,7 @@ const ProductGridItems = ({ products, productCategory }) => {
                     {sortby !== 'Price low to high' && <button
                      className="text-xs uppercase hover:underline"
                      onClick={()=>{
-                      setSortby('Price low to high')
-                      route.push(`/products/${productCategory}?orderby=price&order=asc`);
+                      router.push(`/products/sort?productCategory=${productCategory}&orderby=price&order=asc`);
                     }}
                      >
                       Price low to high
