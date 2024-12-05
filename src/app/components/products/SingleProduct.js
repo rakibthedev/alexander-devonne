@@ -264,10 +264,10 @@ const closeModal = () => {
                         <div 
                         id={`image-${index}`} 
                         key={index} 
-                        className={`${isZoom ? 'relative border-b border-[#e8e8e8] bg-white min-h-screen flex justify-center items-center' : 'product__image__wrapper'}`}                        
+                        className={`${isZoom ? 'relative border-b border-[#e8e8e8] w-full bg-white min-h-screen flex justify-center items-center' : 'product__image__wrapper'}`}                        
                         onClick={()=>handleZoomImage(index, item.src)}
                         >
-                            <div className={`${isZoom ? 'static' : 'relative' } flex justify-center items-center`}>
+                            <div className={`${isZoom ? 'static w-full' : 'relative' } flex justify-center items-center`}>
                                 <img className={`w-full h-auto`} src={item.src} height={339} width={254} alt={product.name} />
                                 <div className='absolute top-0 left-0 py-2 px-3'>
                                     <span className='text-xs'>{`[${index + 1}/${product.images.length}]`}</span>
