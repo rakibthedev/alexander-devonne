@@ -144,7 +144,7 @@ export default function SubscribeForm() {
   
     // Check if category is selected
     if (!formData["category-name"] || formData["category-name"].length === 0) {
-      newErrors["category-name"] = "Please choose a subscription category";
+      newErrors["category-name"] = "Please select categories to subscribe.";
     }
   
     setErrors(newErrors); // Update the state with the new errors

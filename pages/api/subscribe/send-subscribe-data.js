@@ -3,7 +3,7 @@
 export default async function handler(req, res) {
 
     const subscribeData = req.body;
-    console.log(subscribeData)
+
     try {
         const response = await fetch(`${process.env.NEXT_PUBLIC_WORDPRESS_SITE_URL}/wp-json/cf7/v1/submit-form`, {
           method: 'POST',

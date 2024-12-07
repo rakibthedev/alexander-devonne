@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { LoginContext } from '@/app/context/loginContext';
 import { IoClose } from 'react-icons/io5';
 
-export default function Login() {
+export default function Login({inputBg, title, redirect}) {
     const router = useRouter();
 
     const [loginData, setLoginData] = useState({
@@ -25,7 +25,7 @@ export default function Login() {
         login_password: 'no',
     });
 
-    // Login State 
+    // Login context 
     const {loggedUserData, setLoggedUserData} = useContext(LoginContext);
 
 
@@ -181,7 +181,7 @@ export default function Login() {
                 // // Set cookie for middleware
                 document.cookie = `authToken=${data.token}; path=/`;
 
-                router.push('/dashboard/profile');
+                router.push(`${redirect}`);
             } else {
 
                 setNotification({message: "Login failed. Try again."});
@@ -263,7 +263,7 @@ export default function Login() {
             {/* Notification End */}
             <form onSubmit={handleLoginFormSubmit}>
                 <div className="custom__form flex flex-col gap-4">
-                    <h2 className='text-xs uppercase mb-4'>Sign in to your account</h2>
+                    <h2 className='text-xs uppercase mb-4'>{`${title}`}</h2>
 
                     {/* Email Input */}
                     <div className={`flex flex-col lg:flex-row items-stretch gap-4 w-full`}>
@@ -272,7 +272,7 @@ export default function Login() {
                                 onChange={handleInputChange}
                                 id="login_email"
                                 name="login_email"
-                                className={`absolute form__input ${errors.login_email ? "bg-[#00448a33]" : "bg-[#e1e1e180] w-full"} ${loginData.login_email ? "active" : ""} h-12 outline-none text-xs leading-5`}
+                                className={`absolute form__input ${errors.login_email ? `bg-[#00448a33]` : `bg-[#${inputBg}] w-full`} ${loginData.login_email ? "active" : ""} h-12 outline-none text-xs leading-5`}
                                 type="text"
                                 autoComplete="off"
                                 value={loginData.login_email || ''}
@@ -315,7 +315,7 @@ export default function Login() {
                                 onChange={handleInputChange}
                                 id="login_password"
                                 name="login_password"
-                                className={`absolute form__input ${errors.login_password ? "bg-[#00448a33]" : "bg-[#e1e1e180] w-full"} ${loginData.login_password ? "active" : ""} h-12 outline-none text-xs leading-5`}                                
+                                className={`absolute form__input ${errors.login_password ? "bg-[#00448a33]" : `bg-[#${inputBg}] w-full`} ${loginData.login_password ? "active" : ""} h-12 outline-none text-xs leading-5`}                                
                                 autoComplete="off"
                                 value={loginData.login_password || ''}
                                 type={pwdShow.login_password === 'show' ? 'text' : 'password' || 'password'}

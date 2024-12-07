@@ -40,14 +40,14 @@ export default function Footer() {
               <li className="text-[12px] uppercase">
                 <Link className="text-xs uppercase hover:underline" href="/customer-service/shipping-and-returns">Shipping & Returns</Link>
               </li>
-              <li className="text-[12px] uppercase">
+              {/* <li className="text-[12px] uppercase">
                 <Link className="text-xs uppercase hover:underline" href="#">Guest Returns</Link>
-              </li>
+              </li> */}
               <li className="text-[12px] uppercase">
                 <Link className="text-xs uppercase hover:underline" href="/customer-service/payment-methods">Payment Methods</Link>
               </li>
               <li className="text-[12px] uppercase">
-                <Link className="text-xs uppercase hover:underline" href="#">Track your order</Link>
+                <Link className="text-xs uppercase hover:underline" href="/track-order">Track your order</Link>
               </li>         
             </div>
           </ul>

@@ -13,6 +13,8 @@ import { IoCard } from "react-icons/io5";
 import { SiVisa } from "react-icons/si";
 import { SiMastercard } from "react-icons/si";
 import Link from "next/link";
+import Login from "@/app/components/account/Login"
+import { LoginContext } from "@/app/context/loginContext";
 
 function validateEmail(email) {
   // Regular expression for validating an email address
@@ -70,6 +72,34 @@ export default function Checkout() {
       setLoginCheckout(false);
       setGuestEmail(guestEmail);
   }
+
+
+  // Returning customer login 
+  const {loggedUserData, setLoggedUserData} = useContext(LoginContext);
+
+  useEffect(()=>{
+    if(loggedUserData){
+      formData.email = loggedUserData.email;
+      setLoginCheckout(true);
+      // console.log(`Email: ${formData.email}`)
+
+    }else{
+      setLoginCheckout(false);
+      formData.email = '';
+    }
+  }, [loggedUserData])
+
+  // Onload checkout auto logged in for checkout
+  useEffect(()=>{
+    if(loggedUserData){
+      formData.email = loggedUserData.email;
+      setLoginCheckout(true);
+      // console.log(`Email: ${formData.email}`)
+    }else{
+      setLoginCheckout(false);
+      formData.email = '';
+    }
+  }, [])
 
   const [formData, setFormData] = useState({
     payment_method: "",
@@ -363,72 +393,73 @@ export default function Checkout() {
       {/* Checkout Login Form  */}
       {!loginCheckout &&
       <div className="min-h-[400px] flex flex-col">       
-        <p className="text-xs uppercase mb-16">
+        <p className="text-xs uppercase mb-12">
           Secure Checkout
-        </p>
-        <p className="text-xs uppercase mb-3">
-          Guest Checkout
-        </p>
-        <div className="custom__form flex gap-[120px]">
-          <div className="w-[350px]">
-          <p className="text-xs uppercase">
-            Guest Checkout
-          </p>
-          {/* Input row */}
-          <div className={`flex flex-col lg:flex-row items-stretch gap-4 w-full`}>
-              {/* Form Input  */}
-              <div
-                className={`input__group relative w-full ${
-                  guestEmailError ? "h-[72px]" : "h-12"
-                }`}
-              >
-                <input
-                  onChange={(e) => {
-                    setGuestEmail(e.target.value);
-                    setGuestEmailError(null);
-                  }}
-                  id="guestEmail"
-                  name="guestEmail"
-                  className={`absolute form__input ${
-                    guestEmailError ? "bg-[#B5BDBC]" : "bg-white w-full"
-                  } ${
-                    guestEmail ? "active" : ""
-                  } h-12 outline-none text-xs leading-5`}
-                  type="text"
-                  autoComplete="off"
-                  value={guestEmail || ''}
-                />
-                <label
-                  className={`form__label text-xs absolute capitalize`}
-                  htmlFor="guestEmail"
+        </p>       
+        <div className="custom__form flex flex-col lg:flex-row  gap-10 lg:gap-[120px]">
+          <div className="w-full lg:w-[350px]">
+            <p className="text-xs uppercase w-full block">
+              Guest Checkout
+            </p>
+            {/* Input row */}
+            <div className={`flex flex-col items-stretch gap-4 w-full`}>
+                {/* Form Input  */}
+                <div
+                  className={`input__group top-[34px] relative w-full ${
+                    guestEmailError ? "h-[72px]" : "h-[60px]"
+                  }`}
                 >
-                  Email Address
-                </label>
-                {guestEmailError && (
-                  <div className="absolute bottom-4 left-0 w-full text-[#196cb1] text-xs">
-                    {guestEmailError}                
-                  </div>
-                )}
+                  <input
+                    onChange={(e) => {
+                      setGuestEmail(e.target.value);
+                      setGuestEmailError(null);
+                    }}
+                    id="guestEmail"
+                    name="guestEmail"
+                    className={`absolute top-0 left-0 w-full form__input ${
+                      guestEmailError ? "bg-[#B5BDBC]" : "bg-white w-full"
+                    } ${
+                      guestEmail ? "active" : ""
+                    } h-12 outline-none text-xs leading-5`}
+                    type="text"
+                    autoComplete="off"
+                    value={guestEmail || ''}
+                  />
+                  <label
+                    className={`form__label text-xs absolute capitalize`}
+                    htmlFor="guestEmail"
+                  >
+                    Email Address
+                  </label>
+                  {guestEmailError && (
+                    <div className="absolute bottom-4 left-0 w-full text-[#196cb1] text-xs">
+                      {guestEmailError}                
+                    </div>
+                  )}
+                </div>
               </div>
-            </div>
-            <div>
-              <p className="text-xs">
-                We will process your data to manage your purchase. Please see the <Link href="/policy/privacy-policy" className="underline">Privacy policy</Link>.
-              </p>
-            </div>
-            {/* Login button  */}
-            <div className="mt-5">
-              <button
-                className="min-w-[145px] flex items-center justify-center px-4 py-[6px] bg-black rounded text-xs text-white uppercase hover:bg-[#897f7b] disabled:hover:bg-black"
-                onClick={handleGuestCheckout}
-                disabled={loadingStep}
-              >
-                {loadingStep ? (
-                  <span className="loading">/</span>
-                ) : "Guest Checkout"}                          
-              </button>
-            </div>
-            </div>
+              <div className="pt-[34px]">
+                <p className="text-xs">
+                  We will process your data to manage your purchase. Please see the <Link href="/policy/privacy-policy" className="underline">Privacy policy</Link>.
+                </p>
+              </div>
+              {/* Login button  */}
+              <div className="mt-5">
+                <button
+                  className="min-w-[145px] flex items-center justify-center px-4 py-[6px] bg-black rounded text-xs text-white uppercase hover:bg-[#897f7b] disabled:hover:bg-black"
+                  onClick={handleGuestCheckout}
+                  disabled={loadingStep}
+                >
+                  {loadingStep ? (
+                    <span className="loading">/</span>
+                  ) : "Guest Checkout"}                          
+                </button>
+              </div>
+          </div>
+          {/* Returning cursmer login UI */}
+          <div className="w-full lg:w-[350px]">
+            <Login inputBg={"ffffff"} title={"Returning Customer"} redirect={`${process.env.NEXT_PUBLIC_DOMAIN_ADDRESS}/checkout`} />
+          </div>
         </div>
       </div>
       }
@@ -452,14 +483,20 @@ export default function Checkout() {
                   Secure Checkout
                 </p>
                 <div className="flex gap-1 text-xs mb-10">
-                  <p>You are checking out as {guestEmail}. </p>
-                  <button
-                  className="underline"
-                  type="button"
-                  onClick={handleChangeEmail}
-                  >
-                  Change
-                  </button>
+                  {loggedUserData ?
+                    <p>You are checking out as a logged user {formData.email}. </p>
+                    : 
+                    <p>You are checking out as {formData.email}. </p>
+                  }
+                  {!loggedUserData && 
+                    <button
+                    className="underline"
+                    type="button"
+                    onClick={handleChangeEmail}
+                    >
+                    Change
+                    </button>
+                  }
                 </div>
                   <div className="flex justify-between mb-5 mt-6">
                     <p className="text-xs uppercase">1. Shipping Information</p>

@@ -47,8 +47,8 @@ export default function Orders() {
                         return (
                         <div
                         key={index} 
-                        className="flex gap-0 bg-[#eeebeb] rounded p-4">
-                            <div className="flex flex-col justify-start flex-[50%]">
+                        className="flex flex-col lg:flex-row gap-10 lg:gap-0 bg-[#eeebeb] rounded p-4">
+                            <div className="flex flex-col justify-start flex-[100%] lg:flex-[50%]">
                                 <p className='text-xs mb-4 capitalize font-ibmPlexMedium'>#{index + 1}</p>
 
                                 <div className="flex gap-1">
@@ -72,7 +72,7 @@ export default function Orders() {
                                     <p className='text-xs '>{item.transaction_id || '--'}</p>
                                 </div>
                             </div>
-                            <div className="flex-[50%] border border-solid border-l-[#d8d8d8] pl-10">
+                            <div className="flex-[100%] lg:flex-[50%] lg:border lg:border-solid lg:border-l-[#d8d8d8] lg:pl-10 max-w-[350px]">
                                 <OrderSum lineItems={item.line_items} totalPrice={item.total} shippingTotal={item.shipping_lines[0]?.total || 0}/>
                             </div>
                         </div>

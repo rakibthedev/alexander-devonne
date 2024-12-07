@@ -499,6 +499,11 @@ select.form__input,
   padding-left: 14px;
   padding-right: 14px;
 }
+.custom__form .form__textarea {
+  top: -25px;
+  padding-top: 18px;
+}
+
 .custom__form select.form__input,
 .custom__form .form__checkbox{
   -webkit-appearance: none;
