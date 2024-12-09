@@ -63,14 +63,22 @@ export default function TrackOrder({inputBg}) {
                     setFoundedOrderData(trackedData);
                     console.log(trackedData)
             }else{                
-                setNotification("Oops! Something went wrong. Please double-check your order number and email address to ensure they are correct.");                
+                setNotification("Oops! Something went wrong. Please check your order number and email address to ensure they are correct.");                
+                clearNotification();
                 setLoading(false);
             }
         } catch (error) {
             setNotification("Oops! Something went wrong tracking order. Try again with correct input.");         
+            clearNotification();
             setLoading(false);
         }       
 
+    }
+
+    const clearNotification = () => {
+        setTimeout(()=>{
+            setNotification(null);
+        }, 10000)
     }
 
   return (
