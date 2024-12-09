@@ -125,7 +125,7 @@ export default function Login({inputBg, title, redirect}) {
                     clearLoginData();
                 }            
             }catch(error){
-                setNotification({message: "Login failed. Try again."});
+                setNotification({message: "Opps! something went wrong. Please check your email or password."});
                 setLoading(false);
 
                 notificationGone();

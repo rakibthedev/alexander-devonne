@@ -159,8 +159,16 @@ export default function Register() {
                    setLoggedUserData(structuredUserData);  
                     
                     setLoading(false);
-                    
-                    router.push('/dashboard/profile');
+                    setValue({});   
+
+                    // setNotification({message: "Your account has been created successfully! Please Sign in."});
+                    // regErrorGone();
+
+                   // // Set cookie for middleware
+                    document.cookie = `authToken=${token}; path=/`;
+
+                    router.push(`/dashboard/profile`);
+
                 } else {
 
                     if(data === "email_exist_yes"){
