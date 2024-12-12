@@ -11,18 +11,32 @@ export default async function ProductSet() {
   try {
     // Ensure an absolute URL for server-side fetching
     const response = await fetch(`${process.env.NEXT_PUBLIC_DOMAIN_ADDRESS}/api/product-set/product-set`);
-
     // Check if response is successful
     if (!response.ok) {
       console.error('Failed to fetch product-set:', response.status, response.statusText);
-      return <div>Failed to load product sets.</div>;
+      return (
+        <div className="pt-10 pb-10 px-3 lg:px-5 text-xs min-h-screen">
+          <div className='text-xs'>Something went wrong. Please refresh the page.</div>
+          <div className='pt-14'>
+              <Link href="/" className='bg-[#000000cc] text-center text-white text-[14px] uppercase rounded py-2 px-[55px] font-ibmPlexMedium hover:bg-[#897f7b] select-none'>Refresh</Link>
+          </div>
+        </div>
+      );
     }
 
     // Parse JSON response
     data = await response.json();
   } catch (error) {
     console.error('Error fetching product-set:', error.message);
-    return <div>Something went wrong. Please try again later.</div>;
+    return (
+      <div className="pt-5 pb-10 px-3 lg:px-5 text-xs min-h-screen">
+        <div className='text-xs'>Something went wrong. Please refresh the page.</div>
+        <div className='pt-2'>
+            <Link href="/" className='bg-[#000000cc] text-center text-white text-[14px] uppercase rounded py-2 px-[55px] font-ibmPlexMedium hover:bg-[#897f7b] select-none'>Refresh</Link>
+        </div>
+      </div>
+
+    );
   }
 
   

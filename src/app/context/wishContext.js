@@ -9,23 +9,23 @@ export const WishProvider = ({ children }) => {
   const [isClient, setIsClient] = useState(false); // Track if we're on the client
   const [lastWishItem, setLastWishItem] = useState([]);
   
-  // Effect to initialize wishItem from localStorage
+  // Effect to initialize wishItem from sessionStorage
   useEffect(() => {
     setIsClient(true);
-    const savedWishItems = localStorage.getItem('wishItem');
+    const savedWishItems = sessionStorage.getItem('wishItem');
     if (savedWishItems) {
       try {
         setWishItem(JSON.parse(savedWishItems));
       } catch (error) {
-        console.error("Error parsing wish items from localStorage", error);
+        console.error("Error parsing wish items from sessionStorage", error);
       }
     }
   }, []);
 
-  // Effect to update localStorage whenever wishItem changes
+  // Effect to update sessionStorage whenever wishItem changes
   useEffect(() => {
     if (isClient) {
-      localStorage.setItem('wishItem', JSON.stringify(wishItem));
+      sessionStorage.setItem('wishItem', JSON.stringify(wishItem));
     }
   }, [wishItem, isClient]);
 

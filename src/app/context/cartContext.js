@@ -8,24 +8,24 @@ export const CartProvider = ({ children }) => {
   const [popupShow, setPopupShow] = useState(false);
   const [isClient, setIsClient] = useState(false);
 
-  // Effect to initialize cartItem from localStorage
+  // Effect to initialize cartItem from sessionStorage
   useEffect(() => {
     setIsClient(true);
-    const savedCartItems = localStorage.getItem('cartItem');
+    const savedCartItems = sessionStorage.getItem('cartItem');
     
     if (savedCartItems) {
       try {
         setCartItem(JSON.parse(savedCartItems));
       } catch (error) {
-        console.error("Error parsing cart items from localStorage", error);
+        console.error("Error parsing cart items from sessionStorage", error);
       }
     }
   }, []);
 
-  // Effect to update localStorage whenever cartItem changes
+  // Effect to update sessionStorage whenever cartItem changes
   useEffect(() => {
     if (isClient) {
-      localStorage.setItem('cartItem', JSON.stringify(cartItem));
+      sessionStorage.setItem('cartItem', JSON.stringify(cartItem));
     }
   }, [cartItem, isClient]);
 
