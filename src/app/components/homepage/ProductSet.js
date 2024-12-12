@@ -10,7 +10,12 @@ export default async function ProductSet() {
 
   try {
     // Ensure an absolute URL for server-side fetching
+<<<<<<< HEAD
     const response = await fetch(`${process.env.NEXT_PUBLIC_DOMAIN_ADDRESS}/api/product-set/product-set`);
+=======
+    const response = await fetch(`https://www.alexanderdevonne.com/api/product-set/product-set`);
+
+>>>>>>> bc01d77082ba41c9972169fef36a8d8aa95e421b
     // Check if response is successful
     if (!response.ok) {
       console.error('Failed to fetch product-set:', response.status, response.statusText);

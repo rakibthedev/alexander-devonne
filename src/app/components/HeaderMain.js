@@ -91,7 +91,7 @@ export default function HeaderMain() {
             <span className='text-xs'>/</span>
             <button className='border-none p-0 outline-none text-xs font-normal hover:underline'>EN</button>
           </div>
-          <Link href="#" className='border-none p-0 outline-none text-xs font-normal hover:underline'>Contact us</Link>
+          <Link href="https://www.alexanderdevonne.com/contact-us" className='border-none p-0 outline-none text-xs font-normal hover:underline'>Contact us</Link>
         </div>
         <div className='flex-[50%] flex justify-center select-none'>
           <Link href="/"><img className='h-auto lg:w-[200px] lg:h-auto' src='/images/logo.png' width={150} height={50} alt="Alexander Devonne" /></Link>

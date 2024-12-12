@@ -32,7 +32,7 @@ export default function Footer() {
             </div>
             <div className={`${activeFooterMenu.help === 'active' ? 'flex p-4 rounded' : 'hidden'} lg:bg-transparent bg-[#f4f4f2] lg:flex flex-col gap-[6px] `}>
               <li className="text-[12px] uppercase">
-                <Link className="text-xs uppercase hover:underline" href="#">Contact Us</Link>
+                <Link className="text-xs uppercase hover:underline" href="/contact-us">Contact Us</Link>
               </li>
               <li className="text-[12px] uppercase">
                 <Link className="text-xs uppercase hover:underline" href="/customer-service/faq">FAQs</Link>
