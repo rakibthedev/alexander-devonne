@@ -1,6 +1,6 @@
 
 
-import GridLoading from './../../components/page-loading/GridLoading';
+import GridLoading from '../../components/page-loading/GridLoading';
 
 export default function Loading() {
 

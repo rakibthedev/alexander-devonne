@@ -12,7 +12,6 @@ import { WishContext } from '@/app/context/wishContext';
 import { IoMdClose } from "react-icons/io";
 import { CartContext } from '../context/cartContext';
 import { useRouter } from 'next/navigation';
-import { useSearchParams } from 'next/navigation';
 // import Swiper core and required modules
 import { Pagination } from 'swiper/modules';
 // Import Swiper styles
@@ -26,7 +25,7 @@ import { slugToWords } from './methods/SlugToWords';
 import useIsMobile from '../constants/detectMobile';
 
 const ProductGridItems = ({ products, productCategory }) => {
-  const router = useRouter();
+  const route = useRouter();
   
   const [currentImages, setCurrentImages] = useState({}); // State to manage current images for each product
   const swiperRefs = useRef({}); // To store Swiper instances
@@ -39,7 +38,9 @@ const ProductGridItems = ({ products, productCategory }) => {
 
   const selectSizeError = useRef(null);
 
+  // Detect Mobile 
   const isMobile = useIsMobile();
+
   const handleMouseEnter = (id, images) => {
     const timeoutId = setTimeout(() => {
       // Show the second image after 400ms
@@ -253,33 +254,6 @@ const ProductGridItems = ({ products, productCategory }) => {
           y: e.clientY - position.top,
       });
   };
-  
-  const searchParams = useSearchParams();
-
-  const orderby = searchParams.get('orderby');
-  const order = searchParams.get('order');
-
-  useEffect(() => {
-        
-    // Setting recommended sort
-    if (orderby === 'popularity' && order === 'desc') {
-      setSortby('recommended');
-    }
-    // Setting newest sort
-    if (orderby === 'date' && order === 'desc') {
-      setSortby('newest');
-    }
-    // Setting Price High to low sort
-    if (orderby === 'price' && order === 'desc') {
-      setSortby('Price High to low');
-    }
-    // Setting Price low to high sort
-    if (orderby === 'price' && order === 'asc') {
-      setSortby('Price low to high');
-    }
-  }, [orderby, order]);  // Trigger the effect whenever orderby or order changes
-
-
   return (
     <div>
       <div className='fixed top-[100px] right-4 z-[9999] flex flex-col gap-5'>
@@ -413,7 +387,8 @@ const ProductGridItems = ({ products, productCategory }) => {
                     {sortby !== 'recommended' && <button
                      className="text-xs uppercase hover:underline"
                      onClick={()=>{
-                       router.push(`/products/sort?productCategory=${productCategory}&orderby=popularity&order=desc`);
+                       setSortby('recommended');
+                       route.push(`/products/${productCategory}?orderby=popularity&order=desc`);
                      }
                     }
                      >
@@ -423,7 +398,8 @@ const ProductGridItems = ({ products, productCategory }) => {
                     {sortby !== 'newest' && <button
                      className="text-xs uppercase hover:underline"
                      onClick={()=>{
-                      router.push(`/products/sort?productCategory=${productCategory}&orderby=date&order=desc`);
+                      setSortby('newest');
+                      route.push(`/products/${productCategory}?orderby=date&order=desc`);
                     }}
                      >
                       Newest
@@ -432,7 +408,8 @@ const ProductGridItems = ({ products, productCategory }) => {
                     {sortby !== 'Price High to low' && <button
                      className="text-xs uppercase hover:underline"
                      onClick={()=>{
-                      router.push(`/products/sort?productCategory=${productCategory}&orderby=price&order=desc`);
+                      setSortby('Price High to low')
+                      route.push(`/products/${productCategory}?orderby=price&order=desc`);
                     }}
                      >
                       Price High to low
@@ -441,7 +418,8 @@ const ProductGridItems = ({ products, productCategory }) => {
                     {sortby !== 'Price low to high' && <button
                      className="text-xs uppercase hover:underline"
                      onClick={()=>{
-                      router.push(`/products/sort?productCategory=${productCategory}&orderby=price&order=asc`);
+                      setSortby('Price low to high')
+                      route.push(`/products/${productCategory}?orderby=price&order=asc`);
                     }}
                      >
                       Price low to high
@@ -538,7 +516,7 @@ const ProductGridItems = ({ products, productCategory }) => {
                       </div>
                     </Link>
                     
-                      <section className={`flex flex-col pb-3 lg:pb-5 border-t border-[#e8e8e8] ${showArrows[item.id] ? 'lg:border-[#e8e8e8] lg:border-t ' : 'lg:border-none'}`}>
+                      <section className={`flex flex-col pb-3 lg:pb-5 border-t border-[#e8e8e8] ${showArrows[item.id] ? 'lg:border-[#e8e8e8] lg:border-t lg:border-l' : 'lg:border-none'}`}>
                         <p className="m-[13px] mb-0 text-[11px] capitalize leading-4">{item.name}</p>
                         <div>
                           <span className="m-[13px] mb-0 mt-[2px] text-[12px] capitalize leading-5">                            
@@ -546,27 +524,25 @@ const ProductGridItems = ({ products, productCategory }) => {
                             </span>
                         </div>
                         {/* Conditionally render .card__bottom */}
-                        <div className="relative">
-                          <div
-                            className={`absolute top-0 left-0 w-full z-[999] bg-white card__bottom hidden ${showArrows[item.id] ? 'lg:block border-b border-l border-r border-[#e8e8e8] pb-3' : 'hidden'} mt-3`}
-                          >
-                            <div className="px-3 mt-3 flex gap-1">
-                              {
-                                item.attributes
-                                  .filter(item => item.slug === 'color')
-                                  .flatMap(item => item.options)
-                                  .map((option, index) => (
-                                    <button key={index} className={`color__variation__btn ${index === 0 ? 'active' : ''}`}  onClick={handleColorVariationClick} >
-                                      <VariationColor variationColor={option} />
-                                    </button>
-                                  ))
-                              }
-                            </div>
-                            <div className="mt-3 px-3">
-                              <button onClick={()=>handleQuickAddClick(item)} className="block w-full select-none bg-[#cecece80] text-xs uppercase p-1 rounded text-center hover:bg-[#939393] hover:text-white">
-                                Quick Shop                              
-                              </button>
-                            </div>
+                        <div
+                          className={`card__bottom hidden ${showArrows[item.id] ? 'lg:block' : 'hidden'} mt-3`}
+                        >
+                          <div className="px-3 mt-3 flex gap-1">
+                            {
+                              item.attributes
+                                .filter(item => item.slug === 'color')
+                                .flatMap(item => item.options)
+                                .map((option, index) => (
+                                  <button key={index} className={`color__variation__btn ${index === 0 ? 'active' : ''}`}  onClick={handleColorVariationClick} >
+                                    <VariationColor variationColor={option} />
+                                  </button>
+                                ))
+                            }
+                          </div>
+                          <div className="mt-3 px-3">
+                            <button onClick={()=>handleQuickAddClick(item)} className="block w-full select-none bg-[#cecece80] text-xs uppercase p-1 rounded text-center hover:bg-[#939393] hover:text-white">
+                              Quick Shop                              
+                            </button>
                           </div>
                         </div>
                       </section>

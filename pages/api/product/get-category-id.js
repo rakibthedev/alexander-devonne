@@ -18,7 +18,7 @@ export default async function handler(req, res) {
 
   try {
     const { data } = await api.get("products/categories", {
-      slug: category_slug, // Pass the slug to the query
+      slug: category_slug, // Pass the slug to the query 
     });
 
     res.status(200).json(data);

@@ -4,7 +4,7 @@ import ProductSet from './components/homepage/ProductSet';
 
 export default async function Home() {
 
-  //noStore();
+  noStore();
 
   return (
     <main>

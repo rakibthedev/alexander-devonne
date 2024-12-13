@@ -1,51 +1,54 @@
 import ProductGridItems from '@/app/components/ProductGridItems';
 import CategoryProductNotFound from '@/app/components/products/CategoryProductNotFound';
+import React from 'react';
 import { unstable_noStore as noStore } from 'next/cache';
 
-const Page = async ({ params, searchParams }) => {
+const Page = async ({params, searchParams}) => {
   // noStore();
-  const { orderby='date', order='desc' } = searchParams; // Query params
-  const appDomain = process.env.NEXT_PUBLIC_DOMAIN_ADDRESS;
-  const wpUrl = process.env.NEXT_PUBLIC_WORDPRESS_SITE_URL;
-  
-  // Initialize the response data
-  let responsData = {
+  const { orderby, order } = searchParams; // Query params
+  const responsData = {
     success: false,
     products: [],
     error: null,
   };
 
+  const appDomain = process.env.NEXT_PUBLIC_DOMAIN_ADDRESS;
+
   try {
     
-      const response = await fetch(`${wpUrl}/wp-json/custom/v1/category-products?category=${params.productCategory}&orderby=${orderby}&order=${order}`,
-        {
-          next: {revalidate: 300}
-      }
-      );
-      const data = await response.json();
+    const res_id = await fetch(`${appDomain}/api/product/get-category-id?category_slug=${params.productCategory}`); 
+    const res_data = await res_id.json();
+    const category_id = await res_data[0].id;
+    
+    let response = '';
+    
+    if(Object.keys(searchParams).length > 0 && orderby && order){
+      response = await fetch(`${appDomain}/api/product/sorted-products?category=${category_id}&orderby=${orderby}&order=${order}`); 
+    }else{
+      response = await fetch(`${appDomain}/api/product/category-products?category=${category_id}`); 
+    }
 
-    if (response.ok) {
+    const data = await response.json();
+
+    if (data.success) {
       responsData.success = true;
-      responsData.products = data.data;
-      responsData.category = data.category_name;
+      responsData.products = data.products;
     } else {
-      responsData.error = data;
+      responsData.error = data.error;
     }
   } catch (error) {
     responsData.error = error.message;
   }
 
-  // If there's an error, render the "not found" component
   if (responsData.error) {
-    return <CategoryProductNotFound productCategory={params.productCategory} />
+    return (
+      <CategoryProductNotFound productCategory={params.productCategory} />
+    )
   }
-
-  // Otherwise, render the products grid
+  
   return (
     <div>
-      {responsData.products.length > 0 && (
-        <ProductGridItems products={responsData.products} productCategory={responsData.category} />
-      )}
+      {responsData.products && <ProductGridItems products={responsData.products} productCategory={params.productCategory}/>}
     </div>
   );
 };
