@@ -4,6 +4,7 @@ import { useEffect, useState, Suspense } from 'react'; // Import Suspense for bo
 import OrderSummary from '../components/thank-you/OrderSummary';
 import { CiCircleCheck } from "react-icons/ci";
 import Link from 'next/link';
+import ScrollToTop from '../components/ScrollToTop';
 
 // Fallback loading component
 const LoadingFallback = () => (
@@ -63,6 +64,7 @@ const Page = () => {
 
     return (
         <div className="px-2 lg:px-5 py-20 min-h-[500px] bg-[#E2DBC8]">
+            <ScrollToTop />
             {orderData.status === "processing" ? (
                 <div>
                     <div className="flex-col gap-10 lg:flex lg:flex-row lg:gap-20 w-full">

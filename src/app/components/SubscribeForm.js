@@ -154,7 +154,7 @@ export default function SubscribeForm() {
   
 
   return (
-    <div>
+    <div className='min-h-[150px]'>
       {isSubscribed ? (
         <p className="text-xs">Thanks for your subscription. You have joined the Alexander Devonne coummunity.</p>
       ):(

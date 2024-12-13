@@ -1,5 +1,6 @@
 import SingleProduct from "@/app/components/products/SingleProduct";
 import { unstable_noStore as noStore } from 'next/cache';
+import ScrollToTop from '@/app/components/ScrollToTop';
 
 const Page = async ({ params }) => {
   // noStore();
@@ -37,6 +38,7 @@ const Page = async ({ params }) => {
 
   return (
     <div>
+      <ScrollToTop />
       <SingleProduct product={responsData.product} />
     </div>
   );

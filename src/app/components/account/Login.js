@@ -341,14 +341,14 @@ export default function Login({inputBg, title, redirect}) {
                 </div>
 
                 {/* Forgot password link */}
-                <div className="flex justify-between">
+                {/* <div className="flex justify-between">
                     <div></div>
                     <div>
                         <button type="button" className='text-xs underline hover:no-underline'>
                             I forgot my password
                         </button>
                     </div>
-                </div>
+                </div> */}
 
                 {/* Submit button */}
                 <div>

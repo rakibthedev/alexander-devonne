@@ -1,10 +1,12 @@
 import React from 'react'
 import { slugToWords } from '../methods/SlugToWords'
 import Link from 'next/link'
+import ScrollToTop from '../ScrollToTop'
 
 export default function CategoryProductNotFound({productCategory}) {
   return (
     <div className='px-3 lg:px-5 pt-5 pb-20 min-h-[400px]'>
+        <ScrollToTop />
         <div> 
             <h1 className="text-[26px] font-bookish">{slugToWords(productCategory)}</h1>
             <p className="my-8 text-xs">
