@@ -3,7 +3,7 @@ import CategoryProductNotFound from '@/app/components/products/CategoryProductNo
 import { unstable_noStore as noStore } from 'next/cache';
 
 const Page = async ({ params, searchParams }) => {
-  noStore();
+  // noStore();
   const { orderby='date', order='desc' } = searchParams; // Query params
   const appDomain = process.env.NEXT_PUBLIC_DOMAIN_ADDRESS;
   const wpUrl = process.env.NEXT_PUBLIC_WORDPRESS_SITE_URL;
@@ -17,7 +17,11 @@ const Page = async ({ params, searchParams }) => {
 
   try {
     
-      const response = await fetch(`${wpUrl}/wp-json/custom/v1/category-products?category=${params.productCategory}&orderby=${orderby}&order=${order}`);
+      const response = await fetch(`${wpUrl}/wp-json/custom/v1/category-products?category=${params.productCategory}&orderby=${orderby}&order=${order}`,
+        {
+          next: {revalidate: 300}
+      }
+      );
       const data = await response.json();
 
     if (response.ok) {

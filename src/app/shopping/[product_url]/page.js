@@ -2,7 +2,7 @@ import SingleProduct from "@/app/components/products/SingleProduct";
 import { unstable_noStore as noStore } from 'next/cache';
 
 const Page = async ({ params }) => {
-  noStore();
+  // noStore();
 
   const responsData = {
     success: false,
@@ -14,7 +14,11 @@ const Page = async ({ params }) => {
   const slug = params.product_url; // Extract the slug from params
 
   try {
-    const response = await fetch(`${appDomain}/api/singleProduct?slug=${slug}`); 
+    const response = await fetch(`${appDomain}/api/singleProduct?slug=${slug}`,
+      {
+        next: {revalidate: 300}
+      }
+    ); 
     const data = await response.json();
 
     if (data.success) {

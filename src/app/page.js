@@ -1,9 +1,14 @@
-import ProductSet from "./components/homepage/ProductSet";
+// app/page.js
+import { unstable_noStore as noStore } from 'next/cache';
+import ProductSet from './components/homepage/ProductSet';
 
-export default function Home() {
+export default async function Home() {
+
+  //noStore();
+
   return (
-   <main>
+    <main>
       <ProductSet />
-   </main>
+    </main>
   );
 }

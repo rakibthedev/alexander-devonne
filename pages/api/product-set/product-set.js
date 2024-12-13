@@ -2,12 +2,13 @@
 export default async function handler(req, res) {
     try {
       // Fetch data from WordPress API for product sets
-      const response = await fetch(`${process.env.WORDPRESS_SITE_URL}/wp-json/wp/v2/product-set`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_WORDPRESS_SITE_URL}/wp-json/wp/v2/product-set`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json"
-        }
-      });
+        },
+        next: {revalidate: 3600}
+    });
   
       // Check if the fetch was successful
       if (!response.ok) {
