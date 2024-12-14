@@ -15,9 +15,7 @@ export default async function handler(req, res) {
 
     try {
         const postBody = req.body; // Body is already parsed
-        const response = await fetch(`${process.env.NEXT_PUBLIC_WORDPRESS_SITE_URL}/wp-json/wp/v2/media/${postBody.mediaId}`,{
-            next: {revalidate: 3600}
-        });
+        const response = await fetch(`${process.env.NEXT_PUBLIC_WORDPRESS_SITE_URL}/wp-json/wp/v2/media/${postBody.mediaId}`);
 
         const data = await response.json();
 

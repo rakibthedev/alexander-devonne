@@ -6,7 +6,7 @@ import ScrollToTop from './components/ScrollToTop';
 
 export default async function Home() {
 
-  noStore();
+  // noStore();
 
   return (
     <main>
