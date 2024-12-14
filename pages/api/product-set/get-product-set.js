@@ -60,7 +60,7 @@ export default async function handler(req, res) {
     
 
     saveDataToFile(formattedData); // Save the fetched data to a file
-    res.status(200).json({ message: 'Data fetched and saved successfully.' });
+    res.status(200).json(formattedData);
   } else {
     res.status(500).json({ error: 'Failed to fetch data from the API.' });
   }
