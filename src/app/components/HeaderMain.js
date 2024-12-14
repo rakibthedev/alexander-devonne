@@ -226,7 +226,18 @@ export default function HeaderMain() {
                 </div>}
             </div>
             }
-        </div>  
+        </div> 
+        <div className="border-t-[1px] border-[#e8e8e8] border-solid">
+          <div className="py-4 px-4 text-[14px]">
+            <Link href="/account/login" onClick={()=>SetIsShowMobileMenu(false)}>Login</Link>
+          </div>
+          <div className="py-4 px-4 text-[14px]">
+            <Link href="/wishlist" onClick={()=>SetIsShowMobileMenu(false)}>Wishlist [{wishItem.length}]</Link>
+          </div>
+          <div className="py-4 px-4 text-[14px]">
+            <Link href="/contact-us" onClick={()=>SetIsShowMobileMenu(false)}>Contact us</Link>
+          </div>
+        </div> 
       </div>
       }
     </div>

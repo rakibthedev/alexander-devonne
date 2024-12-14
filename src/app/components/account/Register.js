@@ -261,7 +261,7 @@ export default function Register() {
             {/* Notification End */}
             <form onSubmit={handleRegisterFormSubmit}>
                 <div className="custom__form flex flex-col gap-4">
-                    <h2 className='text-xs uppercase mb-5'>Edit Your Personal Information</h2>
+                    <h2 className='text-xs uppercase mb-5'>Register a new account</h2>
 
                     {/* Gender Input  */}
                     <div className={`flex flex-col lg:flex-row items-stretch gap-2 w-full`}>

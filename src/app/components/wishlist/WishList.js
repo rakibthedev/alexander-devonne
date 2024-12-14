@@ -90,12 +90,12 @@ export default function WishList() {
   }
 
   return (
-    <div className='pt-12 pb-[160px] px-2 lg:px-5'>
+    <div className='pt-8 lg:pt-12 pb-20 lg:pb-[160px] px-3 lg:px-5'>
       {loading ? (
         <p className='loading text-[10px]'></p>
       ) : wishItem.length > 0 ? (
         <div className="slide__up">
-          <h1 className="text-[26px] font-bookish mb-6">
+          <h1 className="text-[20px] lg:text-[26px] font-bookish mb-6">
             {`Your wishlist (${wishItem.length} item${wishItem.length > 1 ? 's' : ''})`}
           </h1>
           <div className="product__grid grid grid-cols-2 lg:grid-cols-4">
@@ -112,7 +112,7 @@ export default function WishList() {
                     />
                   </div>
                 </Link>
-                <div className="pl-[18px] py-5">
+                <div className="px-[18px] py-5">
                   <p className="text-[12px] capitalize">{item.name}</p>
                   <p className="text-[12px]">{`$${item.price}`}</p>
                   <div className="mt-4">
@@ -136,7 +136,7 @@ export default function WishList() {
                     ) : (
                       item.size ? (
                         <button 
-                          className="bg-[#000000cc] rounded px-[55px] py-[5px] text-[14px] text-white uppercase hover:bg-[#897f7b] mt-4"
+                        className="bg-[#000000cc] rounded w-full block lg:inline-block lg:w-auto lg:px-[55px] text-center px-[10px] py-[5px] text-[14px] text-white uppercase hover:bg-[#897f7b] mt-4"
                           onClick={() => handleMoveToBag(item.id, item)}
                         >
                           Move to bag
@@ -161,7 +161,7 @@ export default function WishList() {
                         ) : (
                           <div>
                             <button 
-                              className="bg-[#000000cc] rounded px-[55px] py-[5px] text-[14px] text-white uppercase hover:bg-[#897f7b] mt-4"
+                              className="bg-[#000000cc] rounded w-full block lg:inline-block lg:w-auto lg:px-[55px] text-center px-[10px] py-[5px] text-[14px] text-white uppercase hover:bg-[#897f7b] mt-4"
                               onClick={() => handleSelectSize(item.id)}
                             >
                               Select Size
@@ -200,7 +200,7 @@ export default function WishList() {
         </div>
       ) : (
         <div className="slide__up">
-          <h1 className="text-[26px] font-bookish mb-8">Your wishlist</h1>
+          <h1 className="text-[20px] lg:text-[26px] font-bookish mb-8">Your wishlist</h1>
           <p className="my-8 text-xs">{`Add items to your wishlist so you can save them for later. Click or tap 'Add to Wishlist' throughout the site.`}</p>
           <div className='pt-2'>
             <Link href="/" className='bg-[#000000cc] text-center text-white text-[14px] uppercase rounded py-2 px-[55px] font-ibmPlexMedium hover:bg-[#897f7b]'>Continue Shopping</Link>

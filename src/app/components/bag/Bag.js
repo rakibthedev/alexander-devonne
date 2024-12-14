@@ -155,10 +155,10 @@ export default function Bag() {
               )
             }
           </div>
-          <main className='px-2 lg:px-5 pt-2 pb-28 slide__up'>
+          <main className='px-3 lg:px-5 pt-8 lg:pt-12 pb-20 lg:pb-28 slide__up'>
             {cartItem.length === 0 ? (
               <div>
-                <h1 className="text-[26px] font-bookish">Your Shopping Bag</h1>
+                <h1 className="text-[20px] lg:text-[26px] font-bookish">Your Shopping Bag</h1>
                 <p className="my-8 text-xs">Your shopping bag is currently empty.</p>
                 <div className='pt-2'>
                   <Link href="/" className='bg-[#000000cc] text-center select-none text-white text-[14px] uppercase rounded py-2 px-[55px] font-ibmPlexMedium hover:bg-[#897f7b]'>Continue Shopping</Link>
@@ -166,7 +166,7 @@ export default function Bag() {
               </div>
             ) : (
               <div>
-                <h1 className="text-[26px] font-bookish">Your Shopping Bag ({cartItem.length} items)</h1>
+                <h1 className="text-[20px] lg:text-[26px] font-bookish">Your Shopping Bag ({cartItem.length} items)</h1>
                 <div className="block lg:flex gap-8">
                   <div className="lg:flex-[70%]">
                     <div className="bag__wrapper mt-5">

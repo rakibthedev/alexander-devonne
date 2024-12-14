@@ -633,7 +633,7 @@ select:-webkit-autofill:active {
     border-top: none;
   }
   .search__bar{
-    width: calc(100% - 20px);
+    width: calc(100% - 25px);
   }
   
 }

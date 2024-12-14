@@ -71,7 +71,7 @@ export default function Search({handleSearch}) {
     className='h-screen fixed w-screen top-0 left-0 bg-[#cdedd380] z-[999999] border-box' 
     style={{backdropFilter: "blur(3rem)"}}
     >
-        <div className="absolute z-[9999999] right-2 lg:right-5 top-2">
+        <div className="absolute z-[9999999] right-3 lg:right-5 top-2">
             <button 
             className='select-none outline-none flex items-center justify-center'
             onClick={handleSearch}>
