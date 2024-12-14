@@ -4,11 +4,7 @@ import ProductGallery from './ProductGallery'; // Import the client component
 
 // Export a component that uses getServerSideProps
 const ProductGalleryServer = async ({ apiUrl }) => {
-  const res = await fetch(apiUrl,{
-    next: {
-      revalidate: 300
-    }
-  });
+  const res = await fetch(apiUrl);
   const data = await res.json();
 
   const products = data.products.length > 8 
