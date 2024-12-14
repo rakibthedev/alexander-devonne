@@ -11,7 +11,7 @@ export default async function ProductSet() {
   try {
     // Ensure an absolute URL for server-side fetching
 
-    const response = await fetch(`${process.env.NEXT_PUBLIC_DOMAIN_ADDRESS}/api/product-set/get-product-set`);
+    const response = await fetch(`${process.env.NEXT_PUBLIC_DOMAIN_ADDRESS}/api/product-set/product-set`);
 
     // Check if response is successful
     if (!response.ok) {
