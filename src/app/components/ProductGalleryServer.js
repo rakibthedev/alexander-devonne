@@ -6,7 +6,7 @@ import ProductGallery from './ProductGallery'; // Import the client component
 const ProductGalleryServer = async ({ apiUrl }) => {
   const res = await fetch(apiUrl,{
     next: {
-      revalidate: 1200
+      revalidate: 300
     }
   });
   const data = await res.json();

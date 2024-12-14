@@ -1,36 +1,63 @@
 import Link from 'next/link';
 import { FiArrowRight } from 'react-icons/fi';
 import ProductGalleryServer from '../ProductGalleryServer';
-import { productSetData } from '@/app/constants/productSetData';
+import ProductSetImage from './ProductSetImage';
+import ProductSetImageMobile from './ProductSetImageMobile';
+
 export default async function ProductSet() {
- 
+
+  let data = [];
+
+  try {
+    // Ensure an absolute URL for server-side fetching
+
+    const response = await fetch(`${process.env.NEXT_PUBLIC_DOMAIN_ADDRESS}/api/product-set/product-set`,
+      {
+        next: {revalidate: 3600}
+      }
+    );
+
+    // Check if response is successful
+    if (!response.ok) {
+      console.error('Failed to fetch product-set:', response.status, response.statusText);
+      return (
+        <div className="pt-10 pb-10 px-3 lg:px-5 text-xs min-h-screen">
+          <div className='text-xs'>Something went wrong. Please refresh the page.</div>
+          <div className='pt-14'>
+              <Link href="/" className='bg-[#000000cc] text-center text-white text-[14px] uppercase rounded py-2 px-[55px] font-ibmPlexMedium hover:bg-[#897f7b] select-none'>Refresh</Link>
+          </div>
+        </div>
+      );
+    }
+
+    // Parse JSON response
+    data = await response.json();
+  } catch (error) {
+    console.error('Error fetching product-set:', error.message);
+    return (
+      <div className="pt-5 pb-10 px-3 lg:px-5 text-xs min-h-screen">
+        <div className='text-xs'>Something went wrong. Please refresh the page.</div>
+        <div className='pt-10'>
+            <Link href="/" className='bg-[#000000cc] text-center text-white text-[14px] uppercase rounded py-2 px-[55px] font-ibmPlexMedium hover:bg-[#897f7b] select-none'>Refresh</Link>
+        </div>
+      </div>
+
+    );
+  }
+
+  
+
   return (
     <div>
-      {productSetData.map((item, index) => (
+      {data.map((item, index) => (
         <div key={index}>
-            {item.just_gallery == "no" && 
+            {item.acf.just_gallery == "no" && 
             <section className="px-3 lg:px-5 mb-12 lg:mb-28">
               <div>
-                <Link href={item.category_url}>
+                <Link href={item.acf.category_url}>
                  
-                <div
-                  className="hidden md:block lg:min-h-[650px] md:min-h-[650px] w-full"
-                  style={{
-                    backgroundImage: `url(${item.feature_image_desktop})`,
-                    backgroundRepeat: 'no-repeat',
-                    backgroundPosition: 'center top',
-                    backgroundSize: 'auto 100%',
-                  }}
-                />
-                 <div 
-                  className="block min-h-[450px] md:hidden w-full"
-                  style={{
-                    backgroundImage: `url(${item.feature_image_mobile})`,
-                    backgroundRepeat: 'no-repeat',
-                    backgroundPosition: 'left top',
-                    backgroundSize: 'cover',
-                  }}
-                />
+                 <ProductSetImage imageId={item.featured_media}/>
+                 <ProductSetImageMobile imageId={item.acf.feature_image_mobile}/>
 
                   {/* <img
                     className="w-full h-auto"
@@ -41,15 +68,15 @@ export default async function ProductSet() {
                   /> */}
                 </Link>
                 <div className="flex pt-[14px]">
-                  <Link className="text-2xl" href={item.category_url}>
-                    <span className="font-bookish" dangerouslySetInnerHTML={{__html: `<div>${item.title}</div>`}} />
+                  <Link className="text-2xl" href={item.acf.category_url}>
+                    <span className="font-bookish" dangerouslySetInnerHTML={{__html: `<div>${item.title.rendered}</div>`}} />
                   </Link>
                 </div>
                 <Link
                   className="product__set__link text-xs uppercase mt-[13px] ml-[2px] pb-[2px] border-b border-black"
-                  href={item.category_url}
+                  href={item.acf.category_url}
                 >
-                  {item.link_1_text}
+                  {item.acf.link_1_text}
                 </Link>
               </div>
             </section>
@@ -58,19 +85,19 @@ export default async function ProductSet() {
           <section className="px-3 lg:px-5 mb-3">
             <div className="flex items-end gap-5">
               <span className="text-[14px] font-me font-ibmPlexMedium uppercase" 
-              dangerouslySetInnerHTML={{__html: `<div>${item.gallery_title}</div>`}}
+              dangerouslySetInnerHTML={{__html: `<div>${item.acf.gallery_title}</div>`}}
               />
-              {item.just_gallery == "no" && <div className="flex items-center gap-2">
-                <Link className="underline text-xs whitespace-nowrap" href={item.category_url}>
-                  {item.link_2_text}
+              {item.acf.just_gallery == "no" && <div className="flex items-center gap-2">
+                <Link className="underline text-xs whitespace-nowrap" href={item.acf.category_url}>
+                  {item.acf.link_2_text}
                 </Link>
-                <Link className="text-[12px]" href={item.category_url}>
+                <Link className="text-[12px]" href={item.acf.category_url}>
                   <FiArrowRight />
                 </Link>
               </div> }
             </div>
           </section>
-          <ProductGalleryServer apiUrl={`${process.env.NEXT_PUBLIC_DOMAIN_ADDRESS}/api/product/category-products?category=${item.product_category}`}/>
+          <ProductGalleryServer apiUrl={`${process.env.NEXT_PUBLIC_DOMAIN_ADDRESS}/api/product/category-products?category=${item.acf.product_category}`}/>
         </div>
       ))}
     </div>
